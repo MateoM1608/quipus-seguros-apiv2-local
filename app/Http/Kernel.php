@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\ConnectionDataBase::class
     ];
 
     /**
@@ -62,5 +63,9 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+        'jwt.refresh' => \Tymon\JWTAuth\Http\Middleware\RefreshToken::class,
+        'authorization' => \App\Http\Middleware\Authorization::class,
+        'connection' => \App\Http\Middleware\ConnectionDataBase::class,
     ];
 }
