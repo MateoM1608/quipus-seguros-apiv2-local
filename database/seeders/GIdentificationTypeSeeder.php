@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 class GIdentificationTypeSeeder extends Seeder
@@ -34,7 +36,7 @@ class GIdentificationTypeSeeder extends Seeder
         $identificationType = factory(App\Models\GIdentificationType::class)->create([
             'description' => 'Documento Extranjero',
             'alias' => 'DE'
-        ]);        
+        ]);
 
     }
 }

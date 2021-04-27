@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -273,6 +275,12 @@ class ModuleSeeder extends Seeder
                     [
                         'description' => 'identificationType',
                         'name' => 'identificationType',
+                        'icon' => 'icon-speedometer',
+                        'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
+                    ],
+                    [
+                        'description' => 'country',
+                        'name' => 'country',
                         'icon' => 'icon-speedometer',
                         'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
                     ],
