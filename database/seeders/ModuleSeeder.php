@@ -17,7 +17,6 @@ class ModuleSeeder extends Seeder
      */
     public function run()
     {
-        //$module = factory(App\Models\Module::class, 100)->create();
         $modules = [
             [
                 'description' => 'sidebar',
@@ -115,6 +114,17 @@ class ModuleSeeder extends Seeder
                                 'icon' => 'fas fa-th-large',
                                 'class' => '',
                                 'show' => 1,
+                                'children' => [
+                                    [
+                                        'description' => 'permission-profile',
+                                        'name' => 'Permisos de perfil',
+                                        'url' => '/profile/permission-profile',
+                                        'icon' => 'fa fa-chain-broken',
+                                        'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
+                                        'class' => '',
+                                        'show' => 1,
+                                    ],
+                                ]
                             ],
                             [
                                 'description' => 'vendor',
