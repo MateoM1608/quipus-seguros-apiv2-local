@@ -13,17 +13,6 @@ class COperationTypeSeeder extends Seeder
      */
     public function run()
     {
-        $operationType = factory(App\Models\Crm\COperationType::class)->create([
-            'operation_type' => 'Tarea'
-        ]);
-        $operationType = factory(App\Models\Crm\COperationType::class)->create([
-            'operation_type' => 'Llamada'
-        ]);
-        $operationType = factory(App\Models\Crm\COperationType::class)->create([
-            'operation_type' => 'Correo'
-        ]);
-        $operationType = factory(App\Models\Crm\COperationType::class)->create([
-            'operation_type' => 'Contacto'
-        ]);
+
     }
 }

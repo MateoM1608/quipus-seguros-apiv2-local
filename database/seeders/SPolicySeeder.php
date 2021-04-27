@@ -13,6 +13,6 @@ class SPolicySeeder extends Seeder
      */
     public function run()
     {
-        $policy = factory(App\Models\Policy\SPolicy::class, 20)->create();
+
     }
 }

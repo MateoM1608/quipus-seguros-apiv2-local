@@ -13,6 +13,6 @@ class COperationCommentSeeder extends Seeder
      */
     public function run()
     {
-        $operationComment = factory(App\Models\Crm\COperationComment::class, 20)->create();
+
     }
 }

@@ -13,6 +13,6 @@ class SPaymentSeeder extends Seeder
      */
     public function run()
     {
-        $Payment = factory(App\Models\Policy\SPayment::class, 20)->create();
+
     }
 }

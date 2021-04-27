@@ -13,6 +13,6 @@ class SAnnexSeeder extends Seeder
      */
     public function run()
     {
-        $client = factory(App\Models\Policy\SAnnex::class, 20)->create();
+
     }
 }

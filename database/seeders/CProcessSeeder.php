@@ -13,6 +13,6 @@ class CProcessSeeder extends Seeder
      */
     public function run()
     {
-        $process = factory(App\Models\Crm\CProcess::class, 20)->create();
+
     }
 }

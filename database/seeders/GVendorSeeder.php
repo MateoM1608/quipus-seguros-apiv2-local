@@ -13,6 +13,6 @@ class GVendorSeeder extends Seeder
      */
     public function run()
     {
-        $vendor = factory(App\Models\Policy\GVendor::class, 20)->create();
+
     }
 }

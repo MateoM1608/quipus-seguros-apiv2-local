@@ -13,6 +13,6 @@ class SCommissionSeeder extends Seeder
      */
     public function run()
     {
-        $commission = factory(App\Models\Policy\SCommission::class, 20)->create();
+
     }
 }

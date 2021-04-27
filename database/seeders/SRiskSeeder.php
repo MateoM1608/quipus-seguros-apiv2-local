@@ -13,6 +13,6 @@ class SRiskSeeder extends Seeder
      */
     public function run()
     {
-        $policy = factory(App\Models\Policy\SRisk::class, 20)->create();
+
     }
 }

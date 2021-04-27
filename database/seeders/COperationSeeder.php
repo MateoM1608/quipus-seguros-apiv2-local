@@ -13,6 +13,6 @@ class COperationSeeder extends Seeder
      */
     public function run()
     {
-        $operation = factory(App\Models\Crm\COperation::class, 20)->create();
+
     }
 }

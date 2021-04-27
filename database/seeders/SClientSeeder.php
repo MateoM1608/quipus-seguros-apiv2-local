@@ -13,6 +13,6 @@ class SClientSeeder extends Seeder
      */
     public function run()
     {
-        $client = factory(App\Models\SClient::class, 20)->create();
+
     }
 }
