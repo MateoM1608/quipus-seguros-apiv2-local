@@ -1,13 +1,30 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-$factory->define(App\Models\Permission::class, function (Faker $faker) {
-    $user = \App\Models\User::find($faker->numberBetween($min = 1, $max = \App\Models\User::count()));
-    #$module = \App\Models\Module::find($faker->numberBetween($min = 1, $max = \App\Models\Module::count()));
-    return [
-        'user_id' => 1,
-        'module_id' => 1, //$module->id,
-        'actions' => json_encode(['see' => true, 'create' => true, 'edit' => true, 'delete' => true]),
-    ];
-});
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+use App\Models\Permission;
+class PermissionFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Permission::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'user_id' => 1,
+            'module_id' => 1, //$module->id,
+            'actions' => json_encode(['see' => true, 'create' => true, 'edit' => true, 'delete' => true]),
+        ];
+    }
+}

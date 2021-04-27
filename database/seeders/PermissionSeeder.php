@@ -3,6 +3,11 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Config;
+
+use App\Models\Permission;
+use App\Models\Module;
+use App\Models\User;
 
 class PermissionSeeder extends Seeder
 {
@@ -13,16 +18,16 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        $modules = App\Models\Module::all();
-        $users = App\Models\User::where('connection', Config::get('database.default'))->get();
+        $modules = Module::all();
+        $users = User::where('connection', Config::get('database.default'))->get();
 
         foreach ($users as $user) {
             foreach ($modules as $module) {
-                $permission_id = \App\Models\Permission::where('user_id', $user->id)
+                $permission_id = Permission::where('user_id', $user->id)
                     ->where('module_id', $module->id)->first();
 
                 if (!$permission_id) {
-                    $permission = factory(\App\Models\Permission::class)->create([
+                    $permission = Permission::factory()->create([
                         'user_id' => $user->id,
                         'module_id' => $module->id
                     ]);
