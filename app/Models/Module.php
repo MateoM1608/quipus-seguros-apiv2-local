@@ -100,4 +100,33 @@ class Module extends Model
             ->orderBy('order', 'asc')
             ->with(['children']);
     }
+
+    public function permissionProfile()
+    {
+        return $this->hasMany(Module::class, 'parent', 'id')
+            ->join('permission_profiles', 'module_id', 'modules.id')
+            ->where('permission_profiles.profile_id', \Request::instance()->profile_id)
+            ->select([
+                "modules.id",
+                "modules.description",
+                "modules.name",
+                "modules.parent",
+                "modules.url",
+                "modules.icon",
+                "modules.image",
+                "modules.class",
+                "modules.badge",
+                "modules.wrapper",
+                "modules.variant",
+                "modules.attributes",
+                "modules.divider",
+                "modules.method",
+                "modules.show",
+                "permission_profiles.actions",
+                "permission_profiles.profile_id",
+                "permission_profiles.id AS permission_profile_id",
+            ])
+            ->orderBy('order', 'asc')
+            ->with(['permissionProfile']);
+    }
 }

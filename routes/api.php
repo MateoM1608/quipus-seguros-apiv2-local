@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileUserController;
 use App\Http\Controllers\UserController;
 
 # Controllers for Profile
+use App\Http\Controllers\PermissionProfileController;
 use App\Http\Controllers\ProfileController;
 
 # Controllers for Modules
@@ -106,6 +107,11 @@ Route::group(['prefix' => 'v1'], function () {
                 Route::post('/', [ProfileController::class, 'store'])->name('profile-store');
                 Route::put('/{profile}', [ProfileController::class, 'update'])->name('profile-update');
                 Route::delete('/{profile}', [ProfileController::class, 'destroy'])->name('profile-destroy');
+                Route::prefix('permission-profile')->group(function () {
+                    Route::get('/', [PermissionProfileController::class,'index'])->name('profile-permission-consult');
+                    Route::post('/', [PermissionProfileController::class,'store'])->name('profile-permission-store');
+                    Route::delete('/{permission}', [PermissionProfileController::class,'destroy'])->name('profile-permission-destroy');
+                });
             });
 
             /**
