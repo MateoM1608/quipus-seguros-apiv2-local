@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
+use App\Models\GCountry;
+
 class GCountrySeeder extends Seeder
 {
     /**
@@ -13,11 +15,9 @@ class GCountrySeeder extends Seeder
      */
     public function run()
     {
-        $country = factory(App\Models\GCountry::class)->create([
+        $country = GCountry::factory()->create([
             'description' => 'Colombia',
             'initials' => 'COL'
         ]);
-
-        $country = factory(App\Models\GCountry::class, 19)->create();
     }
 }

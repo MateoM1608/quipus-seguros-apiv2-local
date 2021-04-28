@@ -1,14 +1,29 @@
 <?php
 
-use Illuminate\Support\Str;
-use Faker\Generator as Faker;
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 use App\Models\GCountry;
+class GCountryFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = GCountry::class;
 
-$factory->define(GCountry::class, function (Faker $faker) {
-    $faker->addProvider(new \Faker\Provider\en_US\Address($faker));
-    return [
-        'description' => $faker->country,
-        'initials' => 'ABC'
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'description' => $this->faker->country,
+            'initials' => 'ABC'
+        ];
+    }
+}
