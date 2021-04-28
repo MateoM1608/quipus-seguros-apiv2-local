@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
+use App\Models\User;
+
 class UserSeeder extends Seeder
 {
     /**
@@ -13,7 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $users = factory(App\Models\User::class)->create([
+        $users = User::factory()->create([
             'name' => 'Soporte',
             'email' => 'suport@amauttasystems.com'
         ]);
