@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
+use App\Models\Crm\CCaseStage;
+
 class CCaseStageSeeder extends Seeder
 {
     /**
@@ -13,27 +15,27 @@ class CCaseStageSeeder extends Seeder
      */
     public function run()
     {
-        $caseStage = factory(App\Models\Crm\CCaseStage::class)->create([
+        $caseStage = CCaseStage::factory()->create([
             'description' => 'Negocio pendiente',
             'c_type_case_id' => '2'
         ]);
-        $caseStage = factory(App\Models\Crm\CCaseStage::class)->create([
+        $caseStage = CCaseStage::factory()->create([
             'description' => 'Negocio finalizado',
             'c_type_case_id' => '2'
         ]);
-        $caseStage = factory(App\Models\Crm\CCaseStage::class)->create([
+        $caseStage = CCaseStage::factory()->create([
             'description' => 'Negocio gestionado',
             'c_type_case_id' => '2'
         ]);
-        $caseStage = factory(App\Models\Crm\CCaseStage::class)->create([
+        $caseStage = CCaseStage::factory()->create([
             'description' => 'Negocio para reprogramar',
             'c_type_case_id' => '2'
         ]);
-        $caseStage = factory(App\Models\Crm\CCaseStage::class)->create([
+        $caseStage = CCaseStage::factory()->create([
             'description' => 'Abierto',
             'c_type_case_id' => '1'
         ]);
-        $caseStage = factory(App\Models\Crm\CCaseStage::class)->create([
+        $caseStage = CCaseStage::factory()->create([
             'description' => 'Cerrado',
             'c_type_case_id' => '1'
         ]);
