@@ -1,17 +1,30 @@
 <?php
 
-use Illuminate\Support\Str;
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 use App\Models\GCity;
+class GCityFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = GCity::class;
 
-$factory->define(GCity::class, function (Faker $faker) {
-    $faker->addProvider(new \Faker\Provider\en_US\Address($faker));
-    return [
-        'description' => $faker->city,
-        'initials' => 'DEF',
-        'g_country_id' => rand(1, 20)
-
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'description' => $this->faker->city,
+            'initials' => 'DEF',
+            'g_country_id' => rand(1, 20)
+        ];
+    }
+}
