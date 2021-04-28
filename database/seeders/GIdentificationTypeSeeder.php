@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
+use App\Models\GIdentificationType;
+
 class GIdentificationTypeSeeder extends Seeder
 {
     /**
@@ -13,27 +15,27 @@ class GIdentificationTypeSeeder extends Seeder
      */
     public function run()
     {
-        $identificationType = factory(App\Models\GIdentificationType::class)->create([
+        $identificationType = GIdentificationType::factory()->create([
             'description' => 'Cedula de Ciudadania',
             'alias' => 'CC'
         ]);
-        $identificationType = factory(App\Models\GIdentificationType::class)->create([
+        $identificationType = GIdentificationType::factory()->create([
             'description' => 'Nit',
             'alias' => 'NIT'
         ]);
-        $identificationType = factory(App\Models\GIdentificationType::class)->create([
+        $identificationType = GIdentificationType::factory()->create([
             'description' => 'Cedula de Extranjeria',
             'alias' => 'CE'
         ]);
-        $identificationType = factory(App\Models\GIdentificationType::class)->create([
+        $identificationType = GIdentificationType::factory()->create([
             'description' => 'Tarjeta de Identidad',
             'alias' => 'TI'
         ]);
-        $identificationType = factory(App\Models\GIdentificationType::class)->create([
+        $identificationType = GIdentificationType::factory()->create([
             'description' => 'Registro Civil',
             'alias' => 'RC'
         ]);
-        $identificationType = factory(App\Models\GIdentificationType::class)->create([
+        $identificationType = GIdentificationType::factory()->create([
             'description' => 'Documento Extranjero',
             'alias' => 'DE'
         ]);
