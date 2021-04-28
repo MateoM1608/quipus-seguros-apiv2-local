@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
+use App\Models\Crm\CTypeCase;
+
 class CTypeCaseSeeder extends Seeder
 {
     /**
@@ -13,11 +15,11 @@ class CTypeCaseSeeder extends Seeder
      */
     public function run()
     {
-        $typeCase = factory(App\Models\Crm\CTypeCase::class)->create([
+        $typeCase = CTypeCase::factory()->create([
             'description' => 'Servicio al cliente'
         ]);
 
-        $typeCase = factory(App\Models\Crm\CTypeCase::class)->create([
+        $typeCase = CTypeCase::factory()->create([
             'description' => 'Oportunidades de Negocio'
         ]);
 
