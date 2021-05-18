@@ -69,11 +69,11 @@ class GVendorController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
+        /*$redis = Redis::connection();
         $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
             'evento' => 'VENDOR',
             'datos' => $vendor
-        ]));
+        ]));*/
 
         return response()->json($vendor);
     }
@@ -90,11 +90,11 @@ class GVendorController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
+        /*$redis = Redis::connection();
         $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
             'evento' => 'VENDOR',
             'datos' => $vendor
-        ]));
+        ]));*/
 
         return response()->json($vendor);
     }
@@ -119,11 +119,11 @@ class GVendorController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
+        /*$redis = Redis::connection();
         $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
             'evento' => 'VENDOR',
             'datos' => $vendor
-        ]));
+        ]));*/
 
         return response()->json($vendor);
     }
