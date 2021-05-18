@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quipus
+spec:
+  selector:
+    matchLabels:
+      app: quipus
+      tier: backend
+      track: stable
+  replicas: 1
+  strategy:
+        type: Recreate
+  template:
+    metadata:
+      labels:
+        app: quipus
+        tier: backend
+        track: stable
+    spec:
+      containers:
+        - name: quipus
+          image: registry.digitalocean.com/amautta/quipus:latest
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "ln -nfs /var/www/quipus/secret/.env /var/www/quipus/.env && cd /var/www/quipus/ && php artisan config:cache && php artisan config:clear && php artisan migrate --database test"]
+          imagePullPolicy: Always
+          ports:
+            #- name: http
+          - containerPort: 80
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 200m
+          volumeMounts:
+          - name: quipus-env
+            mountPath: "/var/www/quipus/secret"
+      volumes:
+      - name: quipus-env
+        secret:
+          secretName: quipus-environment
