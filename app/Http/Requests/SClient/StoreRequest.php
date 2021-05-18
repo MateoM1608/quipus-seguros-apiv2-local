@@ -34,8 +34,9 @@ class StoreRequest extends BaseFormRequest
             'last_name' => [
                 "required"
             ],
-            'birthay' => [
+            'birthday' => [
                 "date",
+                "date_format:Y-m-d"
             ],
             'fix_phone' => $this->has('fix_phone') ? [
                 "numeric",
@@ -78,7 +79,8 @@ class StoreRequest extends BaseFormRequest
             "identification.unique" => "El número de identificacion del cliente ya se encuentra registrado.",
             "first_name.required" => "El nombre del cliente es obligatorio.",
             "last_name.required" => "El apellido del cliente es obligatorio.",
-            "birthay.date" => "La fecha ingresada no cumple el formato aaaa-mm-dd",
+            "birthday.date" => "El valor ingresado con es una fecha correcta",
+            "birthday.date_format" => "La fecha ingresada no cumple el formato aaaa-mm-dd",
             "fix_phone.numeric" => "El telèfono debe ser numèrico.",
             "cel_phone.required" => "El número de celular es requerido",
             "cel_phone.numeric" => "El número de celular solo debe de contener valores numericos",

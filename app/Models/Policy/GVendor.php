@@ -10,7 +10,7 @@ class GVendor extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'identification', 'first_name', 'last_name', 'birthay', 'cellphone', 'email', 'commission', 'g_identification_type_id'
+        'identification', 'first_name', 'last_name', 'birthday', 'cellphone', 'email', 'commission', 'g_identification_type_id'
     ];
 
     public function gIdentificationType()

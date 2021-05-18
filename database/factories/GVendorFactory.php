@@ -16,7 +16,7 @@ $factory->define(GVendor::class, function (Faker $faker) {
         'identification' => rand(100000, 10000000),
         'first_name' => $faker->firstName,
         'last_name' => $faker->lastName,
-        'birthay' => $faker->date($format = 'Y-m-d', $min = 'now'),
+        'birthday' => $faker->date($format = 'Y-m-d', $min = 'now'),
         'cellphone' => $faker->phoneNumber,
         'email' => $faker->email,
         'commission' => rand(1, 100),
