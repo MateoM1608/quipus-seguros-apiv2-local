@@ -78,10 +78,11 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/me', [AuthController::class, 'me'])->name('login-me');
         });
 
-        /**
-         * User
-         */
         Route::group(['middleware' => ['connection', 'authorization']], function () {
+
+            /**
+             * User
+             */
             Route::prefix('user')->group(function () {
                 Route::get('/', [UserController::class, 'index'])->name('user-consult');
                 Route::post('/', [UserController::class, 'store'])->name('user-create');
