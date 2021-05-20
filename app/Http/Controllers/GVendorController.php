@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
@@ -13,12 +12,14 @@ use App\Http\Requests\Policy\GVendor\StoreRequest;
 //Models
 use App\Models\Policy\GVendor;
 
+// Events
+use App\Events\GVendorEvent;
+
 class GVendorController extends Controller
 {
 
     public function index(Request $request)
     {
-        //\DB::enableQueryLog();
         $data = GVendor::with(['gIdentificationType' => function ($query) use ($request) {
             //
         }])
@@ -53,8 +54,6 @@ class GVendorController extends Controller
             ];
         }
 
-        //dd(\DB::getQueryLog());
-
         return response()->json($response);
     }
 
@@ -69,11 +68,7 @@ class GVendorController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        /*$redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'VENDOR',
-            'datos' => $vendor
-        ]));*/
+        event(new GVendorEvent($vendor));
 
         return response()->json($vendor);
     }
@@ -90,11 +85,7 @@ class GVendorController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        /*$redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'VENDOR',
-            'datos' => $vendor
-        ]));*/
+        event(new GVendorEvent($vendor));
 
         return response()->json($vendor);
     }
@@ -103,7 +94,7 @@ class GVendorController extends Controller
     {
         DB::beginTransaction();
         try {
-            $vendor = GVendor::withTrashed()->findOrFail($id);
+            $vendor = GVendor::withTrashed()->find($id);
 
             if ($request->force) {
                 $vendor->forceDelete();
@@ -113,17 +104,19 @@ class GVendorController extends Controller
                 $vendor->delete();
             }
 
+            event(new GVendorEvent($vendor));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $th) {
+            DB::rollBack();
+            return response()->json($th->getMessage(), 422);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json($th->getMessage(), 422);
         }
-
-        /*$redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'VENDOR',
-            'datos' => $vendor
-        ]));*/
 
         return response()->json($vendor);
     }
