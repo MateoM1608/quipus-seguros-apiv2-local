@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
@@ -15,6 +14,8 @@ use App\Http\Requests\User\StoreRequest;
 use App\Models\Permission;
 use App\Models\User;
 
+// Events
+use App\Events\UserEvent;
 class UserController extends Controller
 {
     public function index(Request $request)
@@ -105,11 +106,7 @@ class UserController extends Controller
                 $message->to($user->email)->subject('Creación de usuario');
             });
 
-            $redis = Redis::connection();
-            $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-                'evento' => 'USER',
-                'datos' => $user
-            ]));
+            event(new UserEvent($user));
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -135,6 +132,8 @@ class UserController extends Controller
                 'evento' => 'USER',
                 'datos' => $user
             ]));
+
+            event(new UserEvent($user));
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -168,6 +167,8 @@ class UserController extends Controller
                 'datos' => $user
             ]));
 
+            event(new UserEvent($user));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
@@ -176,7 +177,6 @@ class UserController extends Controller
             DB::rollBack();
             return response()->json($th->getMessage(), 422);
         }
-
 
         return response()->json($user);
     }
