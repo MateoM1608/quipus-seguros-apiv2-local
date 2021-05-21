@@ -35,7 +35,6 @@ class GVendorEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        //return new Channel('vendor.' . auth('api')->user()->id);
-        return new Channel('vendor.12');
+        return new Channel('vendor.' . auth('api')->user()->id);
     }
 }
