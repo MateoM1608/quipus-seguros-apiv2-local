@@ -71,7 +71,7 @@ return [
     'middleware' => [
         'web',
         Authorize::class,
-        \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+        #\Tymon\JWTAuth\Http\Middleware\Authenticate::class,
     ],
 
     'statistics' => [
