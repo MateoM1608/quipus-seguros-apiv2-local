@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
-//FormRequest
+// FormRequest
 use App\Http\Requests\Crm\CCase\UpdateRequest;
 use App\Http\Requests\Crm\CCase\StoreRequest;
 
-//Models
+// Models
 use App\Models\Crm\CCase;
+
+// Event
+use App\Events\CCaseEvent;
 
 class CCaseController extends Controller
 {
 
     public function index(Request $request)
     {
-        //\DB::enableQueryLog();
         $data = CCase::with(['cTypeCase', 'cCaseStages', 'sClient', 'sPolicy'])
             ->whereHas('sClient', function ($query) use($request) {
                 if (isset($request->name)) {
@@ -60,8 +61,6 @@ class CCaseController extends Controller
             ];
         }
 
-        //dd(\DB::getQueryLog());
-
         return response()->json($response);
     }
 
@@ -70,17 +69,14 @@ class CCaseController extends Controller
         DB::beginTransaction();
         try {
             $case = CCase::create($request->all());
+
+            event(new CCaseEvent($case));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CASE',
-            'datos' => $case
-        ]));
 
         return response()->json($case);
     }
@@ -91,17 +87,14 @@ class CCaseController extends Controller
         try {
             $case = CCase::findOrFail($id);
             $case->update($request->all());
+
+            event(new CCaseEvent($case));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CASE',
-            'datos' => $case
-        ]));
 
         return response()->json($case);
     }
@@ -120,17 +113,13 @@ class CCaseController extends Controller
                 $case->delete();
             }
 
+            event(new CCaseEvent($case));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CASE',
-            'datos' => $case
-        ]));
 
         return response()->json($case);
     }
