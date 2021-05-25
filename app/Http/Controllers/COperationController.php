@@ -1,14 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
 use DB;
 
-use App\Models\Crm\COperation;
-use Illuminate\Http\Request;
-
+// FormRequest
 use App\Http\Requests\Crm\COperation\UpdateRequest;
 use App\Http\Requests\Crm\COperation\StoreRequest;
-use App\Models\Crm\COperationType;
+
+// Models
+use App\Models\Crm\COperation;
+
+// Events
+use App\Events\COperationEvent;
 
 class COperationController extends Controller
 {
@@ -20,12 +25,12 @@ class COperationController extends Controller
     public function index(Request $request)
     {
         $data = COperation::withTrashed()
-        ->with(['COperationType' => function ($query) use ($request) {  }])        
+        ->with(['COperationType' => function ($query) use ($request) {  }])
         ->where(function ($query) use ($request) {
 
             if (isset($request->operation_description)) {
                 $query->where('operation_description', 'like', '%' . $request->operation_description . '%');
-            }          
+            }
         });
         $response = [];
 
@@ -42,8 +47,6 @@ class COperationController extends Controller
             ];
         }
 
-        //dd(\DB::getQueryLog());
-
         return response()->json($response);
     }
 
@@ -57,25 +60,20 @@ class COperationController extends Controller
     {
         DB::beginTransaction();
         try {
-            $operation = COperation::create($request->all());            
+            $operation = COperation::create($request->all());
+
+            event(new COperationEvent($operation));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        /*
-        $redis = Redis::connection();
-        dd('fsfsfs------------>');
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLIENT',
-            'datos' => $client
-        ]));
-        */
         return response()->json($operation);
     }
 
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -83,25 +81,22 @@ class COperationController extends Controller
      * @param  \App\Models\Crm\COperation  $cOperation
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, COperation $id)
+    public function update(UpdateRequest $request, $id)
     {
         DB::beginTransaction();
         try {
-            $id->update($request->all());
+            $operation = COperation::findOrFail($id);
+            $operation->update($request->all());
+
+            event(new COperationEvent($operation));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        /*
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLIENT',
-            'datos' => $client
-        ]));
-            */
-        return response()->json($id);
+        return response()->json($operation);
     }
 
     /**
@@ -114,15 +109,17 @@ class COperationController extends Controller
     {
         DB::beginTransaction();
         try {
-            $id = COperation::withTrashed()->findOrFail($id);
+            $operation = COperation::withTrashed()->findOrFail($id);
 
             if ($request->force) {
-                $id->forceDelete();
-            } else if ($id->trashed()) {
-                $id->restore();
+                $operation->forceDelete();
+            } else if ($operation->trashed()) {
+                $operation->restore();
             } else {
-                $id->delete();
+                $operation->delete();
             }
+
+            event(new COperationEvent($operation));
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -130,14 +127,6 @@ class COperationController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        /*
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLIENT',
-            'datos' => $clients
-        ]));
-        */
-
-        return response()->json($id);
+        return response()->json($operation);
     }
 }
