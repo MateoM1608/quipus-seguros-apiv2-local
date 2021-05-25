@@ -153,7 +153,7 @@ Route::group(['prefix' => 'v1'], function () {
              * Country
              */
             Route::prefix('country')->group(function () {
-                Route::get('/', [GCityController::class, 'index'])->name('city-consult');
+                Route::get('/', [GCountryController::class, 'index'])->name('city-consult');
             });
 
             /**

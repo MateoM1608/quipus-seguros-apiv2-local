@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\GCountry;
 use Illuminate\Http\Request;
+
+// Models
+use App\Models\GCountry;
 
 class GCountryController extends Controller
 {
@@ -12,74 +14,10 @@ class GCountryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $country = GCountry::all();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\GCountry  $gCountry
-     * @return \Illuminate\Http\Response
-     */
-    public function show(GCountry $gCountry)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\GCountry  $gCountry
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(GCountry $gCountry)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\GCountry  $gCountry
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, GCountry $gCountry)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\GCountry  $gCountry
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(GCountry $gCountry)
-    {
-        //
+        return response()->json($country);
     }
 }
