@@ -1,13 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
 use DB;
 
-use App\Models\Crm\COperationComment;
-use Illuminate\Http\Request;
-
+// FormRequest
 use App\Http\Requests\Crm\COperationComment\UpdateRequest;
 use App\Http\Requests\Crm\COperationComment\StoreRequest;
+
+// Models
+use App\Models\Crm\COperationComment;
+
+// Events
+use App\Events\COperationCommentEvent;
 
 class COperationCommentController extends Controller
 {
@@ -19,12 +25,12 @@ class COperationCommentController extends Controller
     public function index(Request $request)
     {
         $data = COperationComment::withTrashed()
-        ->with(['COperation' => function ($query) use ($request) {  }])        
+        ->with(['COperation' => function ($query) use ($request) {  }])
         ->where(function ($query) use ($request) {
 
             if (isset($request->comment_description)) {
                 $query->where('comment_description', 'like', '%' . $request->comment_description . '%');
-            }          
+            }
         });
         $response = [];
 
@@ -41,8 +47,6 @@ class COperationCommentController extends Controller
             ];
         }
 
-        //dd(\DB::getQueryLog());
-
         return response()->json($response);
     }
 
@@ -56,21 +60,16 @@ class COperationCommentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $operationComment = COperationComment::create($request->all());            
+            $operationComment = COperationComment::create($request->all());
+
+            event(new COperationCommentEvent($operationComment));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        /*
-        $redis = Redis::connection();
-        dd('fsfsfs------------>');
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLIENT',
-            'datos' => $client
-        ]));
-        */
         return response()->json($operationComment);
     }
 
@@ -85,21 +84,18 @@ class COperationCommentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $id->update($request->all());
+            $operationComment = COperationComment::findOrFail($id);
+            $operationComment->update($request->all());
+
+            event(new COperationCommentEvent($operationComment));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        /*
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLIENT',
-            'datos' => $client
-        ]));
-            */
-        return response()->json($id);
+        return response()->json($operationComment);
     }
 
     /**
@@ -112,15 +108,17 @@ class COperationCommentController extends Controller
     {
         DB::beginTransaction();
         try {
-            $id = COperationComment::withTrashed()->findOrFail($id);
+            $operationComment = COperationComment::withTrashed()->findOrFail($id);
 
             if ($request->force) {
-                $id->forceDelete();
-            } else if ($id->trashed()) {
-                $id->restore();
+                $operationComment->forceDelete();
+            } else if ($operationComment->trashed()) {
+                $operationComment->restore();
             } else {
-                $id->delete();
+                $operationComment->delete();
             }
+
+            event(new COperationCommentEvent($operationComment));
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -128,14 +126,6 @@ class COperationCommentController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        /*
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLIENT',
-            'datos' => $clients
-        ]));
-        */
-
-        return response()->json($id);
+        return response()->json($operationComment);
     }
 }
