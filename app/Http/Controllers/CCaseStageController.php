@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
-
 
 //FormRequest
 use App\Http\Requests\Crm\CCaseStage\UpdateRequest;
@@ -14,12 +12,13 @@ use App\Http\Requests\Crm\CCaseStage\StoreRequest;
 //Models
 use App\Models\Crm\CCaseStage;
 
+// Events
+use App\Events\CCaseStageEvent;
 
 class CCaseStageController extends Controller
 {
     public function index(Request $request)
     {
-        //\DB::enableQueryLog();
         $data = CCaseStage::with(['cTypeCase'])
             ->where(function ($query) use ($request) {
 
@@ -46,8 +45,6 @@ class CCaseStageController extends Controller
             ];
         }
 
-        //dd(\DB::getQueryLog());
-
         return response()->json($response);
     }
 
@@ -59,14 +56,11 @@ class CCaseStageController extends Controller
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
+
+            event(new CCaseStageEvent($stage));
+
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'STAGE',
-            'datos' => $stage
-        ]));
 
         return response()->json($stage);
     }
@@ -75,36 +69,35 @@ class CCaseStageController extends Controller
     {
         DB::beginTransaction();
         try {
-            $caseStage = CCaseStage::findOrFail($id);
-            $caseStage->update($request->all());
+            $stage = CCaseStage::findOrFail($id);
+            $stage->update($request->all());
+
+            event(new CCaseStageEvent($stage));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'STAGE',
-            'datos' => $caseStage
-        ]));
-
-        return response()->json($caseStage);
+        return response()->json($stage);
     }
 
     public function destroy(Request $request, $id)
     {
         DB::beginTransaction();
         try {
-            $caseStage = CCaseStage::withTrashed()->findOrFail($id);
+            $stage = CCaseStage::withTrashed()->findOrFail($id);
 
             if ($request->force) {
-                $caseStage->forceDelete();
-            } else if ($caseStage->trashed()) {
-                $caseStage->restore();
+                $stage->forceDelete();
+            } else if ($stage->trashed()) {
+                $stage->restore();
             } else {
-                $caseStage->delete();
+                $stage->delete();
             }
+
+            event(new CCaseStageEvent($stage));
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -112,12 +105,6 @@ class CCaseStageController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'STAGE',
-            'datos' => $caseStage
-        ]));
-
-        return response()->json($caseStage);
+        return response()->json($stage);
     }
 }
