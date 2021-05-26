@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
@@ -12,6 +11,9 @@ use App\Http\Requests\Policy\SCommission\StoreRequest;
 
 //Models
 use App\Models\Policy\SCommission;
+
+// Events
+use App\Events\SCommissionEvent;
 
 class SCommissionController extends Controller
 {
@@ -71,6 +73,9 @@ class SCommissionController extends Controller
         DB::beginTransaction();
         try {
             $commission = SCommission::create($request->all());
+
+            event(new SCommissionEvent($commission));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
@@ -78,12 +83,6 @@ class SCommissionController extends Controller
         }
 
         $commission = SCommission::with(['sAnnex', 'gVendor'])->find($commission->id);
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'COMMISSION',
-            'datos' => $commission
-        ]));
 
         return response()->json($commission);
     }
@@ -94,17 +93,14 @@ class SCommissionController extends Controller
         try {
             $commission = SCommission::findOrFail($id);
             $commission->update($request->all());
+
+            event(new SCommissionEvent($commission));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'COMMISSION',
-            'datos' => $commission
-        ]));
 
         return response()->json($commission);
     }
@@ -123,17 +119,13 @@ class SCommissionController extends Controller
                 $commission->delete();
             }
 
+            event(new SCommissionEvent($commission));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'COMMISSION',
-            'datos' => $commission
-        ]));
 
         return response()->json($commission);
     }

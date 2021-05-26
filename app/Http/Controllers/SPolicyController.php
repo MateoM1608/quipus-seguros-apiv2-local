@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
@@ -12,6 +11,10 @@ use App\Http\Requests\Policy\SPolicy\StoreRequest;
 
 //Models
 use App\Models\Policy\SPolicy;
+
+// Events
+use App\Events\SPolicyEvent;
+
 
 
 class SPolicyController extends Controller
@@ -89,17 +92,15 @@ class SPolicyController extends Controller
         DB::beginTransaction();
         try {
             $policy = SPolicy::create($request->all());
+
+            event(new SPolicyEvent($policy));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'POLICY',
-            'datos' => $policy
-        ]));
 
         return response()->json($policy);
     }
@@ -110,17 +111,14 @@ class SPolicyController extends Controller
         try {
             $policy = SPolicy::findOrFail($id);
             $policy->update($request->all());
+
+            event(new SPolicyEvent($policy));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'POLICY',
-            'datos' => $policy
-        ]));
 
         return response()->json($policy);
     }
@@ -139,17 +137,13 @@ class SPolicyController extends Controller
                 $policy->delete();
             }
 
+            event(new SPolicyEvent($policy));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'POLICY',
-            'datos' => $policy
-        ]));
 
         return response()->json($policy);
     }

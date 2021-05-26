@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
 //FormRequest
-use App\Http\Requests\SClient\DeleteRequest;
 use App\Http\Requests\SClient\UpdateRequest;
 use App\Http\Requests\SClient\StoreRequest;
 
 //Models
 use App\Models\SClient;
+
+// Events
+use App\Events\SClientEvent;
 
 class SClientController extends Controller
 {
@@ -71,17 +72,14 @@ class SClientController extends Controller
         DB::beginTransaction();
         try {
             $client = SClient::create($request->all());
+
+            event(new SClientEvent($client));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLIENT',
-            'datos' => $client
-        ]));
 
         return response()->json($client);
     }
@@ -90,35 +88,35 @@ class SClientController extends Controller
     {
         DB::beginTransaction();
         try {
-            $id->update($request->all());
+            $client = SRisk::findOrFail($id);
+            $client->update($request->all());
+
+            event(new SClientEvent($client));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLIENT',
-            'datos' => $id
-        ]));
-
-        return response()->json($id);
+        return response()->json($client);
     }
 
     public function destroy(Request $request, $id)
     {
         DB::beginTransaction();
         try {
-            $id = SClient::withTrashed()->with(['gCity','gIdentificationType'])->findOrFail($id);
+            $client = SClient::withTrashed()->with(['gCity','gIdentificationType'])->findOrFail($id);
 
             if ($request->force) {
-                $id->forceDelete();
-            } else if ($id->trashed()) {
-                $id->restore();
+                $client->forceDelete();
+            } else if ($client->trashed()) {
+                $client->restore();
             } else {
-                $id->delete();
+                $client->delete();
             }
+
+            event(new SClientEvent($client));
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -126,12 +124,6 @@ class SClientController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLIENT',
-            'datos' => $id
-        ]));
-
-        return response()->json($id);
+        return response()->json($client);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
 use DB;
 
 //FormRequest
@@ -12,6 +11,9 @@ use App\Http\Requests\Policy\SInsuranceCarrier\StoreRequest;
 
 //Models
 use App\Models\Policy\SInsuranceCarrier;
+
+// Events
+use App\Events\SInsuranceCarrierEvent;
 
 
 class SInsuranceCarrierController extends Controller
@@ -55,20 +57,17 @@ class SInsuranceCarrierController extends Controller
     {
         DB::beginTransaction();
         try {
-            $insurance = SInsuranceCarrier::create($request->all());
+            $insuranceCarrier = SInsuranceCarrier::create($request->all());
+
+            event(new SInsuranceCarrierEvent($insuranceCarrier));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'INSURANCE',
-            'datos' => $insurance
-        ]));
-
-        return response()->json($insurance);
+        return response()->json($insuranceCarrier);
     }
 
     public function update(UpdateRequest $request, $id)
@@ -77,17 +76,14 @@ class SInsuranceCarrierController extends Controller
         try {
             $insuranceCarrier = SInsuranceCarrier::findOrFail($id);
             $insuranceCarrier->update($request->all());
+
+            event(new SInsuranceCarrierEvent($insuranceCarrier));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'INSURANCE',
-            'datos' => $insuranceCarrier
-        ]));
 
         return response()->json($insuranceCarrier);
     }
@@ -106,17 +102,13 @@ class SInsuranceCarrierController extends Controller
                 $insuranceCarrier->delete();
             }
 
+            event(new SInsuranceCarrierEvent($insuranceCarrier));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'INSURANCE',
-            'datos' => $insuranceCarrier
-        ]));
 
         return response()->json($insuranceCarrier);
     }
