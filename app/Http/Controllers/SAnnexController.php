@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
@@ -12,6 +11,9 @@ use App\Http\Requests\Policy\SAnnex\StoreRequest;
 
 // Models
 use App\Models\Policy\SAnnex;
+
+// Events
+use App\Events\SAnnexEvent;
 
 class SAnnexController extends Controller
 {
@@ -67,17 +69,14 @@ class SAnnexController extends Controller
         DB::beginTransaction();
         try {
             $annex = SAnnex::create($request->all());
+
+            event(new SAnnexEvent($annex));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'ANNEX',
-            'datos' => $annex
-        ]));
 
         return response()->json($annex);
     }
@@ -95,17 +94,14 @@ class SAnnexController extends Controller
         try {
             $annex = SAnnex::findOrFail($id);
             $annex->update($request->all());
+
+            event(new SAnnexEvent($annex));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'ANNEX',
-            'datos' => $annex
-        ]));
 
         return response()->json($annex);
     }
@@ -129,19 +125,14 @@ class SAnnexController extends Controller
                 $annex->delete();
             }
 
+            event(new SAnnexEvent($annex));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'ANNEX',
-            'datos' => $annex
-        ]));
-
         return response()->json($annex);
-        //
     }
 }
