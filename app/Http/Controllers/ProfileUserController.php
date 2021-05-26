@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
 // Models
 use App\Models\ProfileUser;
+
+// Events
+use App\Events\ProfileUserEvent;
 
 class ProfileUserController extends Controller
 {
@@ -67,25 +69,22 @@ class ProfileUserController extends Controller
         DB::beginTransaction();
         try {
             $profileUser = ProfileUser::insert($request->all());
+
+            $data = collect($request->all());
+
+            $profileUser = ProfileUser::where(function ($query) use($data) {
+                $query->whereIn('user_id', $data->pluck('user_id')->unique());
+                $query->whereIn('profile_id', $data->pluck('profile_id')->unique());
+            })
+            ->get();
+
+            event(new ProfileUserEvent($profileUser));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $data = collect($request->all());
-
-        $profileUser = ProfileUser::where(function ($query) use($data) {
-            $query->whereIn('user_id', $data->pluck('user_id')->unique());
-            $query->whereIn('profile_id', $data->pluck('profile_id')->unique());
-        })
-        ->get();
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'PROFILE',
-            'datos' => $profileUser
-        ]));
 
         return response()->json($profileUser);
     }
@@ -103,6 +102,8 @@ class ProfileUserController extends Controller
                 $profileUser->delete();
             }
 
+            event(new ProfileUserEvent($profileUser));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
@@ -110,12 +111,6 @@ class ProfileUserController extends Controller
         }
 
         $profileUser->force = $request->force;
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'PROFILE',
-            'datos' => $profileUser
-        ]));
 
         return response()->json($profileUser);
     }

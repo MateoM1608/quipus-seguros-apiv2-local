@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
-//FormRequest
+// FormRequest
 use App\Http\Requests\Policy\SBranch\UpdateRequest;
 use App\Http\Requests\Policy\SBranch\StoreRequest;
 
-//Models
+// Models
 use App\Models\Policy\SBranch;
+
+// Events
+use App\Events\SBranchEvent;
 
 class SBranchController extends Controller
 {
     public function index(Request $request)
     {
-        //\DB::enableQueryLog();
         $data = SBranch::with(['sInsuranceCarrier' => function ($query) use ($request) {
             //
         }])
@@ -51,8 +52,6 @@ class SBranchController extends Controller
             ];
         }
 
-        //dd(\DB::getQueryLog());
-
         return response()->json($response);
     }
 
@@ -60,20 +59,17 @@ class SBranchController extends Controller
     {
         DB::beginTransaction();
         try {
-            $policy = SBranch::create($request->all());
+            $branch = SBranch::create($request->all());
+
+            event(new SBranchEvent($branch));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'BRANCH',
-            'datos' => $policy->with(['sInsuranceCarrier'])
-        ]));
-
-        return response()->json($policy);
+        return response()->json($branch);
     }
 
     public function update(UpdateRequest $request, $id)
@@ -82,17 +78,14 @@ class SBranchController extends Controller
         try {
             $branch = SBranch::findOrFail($id);
             $branch->update($request->all());
+
+            event(new SBranchEvent($branch));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'BRANCH',
-            'datos' => $branch->with(['sInsuranceCarrier'])
-        ]));
 
         return response()->json($branch);
     }
@@ -111,17 +104,13 @@ class SBranchController extends Controller
                 $branch->delete();
             }
 
+            event(new SBranchEvent($branch));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'BRANCH',
-            'datos' => $branch
-        ]));
 
         return response()->json($branch);
     }

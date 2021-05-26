@@ -6,12 +6,15 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
-//FormRequest
+// FormRequest
 use App\Http\Requests\Policy\SClaim\UpdateRequest;
 use App\Http\Requests\Policy\SClaim\StoreRequest;
 
-//Models
+// Models
 use App\Models\Policy\SClaim;
+
+// Events
+use App\Events\SClaimEvent;
 
 class SClaimController extends Controller
 {
@@ -53,8 +56,6 @@ class SClaimController extends Controller
             ];
         }
 
-        //dd(\DB::getQueryLog());
-
         return response()->json($response);
     }
 
@@ -69,21 +70,17 @@ class SClaimController extends Controller
         DB::beginTransaction();
         try {
             $claim = SClaim::create($request->all());
+
+            event(new SClaimEvent($claim));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLAIM',
-            'datos' => $claim
-        ]));
-
         return response()->json($claim);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -98,17 +95,14 @@ class SClaimController extends Controller
         try {
             $claim = SClaim::findOrFail($id);
             $claim->update($request->all());
+
+            event(new SClaimEvent($claim));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLAIM',
-            'datos' => $claim
-        ]));
 
         return response()->json($claim);
     }
@@ -133,17 +127,13 @@ class SClaimController extends Controller
                 $claim->delete();
             }
 
+            event(new SClaimEvent($claim));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'CLAIM',
-            'datos' => $claim
-        ]));
 
         return response()->json($claim);
     }

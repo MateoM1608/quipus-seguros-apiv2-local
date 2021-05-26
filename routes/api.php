@@ -130,6 +130,9 @@ Route::group(['prefix' => 'v1'], function () {
              */
             Route::prefix('module')->group(function () {
                 Route::get('/', [ModuleController::class, 'index'])->name('module-consult');
+                Route::post('/', [ModuleController::class, 'store'])->name('module-store');
+                Route::put('/{id}', [ModuleController::class, 'update'])->name('module-update');
+                Route::delete('/{id}', [ModuleController::class, 'destroy'])->name('module-destroy');
             });
 
             /**

@@ -62,13 +62,15 @@ class GVendorController extends Controller
         DB::beginTransaction();
         try {
             $vendor = GVendor::create($request->all());
+
+            event(new GVendorEvent($vendor));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        event(new GVendorEvent($vendor));
 
         return response()->json($vendor);
     }
@@ -79,13 +81,15 @@ class GVendorController extends Controller
         try {
             $vendor = GVendor::findOrFail($id);
             $vendor->update($request->all());
+
+            event(new GVendorEvent($vendor));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        event(new GVendorEvent($vendor));
 
         return response()->json($vendor);
     }

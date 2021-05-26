@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
 // Models
 use App\Models\Profile;
+
+// Events
+use App\Events\ProfileEvent;
 
 class ProfileController extends Controller
 {
@@ -47,17 +49,14 @@ class ProfileController extends Controller
         DB::beginTransaction();
         try {
             $profile = Profile::create($request->all());
+
+            event(new ProfileEvent($profile));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'PROFILE',
-            'datos' => $profile
-        ]));
 
         return response()->json($profile);
     }
@@ -67,17 +66,14 @@ class ProfileController extends Controller
         DB::beginTransaction();
         try {
             $profile->update($request->all());
+
+            event(new ProfileEvent($profile));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'PROFILE',
-            'datos' => $profile
-        ]));
 
         return response()->json($profile);
     }
@@ -96,6 +92,8 @@ class ProfileController extends Controller
                 $profile->delete();
             }
 
+            event(new ProfileEvent($profile));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
@@ -103,12 +101,6 @@ class ProfileController extends Controller
         }
 
         $profile->force = $request->force;
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'PROFILE',
-            'datos' => $profile
-        ]));
 
         return response()->json($profile);
     }
