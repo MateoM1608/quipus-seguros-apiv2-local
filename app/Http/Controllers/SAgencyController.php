@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
-//FormRequest
+// FormRequest
 use App\Http\Requests\Policy\SAgency\DeleteRequest;
 use App\Http\Requests\Policy\SAgency\UpdateRequest;
 use App\Http\Requests\Policy\SAgency\StoreRequest;
 
-//Models
+// Models
 use App\Models\Policy\SAgency;
+
+// Events
+use App\Events\SAgencyEvent;
 
 class SAgencyController extends Controller
 {
@@ -56,17 +58,14 @@ class SAgencyController extends Controller
         DB::beginTransaction();
         try {
             $agency = SAgency::create($request->all());
+
+            event(new SAgencyEvent($agency));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'AGENCY',
-            'datos' => $agency
-        ]));
 
         return response()->json($agency);
     }
@@ -77,17 +76,14 @@ class SAgencyController extends Controller
         try {
             $agency = SAgency::findOrFail($id);
             $agency->update($request->all());
+
+            event(new SAgencyEvent($agency));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'AGENCY',
-            'datos' => $agency
-        ]));
 
         return response()->json($agency);
     }
@@ -106,6 +102,8 @@ class SAgencyController extends Controller
                 $agency->delete();
             }
 
+            event(new SAgencyEvent($agency));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
@@ -113,12 +111,6 @@ class SAgencyController extends Controller
         }
 
         $agency->force = $request->force;
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'AGENCY',
-            'datos' => $agency
-        ]));
 
         return response()->json($agency);
     }
