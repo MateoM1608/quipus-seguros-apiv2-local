@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
@@ -10,6 +9,8 @@ use DB;
 use App\Models\Permission;
 use App\Models\Module;
 
+// Events
+use App\Events\PermissionUserEvent;
 
 class PermissionUserController extends Controller
 {
@@ -74,25 +75,22 @@ class PermissionUserController extends Controller
                 ['user_id', 'module_id'],
                 ['actions']
             );
+
+            $data = collect($request->all());
+
+            $permission = Permission::where(function ($query) use($data) {
+                $query->whereIn('user_id', $data->pluck('user_id')->unique());
+                $query->whereIn('module_id', $data->pluck('module_id')->unique());
+            })
+            ->get();
+
+            event(new PermissionUserEvent($permission));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $data = collect($request->all());
-
-        $permission = Permission::where(function ($query) use($data) {
-            $query->whereIn('user_id', $data->pluck('user_id')->unique());
-            $query->whereIn('module_id', $data->pluck('module_id')->unique());
-        })
-        ->get();
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'PERMISSION',
-            'datos' => $permission
-        ]));
 
         return response()->json($permission);
     }
@@ -110,6 +108,8 @@ class PermissionUserController extends Controller
                 $permission->delete();
             }
 
+            event(new PermissionUserEvent($permission));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
@@ -117,12 +117,6 @@ class PermissionUserController extends Controller
         }
 
         $permission->force = $request->force;
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'PERMISSION',
-            'datos' => $permission
-        ]));
 
         return response()->json($permission);
     }
