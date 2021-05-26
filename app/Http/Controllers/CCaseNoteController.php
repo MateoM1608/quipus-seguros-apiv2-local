@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
-
-//FormRequest
+// FormRequest
 use App\Http\Requests\Crm\CCaseNote\UpdateRequest;
 use App\Http\Requests\Crm\CCaseNote\StoreRequest;
 
-//Models
+// Models
 use App\Models\Crm\CCaseNote;
 use App\Models\Crm\CCase;
+
+// Events
+use App\Events\CCaseNoteEvent;
 
 class CCaseNoteController extends Controller
 {
@@ -61,16 +62,12 @@ class CCaseNoteController extends Controller
         try {
             $note = CCaseNote::create($request->all());
             DB::commit();
+
+            event(new CCaseNoteEvent($note));
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'NOTE',
-            'datos' => $note
-        ]));
 
         return response()->json($note);
     }
@@ -79,36 +76,35 @@ class CCaseNoteController extends Controller
     {
         DB::beginTransaction();
         try {
-            $caseNote = CCaseNote::find($id);
-            $caseNote->update($request->all());
+            $note = CCaseNote::find($id);
+            $note->update($request->all());
+
+            event(new CCaseNoteEvent($note));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'NOTE',
-            'datos' => $caseNote
-        ]));
-
-        return response()->json($caseNote);
+        return response()->json($note);
     }
 
     public function destroy(Request $request, $id)
     {
         DB::beginTransaction();
         try {
-            $caseNote = CCaseNote::withTrashed()->findOrFail($id);
+            $note = CCaseNote::withTrashed()->findOrFail($id);
 
             if ($request->force) {
-                $caseNote->forceDelete();
-            } else if ($caseNote->trashed()) {
-                $caseNote->restore();
+                $note->forceDelete();
+            } else if ($note->trashed()) {
+                $note->restore();
             } else {
-                $caseNote->delete();
+                $note->delete();
             }
+
+            event(new CCaseNoteEvent($note));
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
@@ -116,12 +112,6 @@ class CCaseNoteController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'NOTE',
-            'datos' => $caseNote
-        ]));
-
-        return response()->json($caseNote);
+        return response()->json($note);
     }
 }

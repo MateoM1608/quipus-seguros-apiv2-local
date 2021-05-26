@@ -50,6 +50,7 @@ use App\Http\Controllers\Reports\RProduction;
 # Controllers for CRM
 use App\Http\Controllers\CCaseStageController;
 use App\Http\Controllers\CCaseNoteController;
+use App\Http\Controllers\CTypeCaseController;
 use App\Http\Controllers\CCaseController;
 
 /*
@@ -152,7 +153,7 @@ Route::group(['prefix' => 'v1'], function () {
              * Country
              */
             Route::prefix('country')->group(function () {
-                Route::get('/', [GCityController::class, 'index'])->name('city-consult');
+                Route::get('/', [GCountryController::class, 'index'])->name('city-consult');
             });
 
             /**
@@ -284,6 +285,13 @@ Route::group(['prefix' => 'v1'], function () {
             });
 
             Route::prefix('crm')->group(function () {
+
+                /**
+                 * Type Case
+                 */
+                Route::prefix('typeCases')->group(function () {
+                    Route::get('/', [CTypeCaseController::class, 'index'])->name('type-cases-consult');
+                });
 
                 /**
                  * Cases

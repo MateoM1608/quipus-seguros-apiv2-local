@@ -37,8 +37,6 @@ class GCityController extends Controller
             ];
         }
 
-        //dd(\DB::getQueryLog());
-
         return response()->json($response);
     }
 }

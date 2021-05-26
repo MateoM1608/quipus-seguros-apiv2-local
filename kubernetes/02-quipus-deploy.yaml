@@ -27,13 +27,10 @@ spec:
                 command: ["/bin/sh", "-c", "ln -nfs /var/www/quipus/secret/.env /var/www/quipus/.env && cd /var/www/quipus/ && php artisan config:cache && php artisan config:clear && php artisan migrate --database test"]
           imagePullPolicy: Always
           ports:
-            #- name: http
           - containerPort: 80
-          resources:
-            limits:
-              cpu: 500m
-            requests:
-              cpu: 200m
+            name: http
+          - containerPort: 6001
+            name: websocket
           volumeMounts:
           - name: quipus-env
             mountPath: "/var/www/quipus/secret"
