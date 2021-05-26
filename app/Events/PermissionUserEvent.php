@@ -33,6 +33,6 @@ class PermissionUserEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('permission-user.' . auth('api')->user()->connection);
+        return new Channel('permission-user.' . auth('api')->user()->connection);
     }
 }
