@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
-//FormRequest
+// FormRequest
 use App\Http\Requests\Policy\SRisk\UpdateRequest;
 use App\Http\Requests\Policy\SRisk\StoreRequest;
 
-//Models
+// Models
 use App\Models\Policy\SClaim;
 use App\Models\Policy\SRisk;
+
+// Events
+use App\Events\SRiskEvent;
 
 class SRiskController extends Controller
 {
@@ -49,8 +51,6 @@ class SRiskController extends Controller
             ];
         }
 
-        //dd(\DB::getQueryLog());
-
         return response()->json($response);
     }
 
@@ -59,17 +59,14 @@ class SRiskController extends Controller
         DB::beginTransaction();
         try {
             $risk = SRisk::create($request->all());
+
+            event(new SRiskEvent($risk));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'RISK',
-            'datos' => $risk
-        ]));
 
         return response()->json($risk);
     }
@@ -80,17 +77,14 @@ class SRiskController extends Controller
         try {
             $risk = SRisk::findOrFail($id);
             $risk->update($request->all());
+
+            event(new SRiskEvent($risk));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'RISK',
-            'datos' => $risk
-        ]));
 
         return response()->json($risk);
     }
@@ -109,17 +103,13 @@ class SRiskController extends Controller
                 $risk->delete();
             }
 
+            event(new SRiskEvent($risk));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'RISK',
-            'datos' => $risk
-        ]));
 
         return response()->json($risk);
     }
