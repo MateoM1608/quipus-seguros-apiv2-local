@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use DB;
 
@@ -10,6 +9,8 @@ use DB;
 use App\Models\PermissionProfile;
 use App\Models\Module;
 
+// Events
+use App\Events\PermissionProfileEvent;
 
 class PermissionProfileController extends Controller
 {
@@ -74,25 +75,22 @@ class PermissionProfileController extends Controller
                 ['profile_id', 'module_id'],
                 ['actions']
             );
+
+            $data = collect($request->all());
+
+            $permission = PermissionProfile::where(function ($query) use($data) {
+                $query->whereIn('profile_id', $data->pluck('profile_id')->unique());
+                $query->whereIn('module_id', $data->pluck('module_id')->unique());
+            })
+            ->get();
+
+            event(new PermissionProfileEvent($permission));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $data = collect($request->all());
-
-        $permission = PermissionProfile::where(function ($query) use($data) {
-            $query->whereIn('profile_id', $data->pluck('profile_id')->unique());
-            $query->whereIn('module_id', $data->pluck('module_id')->unique());
-        })
-        ->get();
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'PERMISSION_PROFILE',
-            'datos' => $permission
-        ]));
 
         return response()->json($permission);
     }
@@ -110,6 +108,8 @@ class PermissionProfileController extends Controller
                 $permission->delete();
             }
 
+            event(new PermissionProfileEvent($permission));
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
@@ -117,12 +117,6 @@ class PermissionProfileController extends Controller
         }
 
         $permission->force = $request->force;
-
-        $redis = Redis::connection();
-        $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-            'evento' => 'PERMISSION_PROFILE',
-            'datos' => $permission
-        ]));
 
         return response()->json($permission);
     }
