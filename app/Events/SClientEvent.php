@@ -11,7 +11,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 // Models
-use App\Models\Policy\SClient;
+use App\Models\SClient;
 
 class SClientEvent implements ShouldBroadcast
 {
