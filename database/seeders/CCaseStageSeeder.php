@@ -16,19 +16,11 @@ class CCaseStageSeeder extends Seeder
     public function run()
     {
         $caseStage = CCaseStage::factory()->create([
-            'description' => 'Negocio pendiente',
+            'description' => 'Oportunidad perdida',
             'c_type_case_id' => '2'
         ]);
         $caseStage = CCaseStage::factory()->create([
-            'description' => 'Negocio finalizado',
-            'c_type_case_id' => '2'
-        ]);
-        $caseStage = CCaseStage::factory()->create([
-            'description' => 'Negocio gestionado',
-            'c_type_case_id' => '2'
-        ]);
-        $caseStage = CCaseStage::factory()->create([
-            'description' => 'Negocio para reprogramar',
+            'description' => 'Oportunidad ganada',
             'c_type_case_id' => '2'
         ]);
         $caseStage = CCaseStage::factory()->create([
