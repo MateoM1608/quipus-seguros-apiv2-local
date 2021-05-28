@@ -2,84 +2,85 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Crm\CCaseArea;
+
 use Illuminate\Http\Request;
+use DB;
+
+//FormRequest
+use App\Http\Requests\Crm\CCaseArea\UpdateRequest;
+use App\Http\Requests\Crm\CCaseArea\StoreRequest;
+
+//Models
+use App\Models\Crm\CCaseArea;
+
+// Events
+use App\Events\CCaseAreaEvent;
 
 class CCaseAreaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $data = CCaseArea::all();
+        return response()->json($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(StoreRequest $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $areas = CCaseArea::create($request->all());
+            DB::commit();
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+
+            event(new CCaseAreaEvent($areas));
+
+            return response()->json($e->getMessage(), 422);
+        }
+
+        return response()->json($areas);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function update(UpdateRequest $request, $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $areas = CCaseArea::findOrFail($id);
+            $areas->update($request->all());
+
+            event(new CCaseAreaEvent($areas));
+
+            DB::commit();
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            return response()->json($e->getMessage(), 422);
+        }
+
+        return response()->json($areas);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Crm\CCaseArea  $cCaseArea
-     * @return \Illuminate\Http\Response
-     */
-    public function show(CCaseArea $cCaseArea)
+    public function destroy(Request $request, $id)
     {
-        //
-    }
+        DB::beginTransaction();
+        try {
+            $areas = CCaseArea::withTrashed()->findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Crm\CCaseArea  $cCaseArea
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(CCaseArea $cCaseArea)
-    {
-        //
-    }
+            if ($request->force) {
+                $areas->forceDelete();
+            } else if ($areas->trashed()) {
+                $areas->restore();
+            } else {
+                $areas->delete();
+            }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Crm\CCaseArea  $cCaseArea
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, CCaseArea $cCaseArea)
-    {
-        //
-    }
+            event(new CCaseAreaEvent($areas));
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Crm\CCaseArea  $cCaseArea
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(CCaseArea $cCaseArea)
-    {
-        //
+            DB::commit();
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            return response()->json($e->getMessage(), 422);
+        }
+
+        return response()->json($areas);
     }
 }

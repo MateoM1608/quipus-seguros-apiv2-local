@@ -49,6 +49,7 @@ use App\Http\Controllers\Reports\RProduction;
 
 # Controllers for CRM
 use App\Http\Controllers\CCaseStageController;
+use App\Http\Controllers\CCaseAreaController;
 use App\Http\Controllers\CCaseNoteController;
 use App\Http\Controllers\CTypeCaseController;
 use App\Http\Controllers\CCaseController;
@@ -280,12 +281,27 @@ Route::group(['prefix' => 'v1'], function () {
             /**
              * CRM
              */
+
+            /**
+             * Stages CRM
+             */
             Route::prefix('stagesCrm')->group(function () {
                 Route::get('/', [CCaseStageController::class, 'index'])->name('stages-crm-consult');
                 Route::post('/', [CCaseStageController::class, 'store'])->name('stages-crm-store');
                 Route::put('/{id}', [CCaseStageController::class, 'update'])->name('stages-crm-update');
                 Route::delete('/{id}', [CCaseStageController::class, 'destroy'])->name('stages-crm-destroy');
             });
+
+            /**
+             * Areas CRM
+             */
+            Route::prefix('areasCrm')->group(function () {
+                Route::get('/', [CCaseAreaController::class, 'index'])->name('areas-crm-consult');
+                Route::post('/', [CCaseAreaController::class, 'store'])->name('areas-crm-store');
+                Route::put('/{id}', [CCaseAreaController::class, 'update'])->name('areas-crm-update');
+                Route::delete('/{id}', [CCaseAreaController::class, 'destroy'])->name('areas-crm-destroy');
+            });
+
 
             Route::prefix('crm')->group(function () {
 
@@ -307,7 +323,7 @@ Route::group(['prefix' => 'v1'], function () {
                 });
 
                 /**
-                 * Note
+                 * Notes
                  */
                 Route::prefix('notes')->group(function () {
                     Route::get('/', [CCaseNoteController::class, 'index'])->name('notes-consult');

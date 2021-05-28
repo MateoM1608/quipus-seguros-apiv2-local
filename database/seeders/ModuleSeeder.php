@@ -166,6 +166,14 @@ class ModuleSeeder extends Seeder
                                 'icon' => 'fas fa-th-large',
                                 'class' => '',
                                 'show' => 1,
+                            ],
+                            [
+                                'description' => 'areasCrm',
+                                'name' => 'Areas CRM',
+                                'url' => '/areasCrm',
+                                'icon' => 'fas fa-th-large',
+                                'class' => '',
+                                'show' => 1,
                             ]
                         ]
                     ],
