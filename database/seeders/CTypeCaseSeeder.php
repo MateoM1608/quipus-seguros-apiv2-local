@@ -20,7 +20,11 @@ class CTypeCaseSeeder extends Seeder
         ]);
 
         $typeCase = CTypeCase::factory()->create([
-            'description' => 'Oportunidades de Negocio'
+            'description' => 'Oportunidades de negocio'
+        ]);
+
+        $typeCase = CTypeCase::factory()->create([
+            'description' => 'Gestión operativa'
         ]);
 
     }

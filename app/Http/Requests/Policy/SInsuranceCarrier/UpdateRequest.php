@@ -28,7 +28,8 @@ class UpdateRequest extends BaseFormRequest
                 "required",
                 "unique:s_insurance_carriers,insurance_carrier," . $this->id
             ] : [],
-            "identification" => $this->has('identification') ? [
+            "identification" => $this->has('identification') && $this->identification? [
+                "numeric",
                 "unique:s_insurance_carriers,identification," . $this->id
             ] : [],
         ];
@@ -39,6 +40,7 @@ class UpdateRequest extends BaseFormRequest
         return [
             "insurance_carrier.required" => "El nombre de la aseguradora es obligatorio.",
             "insurance_carrier.unique" => "El nombre de la aseguradora ya se encuentra registrado.",
+            "identification.numeric" => "El nit de la aseguradora debe ser un valor numérico.",
             "identification.unique" => "El número identificador de la aseguradora ya se encuentra registrado.",
         ];
     }

@@ -26,11 +26,15 @@ class StoreRequest extends BaseFormRequest
         return [
             "agency_name" => [
                 "required",
-                "unique:s_agencies,agency_name"                
+                "unique:s_agencies,agency_name"
             ],
+            "identification" => $this->has('identification') && $this->identification? [
+                "unique:s_agencies,identification",
+                "numeric"
+            ]: [],
             "agency_commission" => [
-                "required" ,
-                "numeric",               
+                "required",
+                "numeric",
             ]
         ];
     }
@@ -40,9 +44,11 @@ class StoreRequest extends BaseFormRequest
         return [
             "agency_name.required" => "El nombre de la agencia es obligatorio.",
             "agency_name.unique" => "El nombre de la agencia ya se encuentra registrado.",
-            "agency_commission.required" => "El porcentaje de comisión de la agencia es obligatorio.",            
+            "identification.unique" => "El Nit de la agencia ya se encuentra registrado.",
+            "identification.numeric" => "El nit de la agencia debe ser un valor numérico.",
+            "agency_commission.required" => "El porcentaje de comisión de la agencia es obligatorio.",
             "agency_commission.numeric" => "El porcentaje de comisión debe ser numérico",
         ];
     }
-    
+
 }

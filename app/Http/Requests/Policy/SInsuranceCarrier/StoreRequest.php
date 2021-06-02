@@ -28,9 +28,10 @@ class StoreRequest extends BaseFormRequest
                 "required",
                 "unique:s_insurance_carriers,insurance_carrier"
             ],
-            "identification" => [
-                "unique:s_insurance_carriers,identification"
-            ],
+            "identification" => $this->has('identification') && $this->identification? [
+                "unique:s_insurance_carriers,identification",
+                "numeric"
+            ] : [],
         ];
     }
 
@@ -39,7 +40,8 @@ class StoreRequest extends BaseFormRequest
         return [
             "insurance_carrier.required" => "El nombre de la aseguradora es obligatorio.",
             "insurance_carrier.unique" => "El nombre de la aseguradora ya se encuentra registrado.",
-            "identification.unique" => "El número identificador de la aseguradora ya se encuentra registrado.",
+            "identification.unique" => "El Nit de la aseguradora ya se encuentra registrado.",
+            "identification.numeric" => "El nit de la aseguradora debe ser un valor numérico.",
         ];
     }
 }

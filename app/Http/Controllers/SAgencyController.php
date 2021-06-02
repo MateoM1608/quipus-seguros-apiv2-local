@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use DB;
 
 // FormRequest
-use App\Http\Requests\Policy\SAgency\DeleteRequest;
 use App\Http\Requests\Policy\SAgency\UpdateRequest;
 use App\Http\Requests\Policy\SAgency\StoreRequest;
 
