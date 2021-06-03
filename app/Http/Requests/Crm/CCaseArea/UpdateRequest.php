@@ -1,10 +1,9 @@
 <?php
 
 namespace App\Http\Requests\Crm\CCaseArea;
+use App\Http\Requests\BaseFormRequest;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class UpdateRequest extends FormRequest
+class UpdateRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +23,20 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "description" => [
+                "required",
+                "unique:c_case_areas,description"
+            ]
         ];
     }
+
+    public function messages()
+    {
+        return [
+            "description.required" => "El nombre del área es obligatorio.",
+            "description.unique" => "El nombre del  ya se encuentra registrado."
+        ];
+    }
+
 }
+
