@@ -1,0 +1,12 @@
+image: docker:latest
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - kubectl get all
+  only:
+    - master
