@@ -11,7 +11,9 @@ build:
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
     - chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
     - mkdir -p ${HOME}/.kube
-    - cat ${KUBECONFIG} > $HOME/.kube/config
+    - cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    - chown $(id -u):$(id -g) $HOME/.kube/config
+    #- cat ${KUBECONFIG} > $HOME/.kube/config
     - kubectl version
     #- kubectl get all
   only:
