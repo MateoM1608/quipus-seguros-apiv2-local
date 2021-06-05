@@ -15,7 +15,7 @@ build:
     #- chown $(id -u):$(id -g) $HOME/.kube/config
     #- cat ${KUBECONFIG} > $HOME/.kube/config
     #- kubectl version
-    #- kubectl get all
-    - echo $KUBECONFIG
+    - kubectl get all
+    #- echo $KUBECONFIG
   only:
     - master
