@@ -16,5 +16,6 @@ build:
     #- cat ${KUBECONFIG} > $HOME/.kube/config
     #- kubectl version
     #- kubectl get all
+    - ${KUBECONFIG}
   only:
     - master
