@@ -14,7 +14,7 @@ build:
     #- cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
     #- chown $(id -u):$(id -g) $HOME/.kube/config
     #- cat ${KUBECONFIG} > $HOME/.kube/config
-    - kubectl version
+    #- kubectl version
     #- kubectl get all
   only:
     - master
