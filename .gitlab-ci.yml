@@ -1,0 +1,48 @@
+
+stages:
+  - build
+  - deploy
+
+build:
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  script:
+    # LOGIN TO DIGITAL REGISTRY
+    - echo ${DIGITAL_TOKEN} | docker login registry.digitalocean.com -u ${DIGITAL_TOKEN} --password-stdin
+    # CREATE IMAGE
+    - docker build -t "$CI_REGISTRY_IMAGE":"$CI_COMMIT_SHA" .
+    # TAG IMAGES TO LATEST
+    - docker tag "$CI_REGISTRY_IMAGE":"$CI_COMMIT_SHA" "$CI_REGISTRY_IMAGE":latest
+    # PUSH IMAGES
+    - docker push "$CI_REGISTRY_IMAGE":"$CI_COMMIT_SHA" && docker push "$CI_REGISTRY_IMAGE":latest
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  image: ubuntu
+  script:
+    - apt-get -y update
+    - apt-get -y install wget tar curl
+    # INSTALL DOCTL
+    - wget https://github.com/digitalocean/doctl/releases/download/v1.60.0/doctl-1.60.0-linux-amd64.tar.gz
+    - tar xf doctl-1.60.0-linux-amd64.tar.gz
+    - mv doctl /usr/local/bin
+    # CONFIGURE CONECTION TO DIGITAL OCEAN
+    - doctl auth init --access-token ${DIGITAL_TOKEN}
+    # CONFIGURE CONECTION TO KUBERNETES
+    - doctl kubernetes cluster kubeconfig save ${KUBE_CLUSTER_ID}
+    # INSTALL KUBECTL
+    - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+    - chmod +x kubectl
+    - mv kubectl /usr/local/bin/kubectl
+    # APPLY KUBERNETES DEPLOY
+    - sed -i "s/latest/$CI_COMMIT_SHA/g" kubernetes/02-quipus-deploy.yaml
+    - kubectl apply -f kubernetes/02-quipus-deploy.yaml
+  only:
+    - master
