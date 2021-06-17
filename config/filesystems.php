@@ -42,6 +42,15 @@ return [
             'visibility' => 'public',
         ],
 
+        'arvixe' => [
+            'driver' => 'ftp',
+            'host' => 'ftp.amauttasystems.com',
+            'username' => 'amauttas',
+            'password' => 'rg99xI;hh',
+            'port'     => 21,
+            'root' => '/public_ftp/storage_quipus',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

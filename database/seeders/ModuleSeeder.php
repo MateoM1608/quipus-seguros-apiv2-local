@@ -55,6 +55,23 @@ class ModuleSeeder extends Seeder
 
                     ],
                     [
+                        'description' => 'herramientas',
+                        'name' => 'Herramientas',
+                        'icon' => 'fas fa-users-cog',
+                        'class' => 'sidebar-nav-mini-hide',
+                        'show' => 1,
+                        'children' => [
+                            [
+                                'description' => 'upload',
+                                'name' => 'Cargues',
+                                'url' => '/upload',
+                                'icon' => 'fas fa-th-large',
+                                'class' => '',
+                                'show' => 1,
+                            ],
+                        ]
+                    ],
+                    [
                         'description' => 'administration',
                         'name' => 'Administración',
                         'icon' => 'fas fa-users-cog',
