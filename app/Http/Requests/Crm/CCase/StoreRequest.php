@@ -29,10 +29,10 @@ class StoreRequest extends BaseFormRequest
                 "numeric",
                 "exists:c_type_cases,id"
             ],
-            's_client_id' => [
+            's_client_id' => $this->has('s_client_id') ? [
                 "numeric",
                 "exists:s_clients,id"
-            ],
+            ]: [],
             's_policy_id' => [
                 "numeric",
                 "exists:s_policies,id"
