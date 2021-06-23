@@ -11,20 +11,25 @@ use Illuminate\Http\Request;
 use App\Models\UploadedInformation;
 use App\Models\User;
 
-// Imports
-use App\Imports\SClientImport;
+// Events
+use App\Events\UploadedInformationEvent;
 
 // Imports
-use App\Exports\SClientExport;
+use App\Imports\FileImport;
+
+// Imports
+use App\Exports\FileExport;
 class FileUploadManagerController extends Controller
 {
     public $data;
+    public $connection;
 
     public function manager(Request $request)
     {
         $this->data = collect([]);
 
         try {
+            $this->connect = $request->connection;
             $this->upload = UploadedInformation::on($request->connection)->find($request->id);
 
             switch ($this->upload->type) {
@@ -45,21 +50,29 @@ class FileUploadManagerController extends Controller
         $user = User::find($this->upload->user_id);
         $token = \JWTAuth::fromUser($user);
 
-        $this->data = $this->data->map(function($row) use($token){
+        $this->upload->inserted_registry = 0;
+        $this->upload->bad_records =  0;
+
+        $this->data = $this->data->map(function($row, $key) use($token) {
             $response = Http::withToken($token)
             ->post(route($this->upload->type . '-store'), $row);
 
             switch ($response->status()) {
                 case 200:
+                    $this->upload->inserted_registry +=  1;
                     $row['status'] = 'Registro almacenado correctamente.';
                     break;
                 case 422:
+                    $this->upload->bad_records +=  1;
                     $row['status'] = implode(', ', call_user_func_array('array_merge', $response->json()['errors']));
                     break;
                 default:
+                    $this->upload->bad_records +=  1;
                     $row['status'] = 'Error al almacenar el registro.';
                     break;
             }
+
+            event(new UploadedInformationEvent($this->connect, $this->upload));
 
             return $row;
         });
@@ -67,7 +80,7 @@ class FileUploadManagerController extends Controller
 
     public function storeClient()
     {
-        $collection = Excel::toCollection(new SClientImport, $this->upload->path, 'arvixe');
+        $collection = Excel::toCollection(new FileImport, $this->upload->path, 'arvixe');
         $clients =  $collection[0]->whereNotNull('cedulanit');
 
         $schema = [
@@ -96,6 +109,24 @@ class FileUploadManagerController extends Controller
 
         $path = str_replace('xlsx','log.xlsx', $this->upload->path);
 
-        Excel::store(new SClientExport($this->data), $path, 'arvixe');
+        $this->upload->log = $path;
+        $this->upload->save();
+
+        $headings = [
+            'Cedula/Nit',
+            'Nombres',
+            'Apellidos',
+            'Fecha de Nacimiento',
+            'Direccion',
+            'Telefono',
+            'Celular',
+            'CorreoE',
+            'Ciudad',
+            'Tipo de Identificacion',
+            'Observaciones',
+            'Status',
+        ];
+
+        Excel::store(new FileExport($this->data, $headings), $path, 'arvixe');
     }
 }

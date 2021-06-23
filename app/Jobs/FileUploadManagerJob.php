@@ -17,7 +17,7 @@ class FileUploadManagerJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $connetion;
+    public $connet;
     public $id;
 
     /**
@@ -25,9 +25,9 @@ class FileUploadManagerJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($connetion, $id)
+    public function __construct($connet, $id)
     {
-        $this->connection = $connetion;
+        $this->connet = $connet;
         $this->id = $id;
     }
 
@@ -39,7 +39,7 @@ class FileUploadManagerJob implements ShouldQueue
     public function handle()
     {
         $request = new Request([
-            'connection' => $this->connection,
+            'connection' => $this->connet,
             'id' => $this->id
         ]);
 

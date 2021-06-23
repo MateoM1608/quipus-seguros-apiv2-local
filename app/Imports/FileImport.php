@@ -4,7 +4,7 @@ namespace App\Imports;
 
 use Maatwebsite\Excel\Concerns\{Importable, WithHeadingRow};
 
-class SClientImport implements WithHeadingRow
+class FileImport implements WithHeadingRow
 {
      use Importable;
 }

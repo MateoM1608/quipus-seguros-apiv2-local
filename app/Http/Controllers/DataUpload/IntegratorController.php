@@ -15,7 +15,11 @@ use App\Http\Requests\Cargues\StoreRequest;
 use App\Models\UploadedInformation;
 
 // Imports
-use App\Imports\SClientImport;
+use App\Imports\FileImport;
+
+// Jobs
+use App\Jobs\FileUploadManagerJob;
+
 class IntegratorController extends Controller
 {
 
@@ -25,11 +29,11 @@ class IntegratorController extends Controller
         DB::beginTransaction();
 
         try {
-            $data = (new SClientImport)->toCollection($request->file);
+            $data = (new FileImport)->toCollection($request->file);
 
             $path = 'cargues/' . auth('api')->user()->connection . '/' . date_format(now(), 'Y') . '/' . date_format(now(), 'm') . '/' . $request->type . '/' . $request->type .'_' . date_format(now(), 'Hisu') . '.xlsx';
 
-            UploadedInformation::create([
+            $uploaded = UploadedInformation::create([
                 'nit' => auth('api')->user()->connection,
                 'type' => $request->type,
                 'path' => $path,
@@ -38,6 +42,8 @@ class IntegratorController extends Controller
             ]);
 
             Storage::disk('arvixe')->put($path, File::get($request->file));
+
+            FileUploadManagerJob::dispatch(auth('api')->user()->connection, $uploaded->id)->onQueue('upload');
 
             DB::commit();
         } catch (\Throwable $th) {
