@@ -35,6 +35,13 @@ return [
 
     'connections' => [
 
+        'redis' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => '{default}',
+            'retry_after' => 90,
+        ],
+
         'seguros' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),

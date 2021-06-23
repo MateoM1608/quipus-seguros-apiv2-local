@@ -54,6 +54,8 @@ use App\Http\Controllers\CCaseNoteController;
 use App\Http\Controllers\CTypeCaseController;
 use App\Http\Controllers\CCaseController;
 
+# Controllers for Cargues
+use App\Http\Controllers\DataUpload\IntegratorController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -331,6 +333,10 @@ Route::group(['prefix' => 'v1'], function () {
                     Route::put('/{id}', [CCaseNoteController::class, 'update'])->name('notes-update');
                     Route::delete('/{id}', [CCaseNoteController::class, 'destroy'])->name('notes-destroy');
                 });
+            });
+
+            Route::prefix('upload')->group(function () {
+                Route::post('/', [IntegratorController::class, 'store'])->name('cargue-store');
             });
         });
     });
