@@ -4,6 +4,9 @@ namespace App\Http\Requests\SClient;
 
 use App\Http\Requests\BaseFormRequest;
 
+// Models
+use App\Models\GIdentificationType;
+use App\Models\GCity;
 class StoreRequest extends BaseFormRequest
 {
     /**
@@ -14,6 +17,20 @@ class StoreRequest extends BaseFormRequest
     public function authorize()
     {
         return true;
+    }
+
+    public function prepareForValidation()
+    {
+
+        if (gettype($this->g_city_id) == "string") {
+            $city = GCity::whereDescription($this->g_city_id)->first(['id']);
+            $this->merge(['g_city_id' => $city->id]);
+        }
+
+        if (gettype($this->g_identification_type_id) == "string") {
+            $identification = GIdentificationType::whereDescription($this->g_identification_type_id)->first(['id']);
+            $this->merge(['g_identification_type_id' => $identification->id]);
+        }
     }
 
     /**
@@ -75,13 +92,13 @@ class StoreRequest extends BaseFormRequest
     public function messages()
     {
         return [
-            "identification.required" => "El tipo de identificación del cliente es obligatorio.",
-            "identification.unique" => "El número de identificacion del cliente ya se encuentra registrado.",
-            "first_name.required" => "El nombre del cliente es obligatorio.",
-            "last_name.required" => "El apellido del cliente es obligatorio.",
+            "identification.required" => "El tipo de identificación del cliente es obligatorio",
+            "identification.unique" => "El número de identificacion del cliente ya se encuentra registrado",
+            "first_name.required" => "El nombre del cliente es obligatorio",
+            "last_name.required" => "El apellido del cliente es obligatorio",
             "birthday.date" => "El valor ingresado con es una fecha correcta",
             "birthday.date_format" => "La fecha ingresada no cumple el formato aaaa-mm-dd",
-            "fix_phone.numeric" => "El telèfono debe ser numèrico.",
+            "fix_phone.numeric" => "El telèfono debe ser numèrico",
             "cel_phone.required" => "El número de celular es requerido",
             "cel_phone.numeric" => "El número de celular solo debe de contener valores numericos",
             "email.required" => "El email es requerido",
