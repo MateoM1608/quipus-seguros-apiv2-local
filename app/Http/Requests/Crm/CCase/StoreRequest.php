@@ -29,19 +29,31 @@ class StoreRequest extends BaseFormRequest
                 "numeric",
                 "exists:c_type_cases,id"
             ],
-            's_client_id' => $this->has('s_client_id') ? [
+            's_client_id' => $this->has('s_client_id') && $this->s_client_id? [
                 "numeric",
                 "exists:s_clients,id"
-            ]: [],
-            's_policy_id' => [
+            ] : [],
+            's_policy_id' => $this->has('s_policy_id') && $this->s_policy_id? [
                 "numeric",
                 "exists:s_policies,id"
-            ],
+            ]: [],
             'c_type_case_stage_id' => [
                 "required",
                 "numeric",
                 "exists:c_case_stages,id"
             ],
+            'creator_user_id' => [
+                "required",
+                "numeric"
+            ],
+            'assigned_user_id' => [
+                "required",
+                "numeric"
+            ],
+            'expiration_date' => [
+                "date"
+            ],
+
             'calification' => [
                 "numeric",
                 "min:1",
@@ -69,6 +81,13 @@ class StoreRequest extends BaseFormRequest
             "calification.min" => "La calificación del caso debe ser numérico con valores entre 1 y 5.",
             "calification.max" => "La calificación del caso debe ser numérico con valores entre 1 y 5.",
 
+            "creator_user_id.required" => "El identificador del usuario que crea el caso es requerido.",
+            "creator_user_id.numeric" => "El identificador del usuario que crea el caso debe ser numérico.",
+
+            "assigned_user_id.required" => "El identificador del usuario responsable del caso es requerido.",
+            "assigned_user_id.numeric" => "El identificador del usuario responsable del caso debe ser numérico.",
+
+            "expiration_date.date" => "El campo de fecha fin es obligatorio."
         ];
     }
 }
