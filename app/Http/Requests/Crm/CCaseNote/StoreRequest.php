@@ -42,7 +42,6 @@ class StoreRequest extends BaseFormRequest
                 "required"
             ],
             'end_date' => [
-                "required",
                 "date"
             ],
             'state' => [
@@ -62,7 +61,6 @@ class StoreRequest extends BaseFormRequest
             "user_name.required" => "El nombre del usuario que inserta la nota es obligatorio.",
             "user_email.required" => "El email del usuario que inserta la nota es obligatorio.",
             "note.required" => "El nota de seguimiento es obligatoria.",
-            "end_date.required" => "La fecha es obligatoria",
             "end_date.date" => "El formato de fecha no es correcto.",
             "state.required" => "El estado de la nota es obligatorio (Finalizada, Pendiente).",
             "state.in" => "El estado de la nota es obligatorio (Finalizada, Pendiente)."
