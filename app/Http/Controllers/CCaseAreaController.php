@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use DB;
 
@@ -29,12 +28,12 @@ class CCaseAreaController extends Controller
         DB::beginTransaction();
         try {
             $areas = CCaseArea::create($request->all());
-            DB::commit();
-        } catch (\Illuminate\Database\QueryException $e) {
-            DB::rollBack();
 
             event(new CCaseAreaEvent($areas));
 
+            DB::commit();
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 

@@ -30,12 +30,10 @@ class UpdateRequest extends BaseFormRequest
                 "exists:c_type_cases,id"
             ]: [],
             's_client_id' => $this->has('s_client_id') ? [
-                "required",
                 "numeric",
                 "exists:s_clients,id"
             ]: [],
             's_policy_id' => $this->has('s_policy_id') ? [
-                "required",
                 "numeric",
                 "exists:s_policies,id"
             ]: [],
@@ -45,7 +43,6 @@ class UpdateRequest extends BaseFormRequest
                 "exists:c_case_stages,id"
             ]: [],
             'calification' => $this->has('calification') ? [
-                "required",
                 "numeric",
                 "min:1",
                 "max:5"
@@ -60,11 +57,11 @@ class UpdateRequest extends BaseFormRequest
             "c_type_case_id.numeric" => "El identificador del tipo de caso debe ser numérico.",
             "c_type_case_id.exists" => "El identificador del tipo de caso no existe.",
 
-            "s_client_id.required" => "El identificador del cliente es requerido.",
+
             "s_client_id.numeric" => "El identificador del cliente debe ser numérico.",
             "s_client_id.exists" => "El identificador del cliente no existe.",
 
-            "s_policy_id.required" => "El identificador de la poliza es requerido.",
+
             "s_policy_id.numeric" => "El identificador de la poliza debe ser numérico.",
             "s_policy_id.exists" => "El identificador de la poliza no existe.",
 
@@ -72,7 +69,7 @@ class UpdateRequest extends BaseFormRequest
             "c_type_case_stage_id.numeric" => "El estado del caso debe ser numérico.",
             "c_type_case_stage_id.exists" => "El estado del caso no existe.",
 
-            "calification.required" => "La calificación del caso es requerido.",
+
             "calification.min" => "La calificación del caso debe ser numérico con valores entre 1 y 5.",
             "calification.max" => "La calificación del caso debe ser numérico con valores entre 1 y 5.",
 
