@@ -4,6 +4,12 @@ namespace App\Http\Requests\Policy\SPolicy;
 
 use App\Http\Requests\BaseFormRequest;
 
+// Models
+use App\Models\Policy\GVendor;
+use App\Models\Policy\SAgency;
+use App\Models\Policy\SBranch;
+use App\Models\SClient;
+
 class StoreRequest extends BaseFormRequest
 {
     /**
@@ -14,6 +20,30 @@ class StoreRequest extends BaseFormRequest
     public function authorize()
     {
         return true;
+    }
+
+    public function prepareForValidation()
+    {
+        if ($this->manager_upload) {
+            $branch = SBranch::withTrashed()
+            ->join('s_insurance_carriers', 's_branches.s_insurance_carrier_id', 's_insurance_carriers.id')
+            ->where('s_branches.name', $this->s_branch_id)
+            ->where('s_insurance_carriers.identification', $this->insurance_carrier)
+            ->first(['s_branches.id']);
+
+            $this->merge(['s_branch_id' => $branch? $branch->id : 0]);
+
+            $client = SClient::withTrashed()->whereIdentification($this->s_client_id)->first(['id']);
+            $this->merge(['s_client_id' => $client ? $client->id : 0]);
+
+            $vendor = GVendor::withTrashed()->whereIdentification($this->g_vendor_id)->first(['id']);
+            $this->merge(['g_vendor_id' => $vendor ? $vendor->id : 0]);
+
+            $agency = SAgency::withTrashed()->whereIdentification($this->s_agency_id)->first(['id']);
+            $this->merge(['s_agency_id' => $agency ? $agency->id : 0]);
+
+            $this->merge(['policy_state' => 'Vigente']);
+        }
     }
 
     /**
@@ -30,7 +60,8 @@ class StoreRequest extends BaseFormRequest
             ],
             'expedition_date' => [
                 "required",
-                "date"
+                'date',
+                "date_format:Y-m-d",
             ],
             's_branch_id' => [
                 "required",
@@ -66,12 +97,13 @@ class StoreRequest extends BaseFormRequest
     {
         return [
             "policy_number.required" => "El identificador de la poliza es requerido.",
-            "policy_number.unique" => "La poliza registrada ya esta en uso.",
+            "policy_number.unique" => "El numero de poliza ya se encuentra registrada.",
             "expedition_date.required" => "La fecha de expedición es obligatoria.",
-            "expedition_date.unique" => "No cumple el formato aaaa-mm-dd.",
-            "s_branch_id.numeric" => "El identificador de la rama debe ser numérico.",
-            "s_branch_id.required" => "El identificador de la rama es obligatorio",
-            "s_branch_id.exists" => "La rama no se encuetra registrada.",
+            "expedition_date.date" => "No cumple el formato de fecha aaaa-mm-dd.",
+            "expedition_date.date_format" => "No cumple el formato de fecha aaaa-mm-dd.",
+            "s_branch_id.numeric" => "El identificador del ramo debe ser numérico.",
+            "s_branch_id.required" => "El identificador del ramo es obligatorio",
+            "s_branch_id.exists" => "El ramo no se encuetra registrado.",
             "s_client_id.numeric" => "El identificador del cliente debe ser numérico.",
             "s_client_id.required" => "El identificador del cliente es obligatorio",
             "s_client_id.exists" => "El cliente no se encuetra registrado.",
@@ -84,8 +116,7 @@ class StoreRequest extends BaseFormRequest
             "payment_periodicity.in" => "Los valores permitidos para la periocidad de pago son: Anual,Semestral,Trimestral,Mensual,Pago Unico ",
             "s_agency_id.numeric" => "El identificador de la agencia debe ser numérico.",
             "s_agency_id.required" => "El identificador de la agencia es obligatorio",
-            "s_agency_id.exists" => "El agencia no se encuetra registrada.",
-
+            "s_agency_id.exists" => "La agencia no se encuetra registrada.",
         ];
     }
 }

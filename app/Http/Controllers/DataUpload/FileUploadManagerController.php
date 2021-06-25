@@ -21,8 +21,10 @@ use App\Imports\FileImport;
 use App\Exports\FileExport;
 class FileUploadManagerController extends Controller
 {
-    public $data;
+    public $collection;
     public $connection;
+    public $headings;
+    public $data;
 
     public function manager(Request $request)
     {
@@ -31,10 +33,14 @@ class FileUploadManagerController extends Controller
         try {
             $this->connect = $request->connection;
             $this->upload = UploadedInformation::on($request->connection)->find($request->id);
+            $this->collection = Excel::toCollection(new FileImport, $this->upload->path, 'arvixe');
 
             switch ($this->upload->type) {
                 case 'client':
                     $this->storeClient();
+                    break;
+                case 'policies':
+                    $this->storePolicies();
                     break;
                 default:
                     # code...
@@ -54,8 +60,12 @@ class FileUploadManagerController extends Controller
         $this->upload->bad_records =  0;
 
         $this->data = $this->data->map(function($row, $key) use($token) {
+
+            $data = $row;
+            $data['manager_upload'] = true;
+
             $response = Http::withToken($token)
-            ->post(route($this->upload->type . '-store'), $row);
+            ->post(route($this->upload->type . '-store'), $data);
 
             switch ($response->status()) {
                 case 200:
@@ -76,12 +86,18 @@ class FileUploadManagerController extends Controller
 
             return $row;
         });
+
+        $path = str_replace('xlsx','log.xlsx', $this->upload->path);
+
+        $this->upload->log = $path;
+        $this->upload->save();
+
+        Excel::store(new FileExport($this->data, $this->headings), $path, 'arvixe');
     }
 
     public function storeClient()
     {
-        $collection = Excel::toCollection(new FileImport, $this->upload->path, 'arvixe');
-        $clients =  $collection[0]->whereNotNull('cedulanit');
+        $clients =  $this->collection[0]->whereNotNull('cedulanit');
 
         $schema = [
             'identification' => 'cedulanit',
@@ -100,19 +116,12 @@ class FileUploadManagerController extends Controller
         foreach ($clients as $client) {
             $row = [];
             foreach ($schema as $key => $field) {
-                $row[$key] = $client[$field];
+                $row[$key] = trim($client[$field]);
             }
             $this->data->push($row);
         }
 
-        $this->callHttp();
-
-        $path = str_replace('xlsx','log.xlsx', $this->upload->path);
-
-        $this->upload->log = $path;
-        $this->upload->save();
-
-        $headings = [
+        $this->headings = [
             'Cedula/Nit',
             'Nombres',
             'Apellidos',
@@ -127,6 +136,44 @@ class FileUploadManagerController extends Controller
             'Status',
         ];
 
-        Excel::store(new FileExport($this->data, $headings), $path, 'arvixe');
+        $this->callHttp();
+    }
+
+    public function storePolicies()
+    {
+        $policies =  $this->collection[0]->whereNotNull('numero_de_poliza');
+
+        $schema = [
+            's_branch_id' => 'nombre_ramo',
+            's_agency_id' => 'nit_agencia',
+            'policy_number' => 'numero_de_poliza',
+            'insurance_carrier' => 'nit_aseguradora',
+            'g_vendor_id' => 'cedulanit_vendedor',
+            's_client_id' => 'cedulanit_cliente',
+            'expedition_date' => 'inicio_vigencia',
+            'payment_periodicity' => 'periodicidad',
+        ];
+
+        foreach ($policies as $policy) {
+            $row = [];
+            foreach ($schema as $key => $field) {
+                $row[$key] = trim($policy[$field]);
+            }
+            $this->data->push($row);
+        }
+
+        $this->headings = [
+            'NOMBRE RAMO',
+            'NIT AGENCIA',
+            'NUMERO DE POLIZA',
+            'NIT ASEGURADORA',
+            'CEDULA/NIT VENDEDOR',
+            'CEDULA/NIT CLIENTE',
+            'INICIO VIGENCIA',
+            'PERIODICIDAD',
+            'Status',
+        ];
+
+        $this->callHttp();
     }
 }

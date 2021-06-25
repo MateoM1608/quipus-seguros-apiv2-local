@@ -29,6 +29,15 @@ class IntegratorController extends Controller
         DB::beginTransaction();
 
         try {
+            switch ($request->type) {
+                case 'client':
+                        $where = 'cedulanit';
+                    break;
+                case 'policies':
+                        $where = 'numero_de_poliza';
+                    break;
+            }
+
             $data = (new FileImport)->toCollection($request->file);
 
             $path = 'cargues/' . auth('api')->user()->connection . '/' . date_format(now(), 'Y') . '/' . date_format(now(), 'm') . '/' . $request->type . '/' . $request->type .'_' . date_format(now(), 'Hisu') . '.xlsx';
@@ -37,7 +46,7 @@ class IntegratorController extends Controller
                 'nit' => auth('api')->user()->connection,
                 'type' => $request->type,
                 'path' => $path,
-                'total_records' => $data[0]->whereNotNull('cedulanit')->count(),
+                'total_records' => $data[0]->whereNotNull($where)->count(),
                 'user_id' => auth('api')->user()->id,
             ]);
 
