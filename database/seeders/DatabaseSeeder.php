@@ -30,13 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call(SAnnexSeeder::class);
         $this->call(SPaymentSeeder::class);
         $this->call(SCommissionSeeder::class);
-        $this->call(CProcessStageSeeder::class);
-        $this->call(CProcessSeeder::class);
-        $this->call(COperationTypeSeeder::class);
-        $this->call(COperationSeeder::class);
-        $this->call(COperationCommentSeeder::class);
         $this->call(CCaseStageSeeder::class);
         $this->call(CTypeCaseSeeder::class);
-        $this->call(CProcessStageSeeder::class);
     }
 }
