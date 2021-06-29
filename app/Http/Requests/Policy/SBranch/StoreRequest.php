@@ -4,6 +4,9 @@ namespace App\Http\Requests\Policy\SBranch;
 
 use App\Http\Requests\BaseFormRequest;
 
+// Models
+use App\Models\Policy\SInsuranceCarrier;
+
 class StoreRequest extends BaseFormRequest
 {
     /**
@@ -14,6 +17,17 @@ class StoreRequest extends BaseFormRequest
     public function authorize()
     {
         return true;
+    }
+
+    public function prepareForValidation()
+    {
+        if ($this->manager_upload) {
+            $insuranceCarrier = SInsuranceCarrier::withTrashed()
+            ->where('identification', $this->s_insurance_carrier_id)
+            ->first(['id']);
+
+            $this->merge(['s_insurance_carrier_id' => $insuranceCarrier? $insuranceCarrier->id : 0]);
+        }
     }
 
     public function rules()
@@ -32,7 +46,8 @@ class StoreRequest extends BaseFormRequest
             ],
             "s_insurance_carrier_id" => [
                 "required",
-                "numeric"
+                "numeric",
+                "exists:s_insurance_carriers,id"
             ],
             "loss_coverage" => [
                 "required",
@@ -59,6 +74,7 @@ class StoreRequest extends BaseFormRequest
             "tax.numeric" => "El valor del impuesto debe ser en formato numérico.",
             "s_insurance_carrier_id.required" => "El identificador de la compañia aseguradora es obligatorio.",
             "s_insurance_carrier_id.numeric" => "El identificador de la compañia aseguradora debe ser en formato numérico.",
+            "s_insurance_carrier_id.exists" => "La aseguradora no se encuentra registrada.",
             "loss_coverage.required" => "Los días de perdida de cobertura son obligatorios.",
             "loss_coverage.numeric" => "Los días de perdida de cobertura debe ser un número entero",
             "cancellation_risk.required" => "Los días de riesgo de cancelación son obligatorios.",

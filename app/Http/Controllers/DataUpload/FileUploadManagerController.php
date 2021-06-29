@@ -48,6 +48,9 @@ class FileUploadManagerController extends Controller
                 case 'insurance-carrier':
                     $this->storeInsuranceCarriers();
                     break;
+                case 'branch':
+                    $this->storeBranch();
+                    break;
             }
 
             $this->callHttp();
@@ -55,6 +58,32 @@ class FileUploadManagerController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public function storeBranch()
+    {
+        $this->filterBy = 'cedulanit';
+
+        $this->schema = [
+            "name" => "nombre_ramo",
+            "commission" => "comision_ramo",
+            "tax" => "impuesto_ramo",
+            "s_insurance_carrier_id" => "cedulanit",
+            "loss_coverage" => "perdida_de_cobertura_dias",
+            "cancellation_risk" => "riesgo_de_cancelacion_dias",
+            "cancellation" => "cancelacion_dias",
+        ];
+
+        $this->headings = [
+            "NOMBRE RAMO",
+            "COMISION RAMO (%)",
+            "IMPUESTO RAMO (%)",
+            "CEDULA/NIT",
+            "PERDIDA DE COBERTURA (DIAS)",
+            "RIESGO DE CANCELACION (DIAS)",
+            "CANCELACION (DIAS)",
+            "Status",
+        ];
     }
 
     public function storeInsuranceCarriers()
