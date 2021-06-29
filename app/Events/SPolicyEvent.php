@@ -17,7 +17,7 @@ class SPolicyEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $policy
+    public $policy;
 
     /**
      * Create a new event instance.
