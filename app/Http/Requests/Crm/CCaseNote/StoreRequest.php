@@ -41,13 +41,16 @@ class StoreRequest extends BaseFormRequest
             'note' => [
                 "required"
             ],
-            'end_date' => [
-                "date"
-            ],
-            'state' => [
+            'type_note' => [
                 "required",
-                "in:Finalizada,Pendiente"
+                "in:Comentario,Tarea"
             ],
+            'end_date' => $this->has('end_date') && $this->end_date? [
+                "date"
+            ] : [],
+            'state' => $this->has('state') && $this->state? [
+                "in:Finalizada,Pendiente"
+            ]: [],
         ];
     }
     public function messages()
@@ -62,8 +65,9 @@ class StoreRequest extends BaseFormRequest
             "user_email.required" => "El email del usuario que inserta la nota es obligatorio.",
             "note.required" => "El nota de seguimiento es obligatoria.",
             "end_date.date" => "El formato de fecha no es correcto.",
-            "state.required" => "El estado de la nota es obligatorio (Finalizada, Pendiente).",
-            "state.in" => "El estado de la nota es obligatorio (Finalizada, Pendiente)."
+            "state.in" => "El estado de la nota solo permite los registros (Finalizada, Pendiente).",
+            "type_note.in" => "El estado de la nota solo permite los registros (Comentario, Tarea).",
+            "type_note.required" => "El tipo de nota es obligatorio."
 
         ];
     }

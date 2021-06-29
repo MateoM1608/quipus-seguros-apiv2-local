@@ -7,10 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class ModifiedTableCCaseNotesFieldNulleables extends Migration
 {
-    public function __construct()
-    {
-        DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-    }
+
 
     /**
      * Run the migrations.
@@ -21,9 +18,8 @@ class ModifiedTableCCaseNotesFieldNulleables extends Migration
     {
         Schema::table('c_case_notes', function (Blueprint $table) {
             $table->enum('type_note', array('Comentario', 'Tarea'))->after('note');
-            $table->enum('state', array('Pendiente', 'Finalizada'))->nullable()->change();
-
         });
+        DB::statement("ALTER TABLE c_case_notes MODIFY COLUMN state ENUM('Pendiente', 'Finalizada') NULL");
     }
 
     /**
@@ -38,4 +34,6 @@ class ModifiedTableCCaseNotesFieldNulleables extends Migration
             $table->enum('state', array('Pendiente', 'Finalizada'))->change();
         });
     }
+
+
 }
