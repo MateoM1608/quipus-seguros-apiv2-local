@@ -36,6 +36,9 @@ class IntegratorController extends Controller
                 case 'policies':
                         $where = 'numero_de_poliza';
                     break;
+                case 'insurance-carrier':
+                        $where = 'cedulanit';
+                    break;
             }
 
             $data = (new FileImport)->toCollection($request->file);

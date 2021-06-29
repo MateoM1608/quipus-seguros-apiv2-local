@@ -193,10 +193,10 @@ Route::group(['prefix' => 'v1'], function () {
              * Insurance carrier
              */
             Route::prefix('insuranceCarrier')->group(function () {
-                Route::get('/', [SInsuranceCarrierController::class, 'index'])->name('insuranceCarrier-consult');
-                Route::post('/', [SInsuranceCarrierController::class, 'store'])->name('insuranceCarrier-store');
-                Route::put('/{id}', [SInsuranceCarrierController::class, 'update'])->name('insuranceCarrier-update');
-                Route::delete('/{id}', [SInsuranceCarrierController::class, 'destroy'])->name('insuranceCarrier-destroy');
+                Route::get('/', [SInsuranceCarrierController::class, 'index'])->name('insurance-carrier-consult');
+                Route::post('/', [SInsuranceCarrierController::class, 'store'])->name('insurance-carrier-store');
+                Route::put('/{id}', [SInsuranceCarrierController::class, 'update'])->name('insurance-carrier-update');
+                Route::delete('/{id}', [SInsuranceCarrierController::class, 'destroy'])->name('insurance-carrier-destroy');
             });
 
             /**
