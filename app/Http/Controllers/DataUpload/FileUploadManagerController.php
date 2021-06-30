@@ -54,6 +54,9 @@ class FileUploadManagerController extends Controller
                 case 'policies':
                     $this->storePolicies();
                     break;
+                case 'vendor':
+                    $this->storeVendor();
+                    break;
             }
 
             $this->callHttp();
@@ -181,6 +184,32 @@ class FileUploadManagerController extends Controller
             'CEDULA/NIT CLIENTE',
             'INICIO VIGENCIA',
             'PERIODICIDAD',
+            'Status',
+        ];
+    }
+
+    public function storeVendor()
+    {
+        $this->filterBy = 'cedulanit';
+
+        $this->schema = [
+            'identification' => 'cedulanit',
+            'first_name' => 'nombres',
+            'last_name' => 'apellidos',
+            'birthday' => 'cumpleanos',
+            'cellphone' => 'numero_celular',
+            'email' => 'email',
+            'commission' => 'comision_vendedor',
+        ];
+
+        $this->headings = [
+            'CEDULA/NIT',
+            'NOMBRES',
+            'APELLIDOS',
+            'CUMPLEAÑOS',
+            'NUMERO CELULAR',
+            'EMAIL',
+            'COMISION VENDEDOR (%)',
             'Status',
         ];
     }
