@@ -39,17 +39,20 @@ class FileUploadManagerController extends Controller
             $this->collection = Excel::toCollection(new FileImport, $this->upload->path, 'arvixe');
 
             switch ($this->upload->type) {
+                case 'agency':
+                    $this->storeAgency();
+                    break;
+                case 'branch':
+                    $this->storeBranch();
+                    break;
                 case 'client':
                     $this->storeClient();
-                    break;
-                case 'policies':
-                    $this->storePolicies();
                     break;
                 case 'insurance-carrier':
                     $this->storeInsuranceCarriers();
                     break;
-                case 'branch':
-                    $this->storeBranch();
+                case 'policies':
+                    $this->storePolicies();
                     break;
             }
 
@@ -58,6 +61,24 @@ class FileUploadManagerController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public function storeAgency()
+    {
+        $this->filterBy = 'cedulanit';
+
+        $this->schema = [
+            'agency_name' => 'nombre_agencia',
+            'identification' => 'cedulanit',
+            'agency_commission' => 'comision',
+        ];
+
+        $this->headings = [
+            "NOMBRE AGENCIA",
+            "CEDULA/NIT",
+            "COMISION (%)",
+            "Status",
+        ];
     }
 
     public function storeBranch()
@@ -85,23 +106,6 @@ class FileUploadManagerController extends Controller
             "Status",
         ];
     }
-
-    public function storeInsuranceCarriers()
-    {
-        $this->filterBy = 'cedulanit';
-
-        $this->schema = [
-            'insurance_carrier' => 'nombre_aseguradora',
-            'identification' => 'cedulanit',
-        ];
-
-        $this->headings = [
-            'NOMBRE ASEGURADORA ',
-            'CEDULA/NIT',
-            'Status',
-        ];
-    }
-
 
     public function storeClient()
     {
@@ -133,6 +137,22 @@ class FileUploadManagerController extends Controller
             'Ciudad',
             'Tipo de Identificacion',
             'Observaciones',
+            'Status',
+        ];
+    }
+
+    public function storeInsuranceCarriers()
+    {
+        $this->filterBy = 'cedulanit';
+
+        $this->schema = [
+            'insurance_carrier' => 'nombre_aseguradora',
+            'identification' => 'cedulanit',
+        ];
+
+        $this->headings = [
+            'NOMBRE ASEGURADORA ',
+            'CEDULA/NIT',
             'Status',
         ];
     }
@@ -176,7 +196,6 @@ class FileUploadManagerController extends Controller
         $this->upload->bad_records =  0;
 
         $this->data = $this->data->map(function($row) use($token) {
-
             $data = $row;
             $data['manager_upload'] = true;
 
