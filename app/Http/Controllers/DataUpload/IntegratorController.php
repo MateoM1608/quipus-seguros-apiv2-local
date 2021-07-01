@@ -30,13 +30,22 @@ class IntegratorController extends Controller
 
         try {
             switch ($request->type) {
+                case 'agency':
+                        $where = 'cedulanit';
+                    break;
+                case 'branch':
+                        $where = 'cedulanit';
+                    break;
                 case 'client':
+                        $where = 'cedulanit';
+                    break;
+                case 'insurance-carrier':
                         $where = 'cedulanit';
                     break;
                 case 'policies':
                         $where = 'numero_de_poliza';
                     break;
-                case 'insurance-carrier':
+                case 'vendor':
                         $where = 'cedulanit';
                     break;
             }

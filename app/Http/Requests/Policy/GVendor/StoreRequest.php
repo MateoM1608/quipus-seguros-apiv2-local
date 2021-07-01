@@ -12,6 +12,12 @@ class StoreRequest extends BaseFormRequest
         return true;
     }
 
+    public function prepareForValidation()
+    {
+        if ($this->manager_upload) {
+            $this->merge(['g_identification_type_id' => 1]);
+        }
+    }
 
     public function rules()
     {
@@ -26,6 +32,10 @@ class StoreRequest extends BaseFormRequest
             'last_name' => [
                 "required"
             ],
+            'birthday' => $this->birthday ? [
+                'date',
+                "date_format:Y-m-d",
+            ] : [],
             'cellphone' => [
                 "required",
                 "numeric",
@@ -40,7 +50,8 @@ class StoreRequest extends BaseFormRequest
                 "numeric",
             ],
             'g_identification_type_id' => [
-                "required"
+                "required",
+                "exists:g_identification_types,id"
             ],
         ];
     }
@@ -52,6 +63,8 @@ class StoreRequest extends BaseFormRequest
             "identification.unique" => "El número de identificacion del cliente ya se encuentra registrado.",
             "first_name.required" => "El nombre del cliente es obligatorio.",
             "last_name.required" => "El apellido del cliente es obligatorio.",
+            "birthday.date" => "La fecha de cumpleaños no cumple el formato de fecha aaaa-mm-dd.",
+            "birthday.date_format" => "La fecha de cumpleaños no cumple el formato de fecha aaaa-mm-dd.",
             "cellphone.required" => "El número de celular es requerido",
             "cellphone.numeric" => "El número de celular solo debe de contener valores numericos",
             "email.required" => "El email es requerido",
@@ -60,6 +73,7 @@ class StoreRequest extends BaseFormRequest
             "commission.required" => "El valor de comisión es requerido",
             "commission.numeric" => "El campo de comisión debe ser numérico",
             "g_identification_type_id.required" => "El tipo de identificación es requerido",
+            "g_identification_type_id.exists" => "El tipo de identificación envido no existe",
 
         ];
     }
