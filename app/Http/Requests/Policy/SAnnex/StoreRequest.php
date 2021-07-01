@@ -3,6 +3,10 @@
 namespace App\Http\Requests\Policy\SAnnex;
 
 use App\Http\Requests\BaseFormRequest;
+use Carbon\Carbon;
+
+// Models
+use App\Models\Policy\SPolicy;
 
 class StoreRequest extends BaseFormRequest
 {
@@ -16,11 +20,42 @@ class StoreRequest extends BaseFormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+    public function prepareForValidation()
+    {
+        if ($this->manager_upload) {
+            $policy = SPolicy::with('sBranch')
+            ->wherePolicyNumber($this->policy_number)->first([
+                'id',
+                'expedition_date',
+                's_branch_id',
+            ]);
+
+            $annex_tax = $policy && $policy->sBranch && $policy->sBranch->tax ?  $this->annex_premium * ($policy->sBranch->tax / 100) : 0;
+
+            $this->merge([
+                'annex_number' => '1',
+                'annex_expedition' => $policy? $policy->expedition_date : null,
+                'annex_start' => $policy? $policy->expedition_date : null,
+                'annex_end' => $policy && $policy->expedition_date ? Carbon::parse($policy->expedition_date)->addYear()->format('Y-m-d') : null,
+                'annualized_premium' => $this->annex_premium,
+                'annex_tax' => $annex_tax,
+                'annex_expedition_cost' => 0,
+                'annex_other_cost' => 0,
+                'annex_total_value' => $this->annex_premium + $annex_tax,
+                'annex_commission' => $policy && $policy->sBranch && $policy->sBranch->commission ?  $this->annex_premium * ($policy->sBranch->commission / 100) : 0,
+                'annex_paid' => 'No',
+                'commission_paid' => 'No',
+                'annex_type' => 'Expedición',
+                's_policy_id' => $policy? $policy->id : 0,
+                'annex_print' => 'N/A',
+                'annex_printed' => 'N/A',
+                'annex_email' => 'N/A',
+                'annex_delivered' => 'N/A',
+                'annex_description' => 'Anexo creado por migración',
+            ]);
+        }
+    }
+
     public function rules()
     {
         return [

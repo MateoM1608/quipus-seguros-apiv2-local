@@ -173,6 +173,7 @@ class FileUploadManagerController extends Controller
             's_client_id' => 'cedulanit_cliente',
             'expedition_date' => 'inicio_vigencia',
             'payment_periodicity' => 'periodicidad',
+            'annex_premium' => 'valor_prima_antes_de_impuestos',
         ];
 
         $this->headings = [
@@ -184,6 +185,7 @@ class FileUploadManagerController extends Controller
             'CEDULA/NIT CLIENTE',
             'INICIO VIGENCIA',
             'PERIODICIDAD',
+            'VALOR PRIMA ANTES DE IMPUESTOS',
             'Status',
         ];
     }
@@ -214,6 +216,11 @@ class FileUploadManagerController extends Controller
         ];
     }
 
+    public function createAnnex($token, $data)
+    {
+        Http::withToken($token)->post(route('annex-store'), $data);
+    }
+
     public function callHttp()
     {
         $this->organizeData();
@@ -235,6 +242,9 @@ class FileUploadManagerController extends Controller
                 case 200:
                     $this->upload->inserted_registry +=  1;
                     $row['status'] = 'Registro almacenado correctamente.';
+                    if ($this->upload->type == 'policies') {
+                        $this->createAnnex($token, $data);
+                    }
                     break;
                 case 422:
                     $this->upload->bad_records +=  1;
