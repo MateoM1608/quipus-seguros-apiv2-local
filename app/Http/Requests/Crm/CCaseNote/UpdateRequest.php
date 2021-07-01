@@ -23,13 +23,10 @@ class UpdateRequest extends BaseFormRequest
     public function rules()
     {
         return [
-            'note' => [
-                "required"
-            ],
-            'type_note' => [
+            'type_note' => $this->has('type_note') ? [
                 "required",
                 "in:Comentario,Tarea"
-            ],
+            ]:[],
             'end_date' => $this->has('end_date') && $this->end_date? [
                 "date"
             ] : [],
@@ -41,9 +38,9 @@ class UpdateRequest extends BaseFormRequest
     public function messages()
     {
         return [
-            "note.required" => "El nota de seguimiento es obligatoria.",
+
             "end_date.date" => "El formato de fecha no es correcto.",
-            "state.in" => "El estado de la nota solo permite los registros (Finalizada, Pendiente).",
+            "state.in" => "El estado de la nota solo permite los registros (Finalizada, Pendiente, o dejando vacio el valor).",
             "type_note.in" => "El estado de la nota solo permite los registros (Comentario, Tarea).",
             "type_note.required" => "El tipo de nota es obligatorio."
 

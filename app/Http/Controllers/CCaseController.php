@@ -31,6 +31,11 @@ class CCaseController extends Controller
                     $query->where('identification', 'like', '%' . $request->identification . '%');
                 }
             })
+            ->with('cCaseStages', function ($query) use($request) {
+                if (isset($request->status)) {
+                    $query->where('description',$request->status);
+                }
+            })
             ->where(function ($query) use ($request) {
 
 
@@ -41,6 +46,8 @@ class CCaseController extends Controller
                 if (isset($request->type_case)) {
                     $query->where('c_type_case_id',$request->type_case);
                 }
+
+
             });
         if ($request->trashed) {
             $data->withTrashed();
@@ -86,7 +93,7 @@ class CCaseController extends Controller
         DB::beginTransaction();
         try {
             $case = CCase::findOrFail($id);
-            $case->update($request->all());
+            $case->update($request->only(['risk','description','expiration_date', 'c_type_case_stage_id', 'calification']));
 
             event(new CCaseEvent($case));
 

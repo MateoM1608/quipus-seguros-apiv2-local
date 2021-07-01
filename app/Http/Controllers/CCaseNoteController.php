@@ -77,7 +77,7 @@ class CCaseNoteController extends Controller
         DB::beginTransaction();
         try {
             $note = CCaseNote::find($id);
-            $note->update($request->all());
+            $note->update($request->only(['state','type_note', 'end_date']));
 
             event(new CCaseNoteEvent($note));
 
