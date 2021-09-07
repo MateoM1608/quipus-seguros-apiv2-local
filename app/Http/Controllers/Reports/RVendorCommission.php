@@ -28,14 +28,14 @@ class RVendorCommission extends Controller
 
             ->where(function ($query) use ($request) {
 
-                if (isset($request->commissionStatus) && $request->commissionStatus == 1) {
+                if (isset($request->commissionStatus) && $request->commissionStatus == 1) { //1 = Muestre las comisiones pagadas del asesor
 
                     $query->whereNull('s_commissions.deleted_at');
                     $query->where('s_annexes.commission_paid', 'Si');
                     $query->where('s_commissions.vendor_commission_paid', 'Si');
                     $query->where('s_commissions.commission_value', '>', 0);
                 }
-                elseif(isset($request->commissionStatus) && $request->commissionStatus == 2){
+                elseif(isset($request->commissionStatus) && $request->commissionStatus == 2){ //2 Muestreme las comisiones sin pagar
 
                     $query->whereNull('s_commissions.deleted_at');
                     $query->where('s_annexes.commission_paid', 'Si');
@@ -44,7 +44,7 @@ class RVendorCommission extends Controller
                 }
                 else{
 
-                    $query->whereNull('s_commissions.deleted_at');
+                    $query->whereNull('s_commissions.deleted_at'); //Muestreme las comisiones sin pagar para el asesor
                     $query->where('s_annexes.commission_paid', 'Si');
                     $query->where('s_commissions.vendor_commission_paid', 'No');
                     $query->where('s_commissions.commission_value', '>', 0);
