@@ -56,6 +56,8 @@ use App\Http\Controllers\CCaseController;
 
 # Controllers for Cargues
 use App\Http\Controllers\DataUpload\IntegratorController;
+use App\Http\Controllers\Reports\RVendorCommission;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -278,6 +280,7 @@ Route::group(['prefix' => 'v1'], function () {
                 Route::get('/dashboard', [RDashboardController::class, 'index'])->name('reports-dashboard');
                 Route::get('/portfolio', [RPortfolioController::class, 'index'])->name('reports-portfolio');
                 Route::get('/production', [RProduction::class, 'index'])->name('reports-production');
+                Route::get('/vendorCommission', [RVendorCommission::class, 'index'])->name('reports-vendorCommission');
             });
 
             /**

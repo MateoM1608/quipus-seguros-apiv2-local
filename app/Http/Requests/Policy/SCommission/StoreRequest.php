@@ -65,6 +65,13 @@ class StoreRequest extends BaseFormRequest
                 "required",
                 "numeric"
             ],
+            'payment_day' => [
+               "date"
+            ],
+            'status_payment' => [
+                "required",
+                "in:En revision,Por pagar,Pagado"
+            ],
         ];
     }
 
@@ -87,6 +94,8 @@ class StoreRequest extends BaseFormRequest
             "vendor_commission_paid.in" => "Los valores permitidos para la pago vendedor son: Si,No ",
             "agency_commission.numeric" => "El identificador de la agencia debe ser numérico.",
             "agency_commission.required" => "El identificador de la agencia es obligatorio",
+            "status_payment.in" => "Este campo solo permite los valores de 'En revision','Por pagar','Pagado'",
+            "payment_day.date" => "Este campo No cumple el formato aaaa-mm-dd"
 
         ];
     }

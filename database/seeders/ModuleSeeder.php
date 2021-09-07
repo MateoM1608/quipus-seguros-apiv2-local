@@ -305,6 +305,14 @@ class ModuleSeeder extends Seeder
                                 'class' => '',
                                 'show' => 0,
                             ],
+                            [
+                                'description' => 'vendorCommission',
+                                'name' => 'Comisiones por Pagar',
+                                'url' => '/reports/vendorCommission',
+                                'icon' => 'fas fa-hand-holding-usd',
+                                'class' => '',
+                                'show' => 1,
+                            ],
                         ]
                     ],
                     [

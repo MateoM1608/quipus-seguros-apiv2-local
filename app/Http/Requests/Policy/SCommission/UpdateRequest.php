@@ -4,23 +4,26 @@ namespace App\Http\Requests\Policy\SCommission;
 
 use App\Http\Requests\BaseFormRequest;
 
+use App\Models\Policy\SCommission;
+
 class UpdateRequest extends BaseFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
+    public $errors = [];
+
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+    public function prepareForValidation()
+    {
+        $commission = SCommission::find($this->id);
+
+        if ($commission->status_payment === 'Pagado') {
+            $this->errors['status_payment'][] = "La comisión ya fue pagada y no es posible realizar modificaciones.";
+        }
+    }
+
     public function rules()
     {
         return [
@@ -55,6 +58,13 @@ class UpdateRequest extends BaseFormRequest
                 "required",
                 "numeric"
             ] : [],
+            'payment_day' => $this->has('payment_day') ? [
+                "date"
+            ] : [],
+            'status_payment' => $this->has('status_payment') ? [
+                "required",
+                "in:En revision,Por pagar,Pagado"
+            ] : [],
         ];
     }
 
@@ -76,7 +86,20 @@ class UpdateRequest extends BaseFormRequest
             "vendor_commission_paid.in" => "Los valores permitidos para la pago vendedor son: Si,No ",
             "agency_commission.numeric" => "El identificador de la agencia debe ser numérico.",
             "agency_commission.required" => "El identificador de la agencia es obligatorio",
+            "status_payment.in" => "Este campo solo permite los valores de 'En revision','Por pagar','Pagado'",
+            "payment_day.date" => "Este campo No cumple el formato aaaa-mm-dd"
 
         ];
+    }
+
+    public function withValidator($validation)
+    {
+        $validation->after(function ($validation) {
+            foreach ($this->errors as $key => $error) {
+                foreach ($error as $value) {
+                    $validation->errors()->add($key, $value);
+                }
+            }
+        });
     }
 }
