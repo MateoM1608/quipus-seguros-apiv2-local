@@ -162,7 +162,7 @@ class ModuleSeeder extends Seeder
                             ],
                             [
                                 'description' => 'branch',
-                                'name' => 'Ramos aseguradoras',
+                                'name' => 'Ramos',
                                 'url' => '/branch',
                                 'icon' => 'fas fa-code-branch',
                                 'class' => '',
@@ -178,7 +178,7 @@ class ModuleSeeder extends Seeder
                             ],
                             [
                                 'description' => 'stagesCrm',
-                                'name' => 'Estádos CRM',
+                                'name' => 'Etapas crm',
                                 'url' => '/stagesCrm',
                                 'icon' => 'fas fa-th-large',
                                 'class' => '',
@@ -186,7 +186,7 @@ class ModuleSeeder extends Seeder
                             ],
                             [
                                 'description' => 'areasCrm',
-                                'name' => 'Areas CRM',
+                                'name' => 'Areas crm',
                                 'url' => '/areasCrm',
                                 'icon' => 'fas fa-th-large',
                                 'class' => '',
@@ -364,9 +364,19 @@ class ModuleSeeder extends Seeder
                     [
                         'description' => 'crm',
                         'name' => 'Crm',
+                        'url' => '/crm/cases',
                         'icon' => 'fas fa-users-cog',
                         'class' => 'sidebar-nav-mini-hide',
                         'show' => 1,
+                        'class' => ''
+
+                    ],
+                    [
+                        'description' => 'crm_children',
+                        'name' => 'Crm',
+                        'icon' => 'fas fa-users-cog',
+                        'class' => 'sidebar-nav-mini-hide',
+                        'show' => 0,
                         'children' => [
                             [
                                 'description' => 'typeCases',
@@ -374,7 +384,7 @@ class ModuleSeeder extends Seeder
                                 'url' => '/crm/typeCases',
                                 'icon' => 'fas fa-th-large',
                                 'class' => '',
-                                'show' => 1,
+                                'show' => 0,
                             ],
                             [
                                 'description' => 'cases',
@@ -382,7 +392,7 @@ class ModuleSeeder extends Seeder
                                 'url' => '/crm/cases',
                                 'icon' => 'fas fa-th-large',
                                 'class' => '',
-                                'show' => 1,
+                                'show' => 0,
                             ],
                             [
                                 'description' => 'oportunity',
@@ -390,7 +400,7 @@ class ModuleSeeder extends Seeder
                                 'url' => '/crm/cases',
                                 'icon' => 'fas fa-th-large',
                                 'class' => '',
-                                'show' => 1,
+                                'show' => 0,
                             ],
                             [
                                 'description' => 'notes',
