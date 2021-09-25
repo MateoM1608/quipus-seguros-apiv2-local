@@ -11,7 +11,7 @@ class CCase extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'c_type_case_id', 's_client_id', 's_policy_id', 'c_type_case_stage_id', 'risk', 'description', 'creator_user_id','assigned_user_id','expiration_date','calification'
+        'c_type_case_id', 's_client_id', 's_policy_id', 'c_type_case_stage_id', 'c_case_area_id','risk', 'description', 'creator_user_id','creator_name','assigned_user_id','assigned_name','expiration_date','calification'
     ];
 
     public function cTypeCase()
@@ -33,5 +33,10 @@ class CCase extends Model
     public function cCaseNote()
     {
        return $this->hasMany(CCaseNote::class);
+    }
+    public function cCaseArea()
+    {
+       //return $this->hasMany(CCaseArea::class);
+       return $this->belongsTo(CCaseArea::class, 'c_case_area_id');
     }
 }

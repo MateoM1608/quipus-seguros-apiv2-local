@@ -20,7 +20,7 @@ class CCaseController extends Controller
 
     public function index(Request $request)
     {
-        $data = CCase::with(['cTypeCase', 'cCaseStages', 'sClient', 'sPolicy'])
+        $data = CCase::with(['cTypeCase', 'cCaseStages', 'cCaseArea','sClient', 'sPolicy'])
             ->with('sClient', function ($query) use($request) {
                 if (isset($request->name)) {
                     $query->where('first_name', 'like', '%' . $request->name . '%');
