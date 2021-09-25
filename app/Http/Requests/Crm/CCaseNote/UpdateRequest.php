@@ -23,26 +23,52 @@ class UpdateRequest extends BaseFormRequest
     public function rules()
     {
         return [
-            'type_note' => $this->has('type_note') ? [
+            'c_case_id' => [
+                "required",
+                "numeric",
+                "exists:c_cases,id"
+            ],
+            'user_id' => [
+                "required",
+                "numeric"
+            ],
+            'user_name' => [
+                "required"
+            ],
+            'user_email' => [
+                "required"
+            ],
+            'note' => [
+                "required"
+            ],
+            'type_note' => [
                 "required",
                 "in:Comentario,Tarea"
-            ]:[],
+            ],
             'end_date' => $this->has('end_date') && $this->end_date? [
                 "date"
             ] : [],
-            'state' => $this->has('state') && $this->state? [
+            'state' => [
+                "required",
                 "in:Finalizada,Pendiente"
-            ]: [],
+            ],
         ];
     }
     public function messages()
     {
         return [
-
+            "c_case_id.required" => "El id del caso es obligatorio.",
+            "c_case_id.numeric" => "El id del caso debe ser numerico.",
+            "c_case_id.exists" => "El id del caso no existe.",
+            "user_id.required" => "El id de usuario es obligatorio.",
+            "user_id.numeric" => "El id del usuario debe ser numerico.",
+            "user_name.required" => "El nombre del usuario que inserta la nota es obligatorio.",
+            "user_email.required" => "El email del usuario que inserta la nota es obligatorio.",
+            "note.required" => "El nota de seguimiento es obligatoria.",
             "end_date.date" => "El formato de fecha no es correcto.",
-            "state.in" => "El estado de la nota solo permite los registros (Finalizada, Pendiente, o dejando vacio el valor).",
+            "state.in" => "El estado de la nota solo permite los registros (Finalizada, Pendiente).",
             "type_note.in" => "El estado de la nota solo permite los registros (Comentario, Tarea).",
-            "type_note.required" => "El tipo de nota es obligatorio."
+            "type_note.required" => "El tipo de nota es obligatorio (Comentario, Tarea)."
 
         ];
     }

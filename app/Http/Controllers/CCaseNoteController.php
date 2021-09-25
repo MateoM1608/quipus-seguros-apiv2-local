@@ -20,20 +20,13 @@ class CCaseNoteController extends Controller
 {
     public function index(Request $request)
     {
-        $data = CCase::with(['cCaseNote'])
-            ->whereHas('cCaseNote', function ($query) use($request) {
+        $data = CCaseNote::where(function ($query) use ($request) {
 
-                if (isset($request->case_note)) {
-                    $query->where('c_case_id',$request->case_note);
-                }
-            })
-            ->where(function ($query) use ($request) {
+            if (isset($request->case)) {
+                $query->where('c_case_id', $request->case);
+            }
+        });
 
-                if (isset($request->case)) {
-                    $query->where('id', 'like', '%' . $request->case . '%');
-                }
-
-            });
         if ($request->trashed) {
             $data->withTrashed();
         }

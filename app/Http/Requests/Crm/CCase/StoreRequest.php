@@ -42,23 +42,34 @@ class StoreRequest extends BaseFormRequest
                 "numeric",
                 "exists:c_case_stages,id"
             ],
+            'c_case_area_id' => [
+                "required",
+                "numeric",
+                "exists:c_case_areas,id"
+            ],
             'creator_user_id' => [
                 "required",
                 "numeric"
+            ],
+            'creator_name' => [
+                "required",
             ],
             'assigned_user_id' => [
                 "required",
                 "numeric"
             ],
+            'assigned_name' => [
+                "required",
+            ],
             'expiration_date' => [
                 "date"
             ],
 
-            'calification' => [
+            'calification' => $this->has('calification') && $this->calification? [
                 "numeric",
                 "min:1",
                 "max:5"
-            ]
+            ]: [],
         ];
     }
     public function messages()
@@ -87,7 +98,11 @@ class StoreRequest extends BaseFormRequest
             "assigned_user_id.required" => "El identificador del usuario responsable del caso es requerido.",
             "assigned_user_id.numeric" => "El identificador del usuario responsable del caso debe ser numérico.",
 
-            "expiration_date.date" => "El campo de fecha fin es obligatorio."
+            "expiration_date.date" => "El campo de fecha fin es obligatorio.",
+
+            "creator_name.required" => "El campo de nombre del creador del caso es obligatorio.",
+            "assigned_name.required" => "El campo de nombre del usuario responsable del caso es obligatorio.",
+            "c_case_area_id.required" => "El identificador del Area es obligatorio."
         ];
     }
 }

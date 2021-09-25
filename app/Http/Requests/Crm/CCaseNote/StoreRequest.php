@@ -15,11 +15,13 @@ class StoreRequest extends BaseFormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+    public function prepareForValidation()
+    {
+        if ($this->type_note == 'Tarea') {
+           /*Logica de poner la fecha obligaria en caso de que sea tarea*/
+        }
+    }
+
     public function rules()
     {
         return [
@@ -48,9 +50,10 @@ class StoreRequest extends BaseFormRequest
             'end_date' => $this->has('end_date') && $this->end_date? [
                 "date"
             ] : [],
-            'state' => $this->has('state') && $this->state? [
+            'state' => [
+                "required",
                 "in:Finalizada,Pendiente"
-            ]: [],
+            ],
         ];
     }
     public function messages()
@@ -67,7 +70,7 @@ class StoreRequest extends BaseFormRequest
             "end_date.date" => "El formato de fecha no es correcto.",
             "state.in" => "El estado de la nota solo permite los registros (Finalizada, Pendiente).",
             "type_note.in" => "El estado de la nota solo permite los registros (Comentario, Tarea).",
-            "type_note.required" => "El tipo de nota es obligatorio."
+            "type_note.required" => "El tipo de nota es obligatorio (Comentario, Tarea)."
 
         ];
     }

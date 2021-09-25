@@ -93,7 +93,7 @@ class CCaseController extends Controller
         DB::beginTransaction();
         try {
             $case = CCase::findOrFail($id);
-            $case->update($request->only(['risk','description','expiration_date', 'c_type_case_stage_id', 'calification']));
+            $case->update($request->only(['risk','expiration_date', 'c_type_case_stage_id', 'calification','c_case_area_id','assigned_user_id','assigned_name']));
 
             event(new CCaseEvent($case));
 
