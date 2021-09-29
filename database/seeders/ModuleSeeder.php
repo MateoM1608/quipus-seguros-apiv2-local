@@ -211,17 +211,6 @@ class ModuleSeeder extends Seeder
                         'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
                         'show' => 1,
                         'class' => 'sidebar-nav-mini-hide',
-                        'children' => [
-                            [
-                                'description' => 'policies_id',
-                                'name' => 'Policy particular',
-                                'url' => '/policies/:id',
-                                'icon' => 'fas fa-umbrella',
-                                'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
-                                'class' => '',
-                                'show' => 0,
-                            ]
-                        ]
                     ],
                     [
                         'description' => 'policies_children',
@@ -232,6 +221,15 @@ class ModuleSeeder extends Seeder
                         'show' => 0,
                         'class' => 'sidebar-nav-mini-hide',
                         'children' => [
+                            [
+                                'description' => 'policies_id',
+                                'name' => 'Policy particular',
+                                'url' => '/policies/:id',
+                                'icon' => 'fas fa-umbrella',
+                                'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
+                                'class' => '',
+                                'show' => 0,
+                            ],
                             [
                                 'name' => 'risk',
                                 'icon' => 'icon-speedometer',
