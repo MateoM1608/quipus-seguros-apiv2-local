@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AuthApi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use DB;
 
 class AuthController extends Controller
 {
@@ -45,9 +46,16 @@ class AuthController extends Controller
     public function login()
     {
         $credentials = request(['email', 'password']);
+
         if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        if($this->checkLogin()) {
+            \JWTAuth::manager()->invalidate(new \Tymon\JWTAuth\Token($token), $forceForever = false);
+            return response()->json(['error' => 'Ya tiene una session iniciada, cierre la sessión e inicie de nuevo.'], 403);
+        }
+
         return $this->respondWithToken($token);
     }
 
@@ -98,7 +106,12 @@ class AuthController extends Controller
      */
     public function logout()
     {
+        DB::connection('seguros')->table('sessions')
+        ->where('user_id', auth('api')->user()->id)
+        ->delete();
+
         auth('api')->logout();
+
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -149,5 +162,24 @@ class AuthController extends Controller
             'expires_in' => auth('api')->factory()->getTTL() * 60,
             'user' => auth('api')->user()
         ]);
+    }
+
+    protected function checkLogin()
+    {
+        $user = DB::connection('seguros')->table('sessions')
+        ->where('user_id', auth('api')->user()->id)
+        ->get();
+
+        if (!$user->count()) {
+            DB::connection('seguros')->table('sessions')
+            ->insert([
+                'user_id' => auth('api')->user()->id,
+                'expires_in' => auth('api')->factory()->getTTL() * 60
+            ]);
+        } else {
+            return true;
+        }
+
+        return false;
     }
 }
