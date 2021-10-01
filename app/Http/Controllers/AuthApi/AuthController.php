@@ -166,11 +166,26 @@ class AuthController extends Controller
 
     protected function checkLogin()
     {
-        $user = DB::connection('seguros')->table('sessions')
+        $session = DB::connection('seguros')->table('sessions')
         ->where('user_id', auth('api')->user()->id)
-        ->get();
+        ->get([
+            'id',
+            DB::raw('TIMESTAMPADD(SECOND,expires_in,created_at) < NOW() AS expiration'),
+        ]);
 
-        if (!$user->count()) {
+        $expiration = collect($session->where('expiration', 1)->pluck('id')->toArray());
+
+        if ($expiration->count()) {
+            DB::connection('seguros')->table('sessions')
+            ->whereIn('id', $expiration->toArray())
+            ->delete();
+        }
+
+        $session = $session->filter(function ($session, $key) {
+            return (int) $session->expiration === 0;
+        });
+
+        if (!$session->count()) {
             DB::connection('seguros')->table('sessions')
             ->insert([
                 'user_id' => auth('api')->user()->id,
