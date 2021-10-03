@@ -11,7 +11,21 @@ class CCase extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'c_type_case_id', 's_client_id', 's_policy_id', 'c_type_case_stage_id', 'c_case_area_id','risk', 'description', 'creator_user_id','creator_name','assigned_user_id','assigned_name','expiration_date','calification'
+        'c_type_case_id',
+        's_client_id',
+        's_policy_id',
+        'c_type_case_stage_id',
+        'c_case_area_id','risk',
+        'description',
+        'creator_user_id',
+        'creator_name',
+        'assigned_user_id',
+        'assigned_name',
+        'projected_value',
+        'real_value',
+        'status_case',
+        'expiration_date',
+        'calification'
     ];
 
     public function cTypeCase()
