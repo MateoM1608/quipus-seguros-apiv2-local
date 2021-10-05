@@ -121,17 +121,13 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function update(UpdateRequest $request, User $user)
+    public function update(UpdateRequest $request, $id)
     {
         DB::beginTransaction();
         try {
-            $user->update($request->except(['password','connection']));
 
-            $redis = Redis::connection();
-            $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-                'evento' => 'USER',
-                'datos' => $user
-            ]));
+            $user = User::findOrFail($id);
+            $user->update($request->except(['password','connection']));
 
             event(new UserEvent($user));
 
@@ -160,12 +156,6 @@ class UserController extends Controller
             } else {
                 $user->delete();
             }
-
-            $redis = Redis::connection();
-            $redis->publish('channel-vue-' . auth()->guard('api')->user()->id, json_encode([
-                'evento' => 'USER',
-                'datos' => $user
-            ]));
 
             event(new UserEvent($user));
 

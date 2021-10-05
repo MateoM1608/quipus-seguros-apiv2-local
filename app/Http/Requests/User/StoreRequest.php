@@ -42,9 +42,13 @@ class StoreRequest extends BaseFormRequest
             "name" => [
                 "required",
             ],
+            "identification" => [
+                "required",
+                "unique_user_with:identification",
+            ],
             "email" => [
                 "required",
-                "unique:users,email",
+                "unique_user_with:email",
                 "email"
             ],
             "password" => [
@@ -60,8 +64,10 @@ class StoreRequest extends BaseFormRequest
     {
         return [
             "name.required" => "El nombre de usuario es obligatorio.",
+            "identification.required" => "La identificación del usuario es obligatoria.",
+            "identification.unique_user_with" => "La identificación ingresada ya se encuentra registrada.",
             "email.required" => "El email del usuario es obligatorio.",
-            "email.unique" => "El email del usuario ingresado ya se encuentra registrado.",
+            "email.unique_user_with" => "El email del usuario ingresado ya se encuentra registrado.",
             "email.email" => "El email ingresado no es valido.",
             "password.required" => "Hubo un problema en la asignación de la contraseña",
             "connection.required" => "Hubo un problema en la asignación de la conexión",

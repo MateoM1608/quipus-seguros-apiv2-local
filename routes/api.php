@@ -92,7 +92,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::prefix('user')->group(function () {
                 Route::get('/', [UserController::class, 'index'])->name('user-consult');
                 Route::post('/', [UserController::class, 'store'])->name('user-create');
-                Route::put('/{user}', [UserController::class,'update'])->name('user-update');
+                Route::put('/{id}', [UserController::class,'update'])->name('user-update');
                 Route::delete('/{id}', [UserController::class,'destroy'])->name('user-delete');
 
                 Route::prefix('password')->group(function () {

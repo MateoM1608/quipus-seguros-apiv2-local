@@ -35,11 +35,15 @@ class UpdateRequest extends BaseFormRequest
             "name" => $this->has('name')? [
                 "required",
             ] : [],
+            "identification" => $this->has('identification')? [
+                "required",
+                "unique_user_with:identification," . $this->id,
+            ] : [],
             "email" => $this->has('email')? [
                 "required",
-                "unique:users,email," . $this->id,
+                "unique_user_with:email," . $this->id,
                 "email"
-            ] : []
+            ] : [],
         ];
     }
 
@@ -47,8 +51,10 @@ class UpdateRequest extends BaseFormRequest
     {
         return [
             "name.required" => "El nombre de usuario es obligatorio.",
+            "identification.required" => "La identificación del usuario es obligatoria.",
+            "identification.unique_user_with" => "La identificación ingresada ya se encuentra registrada.",
             "email.required" => "El email del usuario es obligatorio.",
-            "email.unique" => "El email del usuario ingresado ya se encuentra registrado.",
+            "email.unique_user_with" => "El email del usuario ingresado ya se encuentra registrado.",
             "email.email" => "El email ingresado no es valido.",
         ];
     }
