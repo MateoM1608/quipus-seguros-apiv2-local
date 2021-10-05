@@ -57,17 +57,19 @@ class ModuleSeeder extends Seeder
                     [
                         'description' => 'herramientas',
                         'name' => 'Herramientas',
-                        'icon' => 'fas fa-users-cog',
+                        'icon' => 'fas fa-sliders-h',
                         'class' => 'sidebar-nav-mini-hide',
                         'show' => 1,
+                        'order' => 0,
                         'children' => [
                             [
                                 'description' => 'upload',
                                 'name' => 'Cargues',
                                 'url' => '/upload',
-                                'icon' => 'fas fa-th-large',
+                                'icon' => 'fas fa-cloud-upload-alt',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 0,
                             ],
                         ]
                     ],
@@ -77,6 +79,7 @@ class ModuleSeeder extends Seeder
                         'icon' => 'fas fa-users-cog',
                         'class' => 'sidebar-nav-mini-hide',
                         'show' => 1,
+                        'order' => 1,
                         'children' => [
                             [
                                 'description' => 'module',
@@ -85,6 +88,7 @@ class ModuleSeeder extends Seeder
                                 'icon' => 'fas fa-th-large',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 9,
                             ],
                             [
                                 'description' => 'user',
@@ -94,6 +98,7 @@ class ModuleSeeder extends Seeder
                                 'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 7,
                                 'children' => [
                                     [
                                         'description' => 'permission',
@@ -128,9 +133,10 @@ class ModuleSeeder extends Seeder
                                 'description' => 'profile',
                                 'name' => 'Perfiles',
                                 'url' => '/profile',
-                                'icon' => 'fas fa-th-large',
+                                'icon' => 'far fa-address-card',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 8,
                                 'children' => [
                                     [
                                         'description' => 'permission-profile',
@@ -151,6 +157,7 @@ class ModuleSeeder extends Seeder
                                 'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 4,
                             ],
                             [
                                 'description' => 'agency',
@@ -159,6 +166,7 @@ class ModuleSeeder extends Seeder
                                 'icon' => 'fas fa-house-user',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 3,
                             ],
                             [
                                 'description' => 'branch',
@@ -167,6 +175,7 @@ class ModuleSeeder extends Seeder
                                 'icon' => 'fas fa-code-branch',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 2,
                             ],
                             [
                                 'description' => 'insuranceCarrier',
@@ -175,22 +184,26 @@ class ModuleSeeder extends Seeder
                                 'icon' => 'fas fa-building',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 1,
                             ],
                             [
                                 'description' => 'stagesCrm',
-                                'name' => 'Etapas crm',
+                                'name' => 'Etapas CRM',
                                 'url' => '/stagesCrm',
-                                'icon' => 'fas fa-th-large',
+                                'icon' => 'fas fa-sort-amount-up',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 5,
+
                             ],
                             [
                                 'description' => 'areasCrm',
-                                'name' => 'Areas crm',
+                                'name' => 'Areas CRM',
                                 'url' => '/areasCrm',
-                                'icon' => 'fas fa-th-large',
+                                'icon' => 'fas fa-boxes',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 6,
                             ]
                         ]
                     ],
@@ -202,6 +215,7 @@ class ModuleSeeder extends Seeder
                         'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
                         'class' => 'sidebar-nav-mini-hide',
                         'show' => 1,
+                        'order' => 2,
                     ],
                     [
                         'description' => 'policies',
@@ -211,6 +225,7 @@ class ModuleSeeder extends Seeder
                         'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
                         'show' => 1,
                         'class' => 'sidebar-nav-mini-hide',
+                        'order' => 3,
                     ],
                     [
                         'description' => 'policies_children',
@@ -273,6 +288,7 @@ class ModuleSeeder extends Seeder
                         'icon' => 'fas fa-chart-pie',
                         'class' => 'sidebar-nav-mini-hide',
                         'show' => 1,
+                        'order' => 5,
                         'children' => [
                             [
                                 'description' => 'expiration',
@@ -281,6 +297,7 @@ class ModuleSeeder extends Seeder
                                 'icon' => 'fas fa-chart-bar',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 1,
                             ],
                             [
                                 'description' => 'portfolio',
@@ -289,6 +306,7 @@ class ModuleSeeder extends Seeder
                                 'icon' => 'fas fa-hand-holding-usd',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 5,
                             ],
                             [
                                 'description' => 'commissionReceivable',
@@ -297,14 +315,16 @@ class ModuleSeeder extends Seeder
                                 'icon' => 'fas fa-file-invoice-dollar',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 2,
                             ],
                             [
                                 'description' => 'production',
                                 'name' => 'Producción',
                                 'url' => '/reports/production',
-                                'icon' => 'fas fa-file-invoice-dollar',
+                                'icon' => 'fas fa-flag-checkered',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 4,
                             ],
                             [
                                 'description' => 'dashboard',
@@ -316,11 +336,12 @@ class ModuleSeeder extends Seeder
                             ],
                             [
                                 'description' => 'vendorCommission',
-                                'name' => 'Comisiones por Pagar',
+                                'name' => 'Comisiones por pagar',
                                 'url' => '/reports/vendorCommission',
-                                'icon' => 'fas fa-hand-holding-usd',
+                                'icon' => 'fas fa-money-check-alt',
                                 'class' => '',
                                 'show' => 1,
+                                'order' => 3,
                             ],
                         ]
                     ],
@@ -372,42 +393,29 @@ class ModuleSeeder extends Seeder
                     ],
                     [
                         'description' => 'crm',
-                        'name' => 'Crm',
+                        'name' => 'CRM',
                         'url' => '/crm/cases',
                         'icon' => 'fas fa-users-cog',
                         'class' => 'sidebar-nav-mini-hide',
                         'show' => 1,
+                        'order' => 4,
                         'class' => ''
 
                     ],
                     [
                         'description' => 'crm_children',
-                        'name' => 'Crm',
+                        'name' => 'CRM',
+                        'url' => '/crm/cases',
                         'icon' => 'fas fa-users-cog',
                         'class' => 'sidebar-nav-mini-hide',
                         'show' => 0,
                         'children' => [
-                            [
-                                'description' => 'typeCases',
-                                'name' => 'Tipos de casos',
-                                'url' => '/crm/typeCases',
-                                'icon' => 'fas fa-th-large',
-                                'class' => '',
-                                'show' => 0,
-                            ],
+
                             [
                                 'description' => 'cases',
-                                'name' => 'Servicio al cliente',
-                                'url' => '/crm/cases',
-                                'icon' => 'fas fa-th-large',
-                                'class' => '',
-                                'show' => 0,
-                            ],
-                            [
-                                'description' => 'oportunity',
-                                'name' => 'Oportunidades',
-                                'url' => '/crm/cases',
-                                'icon' => 'fas fa-th-large',
+                                'name' => 'Casos',
+                                'url' => '/crm/cases/:id',
+                                'icon' => 'fas fa-users-cog',
                                 'class' => '',
                                 'show' => 0,
                             ],

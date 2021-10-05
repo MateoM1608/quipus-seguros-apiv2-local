@@ -6,21 +6,27 @@ use App\Http\Requests\BaseFormRequest;
 
 class UpdateRequest extends BaseFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
+    private $errors = [];
+
+
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+    public function prepareForValidation()
+    {
+        $typeCase = CTypeCase::find($this->c_type_case_id, ['description']);
+
+        if ($typeCase && in_array($typeCase->description, ['Servicio al cliente', 'Oportunidades de negocio']) && !$this->s_client_id) {
+            $this->errors['s_client_id'][] = "El cliente es requerido.";
+        }
+        /*
+        if ($typeCase && in_array($typeCase->description, ['Oportunidades de negocio']) && !$this->s_client_id) {
+            $this->errors['projected_value'][] = "El valor proyectado del negocio es requerido.";
+        }*/
+    }
+
     public function rules()
     {
         return [
@@ -61,13 +67,16 @@ class UpdateRequest extends BaseFormRequest
             'assigned_name' => [
                 "required",
             ],
+            'expiration_date' => [
+                "date"
+            ],
             'status_case' => [
                 "required",
                 "in:Abierto,Cerrado"
             ],
             'projected_value' => $this->has('projected_value') && $this->projected_value? [
                 "numeric"
-            ]: [],
+            ]:[],
             'real_value' => $this->has('real_value') && $this->real_value? [
                 "numeric"
             ]: [],
@@ -92,9 +101,9 @@ class UpdateRequest extends BaseFormRequest
             "s_policy_id.numeric" => "El identificador de la poliza debe ser numérico.",
             "s_policy_id.exists" => "El identificador de la poliza no existe.",
 
-            "c_type_case_stage_id.required" => "El estado del caso es requerido.",
-            "c_type_case_stage_id.numeric" => "El estado del caso debe ser numérico.",
-            "c_type_case_stage_id.exists" => "El estado para el caso no existe.",
+            "c_type_case_stage_id.required" => "La etapa para el tipo de caso seleccionado es requerida.",
+            "c_type_case_stage_id.numeric" => "El Id de la etapa para este tipo de caso debe ser numérico.",
+            "c_type_case_stage_id.exists" => "La etapa registrada, no existe.",
 
             "calification.min" => "La calificación del caso debe ser numérico con valores entre 1 y 5.",
             "calification.max" => "La calificación del caso debe ser numérico con valores entre 1 y 5.",
@@ -105,16 +114,28 @@ class UpdateRequest extends BaseFormRequest
             "assigned_user_id.required" => "El identificador del usuario responsable del caso es requerido.",
             "assigned_user_id.numeric" => "El identificador del usuario responsable del caso debe ser numérico.",
 
-            "expiration_date.date" => "El campo de fecha fin es obligatorio.",
-
-            "creator_name.required" => "El campo de nombre del creador del caso es obligatorio.",
-            "assigned_name.required" => "El campo de nombre del usuario responsable del caso es obligatorio.",
-
             "status_case.in" => "El estado del caso solo admite los valores Abierto o Cerrado.",
             "status_case.required" => "El estado del caso es obligatorio.",
 
             "projected_value.numeric" => "El valor proyectado del caso debe ser numérico.",
             "real_value.numeric" => "El valor real obtenido del caso  debe ser numérico.",
+
+            "expiration_date.date" => "El campo de fecha fin es obligatorio.",
+
+            "creator_name.required" => "El campo de nombre del creador del caso es obligatorio.",
+            "assigned_name.required" => "El campo de nombre del usuario responsable del caso es obligatorio.",
+            "c_case_area_id.required" => "El identificador del Area es obligatorio."
         ];
+    }
+
+    public function withValidator($validation)
+    {
+        $validation->after(function ($validation) {
+            foreach ($this->errors as $key => $error) {
+                foreach ($error as $value) {
+                    $validation->errors()->add($key, $value);
+                }
+            }
+        });
     }
 }
