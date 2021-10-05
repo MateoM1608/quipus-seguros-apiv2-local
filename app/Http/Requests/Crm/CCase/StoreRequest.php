@@ -64,7 +64,16 @@ class StoreRequest extends BaseFormRequest
             'expiration_date' => [
                 "date"
             ],
-
+            'status_case' => [
+                "required",
+                "in:Abierto,Cerrado"
+            ],
+            'projected_value' => [
+                "numeric"
+            ],
+            'real_value' => [
+                "numeric"
+            ],
             'calification' => $this->has('calification') && $this->calification? [
                 "numeric",
                 "min:1",
@@ -97,6 +106,12 @@ class StoreRequest extends BaseFormRequest
 
             "assigned_user_id.required" => "El identificador del usuario responsable del caso es requerido.",
             "assigned_user_id.numeric" => "El identificador del usuario responsable del caso debe ser numérico.",
+
+            "status_case.in" => "El estado del caso solo admite los valores Abierto o Cerrado.",
+            "status_case.required" => "El estado del caso es obligatorio.",
+
+            "projected_value.numeric" => "El valor proyectado del caso debe ser numérico.",
+            "real_value.numeric" => "El valor real obtenido del caso  debe ser numérico.",
 
             "expiration_date.date" => "El campo de fecha fin es obligatorio.",
 

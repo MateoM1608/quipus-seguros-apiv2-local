@@ -61,10 +61,16 @@ class UpdateRequest extends BaseFormRequest
             'assigned_name' => [
                 "required",
             ],
-            'expiration_date' => [
-                "date"
+            'status_case' => [
+                "required",
+                "in:Abierto,Cerrado"
             ],
-
+            'projected_value' => $this->has('projected_value') && $this->projected_value? [
+                "numeric"
+            ]: [],
+            'real_value' => $this->has('real_value') && $this->real_value? [
+                "numeric"
+            ]: [],
             'calification' => $this->has('calification') && $this->calification? [
                 "numeric",
                 "min:1",
@@ -102,7 +108,13 @@ class UpdateRequest extends BaseFormRequest
             "expiration_date.date" => "El campo de fecha fin es obligatorio.",
 
             "creator_name.required" => "El campo de nombre del creador del caso es obligatorio.",
-            "assigned_name.required" => "El campo de nombre del usuario responsable del caso es obligatorio."
+            "assigned_name.required" => "El campo de nombre del usuario responsable del caso es obligatorio.",
+
+            "status_case.in" => "El estado del caso solo admite los valores Abierto o Cerrado.",
+            "status_case.required" => "El estado del caso es obligatorio.",
+
+            "projected_value.numeric" => "El valor proyectado del caso debe ser numérico.",
+            "real_value.numeric" => "El valor real obtenido del caso  debe ser numérico.",
         ];
     }
 }
