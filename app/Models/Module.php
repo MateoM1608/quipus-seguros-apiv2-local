@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use DB;
 
 class Module extends Model
 {
@@ -51,8 +52,10 @@ class Module extends Model
     public function permission()
     {
         return $this->hasMany(Module::class, 'parent', 'id')
-            ->join('permissions', 'module_id', 'modules.id')
-            ->where('permissions.user_id', auth()->user()->id)
+            ->leftJoin('permissions', function ($query) {
+                $query->on('module_id', 'modules.id')
+                ->where('permissions.user_id', request()->user_id);
+            })
             ->select([
                 "modules.id",
                 "modules.description",
@@ -69,7 +72,7 @@ class Module extends Model
                 "modules.divider",
                 "modules.method",
                 "modules.show",
-                "permissions.actions",
+                DB::raw("IF(permissions.actions is not null,permissions.actions, '{\"see\": false, \"edit\": false, \"create\": false, \"delete\": false}') as actions"),
                 "permissions.user_id",
                 "permissions.id AS permission_id",
             ])
@@ -104,8 +107,10 @@ class Module extends Model
     public function permissionProfile()
     {
         return $this->hasMany(Module::class, 'parent', 'id')
-            ->join('permission_profiles', 'module_id', 'modules.id')
-            ->where('permission_profiles.profile_id', \Request::instance()->profile_id)
+            ->leftJoin('permission_profiles', function ($query) {
+                $query->on('module_id', 'modules.id')
+                ->where('permission_profiles.profile_id', request()->profile_id);
+            })
             ->select([
                 "modules.id",
                 "modules.description",
@@ -122,7 +127,7 @@ class Module extends Model
                 "modules.divider",
                 "modules.method",
                 "modules.show",
-                "permission_profiles.actions",
+                DB::raw("IF(permission_profiles.actions is not null ,permission_profiles.actions, '{\"see\": false, \"edit\": false, \"create\": false, \"delete\": false}') as actions"),
                 "permission_profiles.profile_id",
                 "permission_profiles.id AS permission_profile_id",
             ])

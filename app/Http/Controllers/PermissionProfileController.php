@@ -20,8 +20,10 @@ class PermissionProfileController extends Controller
             ->where(function ($query) use ($request) {
                 $query->where('parent', $request->parent ?: null);
             })
-            ->join('permission_profiles', 'module_id', 'modules.id')
-            ->where('permission_profiles.profile_id', $request->profile_id)
+            ->leftJoin('permission_profiles', function ($query) use ($request) {
+                $query->on('module_id', 'modules.id')
+                ->where('permission_profiles.profile_id', $request->profile_id);
+            })
             ->orderBy('order', 'asc')
             ->get([
                 "modules.id",
@@ -39,7 +41,7 @@ class PermissionProfileController extends Controller
                 "modules.divider",
                 "modules.method",
                 "modules.show",
-                "permission_profiles.actions",
+                DB::raw("IF(permission_profiles.actions is not null ,permission_profiles.actions, '{\"see\": false, \"edit\": false, \"create\": false, \"delete\": false}') as actions"),
                 "permission_profiles.profile_id",
                 "permission_profiles.id AS permission_profile_id",
             ]);

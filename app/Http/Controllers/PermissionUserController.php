@@ -17,32 +17,34 @@ class PermissionUserController extends Controller
     public function index(Request $request)
     {
         $modules = Module::with(['permission'])
-            ->where(function ($query) use ($request) {
-                $query->where('parent', $request->parent ?: null);
-            })
-            ->join('permissions', 'module_id', 'modules.id')
-            ->where('permissions.user_id', auth()->user()->id)
-            ->orderBy('order', 'asc')
-            ->get([
-                "modules.id",
-                "modules.description",
-                "modules.name",
-                "modules.parent",
-                "modules.url",
-                "modules.icon",
-                "modules.image",
-                "modules.class",
-                "modules.badge",
-                "modules.wrapper",
-                "modules.variant",
-                "modules.attributes",
-                "modules.divider",
-                "modules.method",
-                "modules.show",
-                "permissions.actions",
-                "permissions.user_id",
-                "permissions.id AS permission_id",
-            ]);
+        ->where(function ($query) use ($request) {
+            $query->where('parent', $request->parent ?: null);
+        })
+        ->leftJoin('permissions', function ($query) use ($request) {
+            $query->on('module_id', 'modules.id')
+            ->where('permissions.user_id', $request->user_id);
+        })
+        ->orderBy('order', 'asc')
+        ->get([
+            "modules.id",
+            "modules.description",
+            "modules.name",
+            "modules.parent",
+            "modules.url",
+            "modules.icon",
+            "modules.image",
+            "modules.class",
+            "modules.badge",
+            "modules.wrapper",
+            "modules.variant",
+            "modules.attributes",
+            "modules.divider",
+            "modules.method",
+            "modules.show",
+            DB::raw("IF(permissions.actions is not null ,permissions.actions, '{\"see\": false, \"edit\": false, \"create\": false, \"delete\": false}') as actions"),
+            "permissions.user_id",
+            "permissions.id AS permission_id",
+        ]);
 
         return response()->json($modules);
     }
