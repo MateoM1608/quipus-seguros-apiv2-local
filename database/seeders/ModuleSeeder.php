@@ -353,6 +353,15 @@ class ModuleSeeder extends Seeder
                                 'show' => 1,
                                 'order' => 3,
                             ],
+                            [
+                                'description' => 'taskCrm',
+                                'name' => 'Tareas CRM',
+                                'url' => '/reports/taskCrm',
+                                'icon' => 'fas fa-money-check-alt',
+                                'class' => '',
+                                'show' => 0,
+                                'order' => 0,
+                            ],
                         ]
                     ],
                     [

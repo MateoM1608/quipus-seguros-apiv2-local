@@ -24,30 +24,10 @@ class RTasksCrm extends Controller
         $response = [];
 
         $fields = [
-            's_agencies.agency_name',
-            's_insurance_carriers.insurance_carrier',
-            's_branches.name as branche',
-            's_policies.policy_number',
-            's_agencies.agency_commission',
-            \DB::raw('CONCAT(s_clients.first_name, " ", s_clients.last_name) AS client'),
-            's_clients.identification',
-            's_annexes.id AS s_annex_id',
-            's_annexes.annex_number',
-            's_annexes.annex_type',
-            's_annexes.annex_start',
-            's_annexes.annex_expedition',
-            's_annexes.annex_paid',
-            's_annexes.commission_paid',
-            's_annexes.annex_premium',
-            's_annexes.annex_commission',
-            's_annexes.annex_total_value',
-            's_annexes.annex_commission',
-            's_branches.commission AS commission_branches_percentage',
-            's_branches.tax',
-            's_branches.loss_coverage',
-            's_branches.cancellation_risk',
-            's_branches.cancellation',
-            's_policies.g_vendor_id'
+            'c_cases.c_case_area_id',
+            \DB::raw('c_case_areas.description AS AREA'),
+            'c_type_cases.description AS tipoCaso',
+            'c_case_notes.*'
 
         ];
 
