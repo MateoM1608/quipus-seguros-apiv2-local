@@ -44,6 +44,7 @@ class IProduction extends Controller
         $fields = [
             DB::raw("MONTHNAME(s_annexes.annex_start) as month"),
             DB::raw("COALESCE(ROUND(SUM(s_annexes.annualized_premium)), 0) AS value"),
+            DB::raw("'AMOUNT' AS type"),
         ];
 
         $datos = [
