@@ -25,8 +25,8 @@ class RTasksCrm extends Controller
 
         $fields = [
             'c_cases.c_case_area_id',
-            \DB::raw('c_case_areas.description AS AREA'),
-            'c_type_cases.description AS tipoCaso',
+            \DB::raw('c_case_areas.description AS area'),
+            'c_type_cases.description AS type_case',
             'c_case_notes.*'
 
         ];
