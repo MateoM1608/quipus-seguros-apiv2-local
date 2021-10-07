@@ -108,7 +108,7 @@ class ModuleSeeder extends Seeder
                                 'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
                                 'class' => '',
                                 'show' => 0,
-                                'order' => null,
+                                'order' => 0,
                                 'children' => [
                                     [
                                         'description' => 'permission',
