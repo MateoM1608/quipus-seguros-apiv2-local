@@ -337,6 +337,15 @@ class ModuleSeeder extends Seeder
                                 'order' => 4,
                             ],
                             [
+                                'description' => 'indicator_production',
+                                'name' => 'Producción',
+                                'url' => '/reports/indicators/production',
+                                'icon' => 'fas fa-flag-checkered',
+                                'class' => '',
+                                'show' => 0,
+                                'order' => 0,
+                            ],
+                            [
                                 'description' => 'dashboard',
                                 'name' => 'Dashboard',
                                 'url' => '/reports/dashboard',
