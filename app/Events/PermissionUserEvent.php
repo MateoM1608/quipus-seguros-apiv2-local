@@ -23,7 +23,7 @@ class PermissionUserEvent implements ShouldBroadcast
      */
     public function __construct($permissionUser)
     {
-        $this->permissionUser = $permissionUser
+        $this->permissionUser = $permissionUser;
     }
 
     /**
