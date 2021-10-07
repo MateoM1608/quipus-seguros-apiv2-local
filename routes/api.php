@@ -47,6 +47,9 @@ use App\Http\Controllers\Reports\RDashboardController;
 use App\Http\Controllers\Reports\RPortfolioController;
 use App\Http\Controllers\Reports\RProduction;
 
+# Controllers for Indicators
+use App\Http\Controllers\Reports\IProduction;
+
 # Controllers for CRM
 use App\Http\Controllers\CCaseStageController;
 use App\Http\Controllers\CCaseAreaController;
@@ -283,6 +286,9 @@ Route::group(['prefix' => 'v1'], function () {
                 Route::get('/production', [RProduction::class, 'index'])->name('reports-production');
                 Route::get('/vendorCommission', [RVendorCommission::class, 'index'])->name('reports-vendorCommission');
                 Route::get('/taskCrm', [RTasksCrm::class, 'index'])->name('reports-taskCrm');
+                Route::prefix('indicators')->group(function () {
+                    Route::get('/production', [IProduction::class, 'index'])->name('indicator-production');
+                });
             });
 
             /**
