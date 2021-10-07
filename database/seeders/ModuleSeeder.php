@@ -422,6 +422,14 @@ class ModuleSeeder extends Seeder
                         'children' => [
 
                             [
+                                'description' => 'typeCases',
+                                'name' => 'Tipos de Casos',
+                                'url' => '/crm/typeCases',
+                                'icon' => 'fas fa-th-large',
+                                'class' => '',
+                                'show' => 0,
+                            ],
+                            [
                                 'description' => 'cases',
                                 'name' => 'Casos',
                                 'url' => '/crm/cases/:id',
