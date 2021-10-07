@@ -90,7 +90,7 @@ class ModuleSeeder extends Seeder
                                 'show' => 1,
                                 'order' => 9,
                             ],
-                            [
+							[
                                 'description' => 'user',
                                 'name' => 'Usuarios',
                                 'url' => '/user',
@@ -99,6 +99,16 @@ class ModuleSeeder extends Seeder
                                 'class' => '',
                                 'show' => 1,
                                 'order' => 7,
+							],
+                            [
+                                'description' => 'user_children',
+                                'name' => 'Usuarios',
+                                'url' => '/user',
+                                'icon' => 'fas fa-user-friends',
+                                'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
+                                'class' => '',
+                                'show' => 0,
+                                'order' => 0,
                                 'children' => [
                                     [
                                         'description' => 'permission',
