@@ -16,6 +16,7 @@ class ModifiedViewDashboardV2 extends Migration
         \DB::statement("DROP VIEW IF EXISTS view_dashboard");
 
         \DB::statement("
+        CREATE VIEW view_dashboard AS
         SELECT
         'reports' AS clasification,
         'Vencimientos' AS label,
