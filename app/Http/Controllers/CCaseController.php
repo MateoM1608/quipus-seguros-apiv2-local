@@ -11,6 +11,7 @@ use App\Http\Requests\Crm\CCase\StoreRequest;
 
 // Models
 use App\Models\Crm\CCase;
+use App\Models\User;
 
 // Event
 use App\Events\CCaseEvent;
@@ -88,6 +89,18 @@ class CCaseController extends Controller
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
+        $user = User::find($case->assigned_user_id, ['email']);
+
+        $reset = [
+            'email' => $user->email,
+            'case' => $case->id,
+            'url' => 'https://quipus-1806d.web.app',
+        ];
+
+        \Mail::send('emails.crm.responsible', $reset, function ($message) use($user) {
+            $message->from('noreply@amauttasystems.com', 'Quipus seguros');
+            $message->to($user->email)->subject('Nuevo caso CRM');
+        });
 
         return response()->json($case);
     }
