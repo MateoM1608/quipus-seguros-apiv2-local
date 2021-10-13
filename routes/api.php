@@ -346,6 +346,9 @@ Route::group(['prefix' => 'v1'], function () {
                 });
             });
 
+            /**
+            * Data upload
+            */
             Route::prefix('upload')->group(function () {
                 Route::post('/', [IntegratorController::class, 'store'])->name('cargue-store');
             });
