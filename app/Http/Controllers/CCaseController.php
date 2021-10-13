@@ -109,10 +109,14 @@ class CCaseController extends Controller
     {
         DB::beginTransaction();
         try {
-            $case = CCase::findOrFail($id);
+            $case = $oldCase = CCase::findOrFail($id);
             $case->update($request->only(['risk','expiration_date', 'c_type_case_stage_id', 'calification','c_case_area_id','assigned_user_id','assigned_name','status_case','real_value']));
 
             event(new CCaseEvent($case));
+            /*
+            if ($oldCase->assigned_user_id != $case->assigned_user_id) {
+
+            }*/
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
