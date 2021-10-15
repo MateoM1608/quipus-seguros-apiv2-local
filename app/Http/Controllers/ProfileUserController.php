@@ -49,6 +49,7 @@ class ProfileUserController extends Controller
 
     public function store(Request $request)
     {
+        $user_id = $request->user_id;
         $data = [];
         if (gettype($request->profile_id) == 'array') {
             foreach ($request->profile_id as $profile_id) {
@@ -68,6 +69,9 @@ class ProfileUserController extends Controller
 
         DB::beginTransaction();
         try {
+
+            ProfileUser::where('user_id', $user_id)->forceDelete();
+
             $profileUser = ProfileUser::insert($request->all());
 
             $data = collect($request->all());
