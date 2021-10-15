@@ -27,6 +27,12 @@
                                         <td valign="top" style="padding:48px 48px 32px">
                                             <div style="color:#636363;font-family:&quot;Helvetica Neue&quot;,Helvetica,Roboto,Arial,sans-serif;font-size:14px;line-height:150%;text-align:left">
                                                 <p style="margin:0 0 16px">Hola. Se ha creado un nuevo caso de CRM con # <a href="{{ $url }}/crm/cases/{{ $case }}">{{ $case }}</a> y se te ha asignado como responsable. Para ver mas detalles da clic <a href="{{ $url }}/crm/cases/{{ $case }}">aquí</a>.</p>
+                                                <p><b>Información adicional</b></p>
+                                                <p><b>Creador(@) del caso:</b> "{{ $creator_case }}"<br>
+                                                <p><b>Descripción:</b> "{{ $note }}"</p>
+                                                <br><br>
+                                                <h4>Team Amautta Systems :D</h4>
+
                                             </div>
                                         </td>
                                     </tr>

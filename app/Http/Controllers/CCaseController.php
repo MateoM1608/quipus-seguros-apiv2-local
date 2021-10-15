@@ -89,15 +89,17 @@ class CCaseController extends Controller
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-        $user = User::find($case->assigned_user_id, ['email']);
+        $user = User::find($case->assigned_user_id, ['email']); //Traemos el email del usuario responsable
 
-        $reset = [
+        $newCase = [
             'email' => $user->email,
             'case' => $case->id,
             'url' => 'https://quipus-1806d.web.app',
+            'note' => $case->description,
+            'creator_case' => $case->creator_name
         ];
 
-        \Mail::send('emails.crm.responsible', $reset, function ($message) use($user) {
+        \Mail::send('emails.crm.responsible', $newCase, function ($message) use($user) {
             $message->from('noreply@amauttasystems.com', 'Quipus seguros');
             $message->to($user->email)->subject('Nuevo caso CRM');
         });
@@ -109,14 +111,37 @@ class CCaseController extends Controller
     {
         DB::beginTransaction();
         try {
-            $case = $oldCase = CCase::findOrFail($id);
+            $case = CCase::findOrFail($id);
+            if ($case) {
+                $oldCase = $case->toArray();
+            }
+
             $case->update($request->only(['risk','expiration_date', 'c_type_case_stage_id', 'calification','c_case_area_id','assigned_user_id','assigned_name','status_case','real_value']));
 
             event(new CCaseEvent($case));
-            /*
-            if ($oldCase->assigned_user_id != $case->assigned_user_id) {
 
-            }*/
+            //Validamos si en el update del caso, cambiaron de responsable. De ser asi notifique
+            if ($oldCase['assigned_user_id'] != $case->assigned_user_id) {
+
+                $user = User::find($case->assigned_user_id, ['email']); //Traemos el email del usuario responsable
+
+                $updateCase = [
+                    'email' => $user->email,
+                    'case' => $case->id,
+                    'url' => 'https://quipus-1806d.web.app',
+                    'note' => $case->description,
+                    'creator_case' => $case->creator_name
+                ];
+
+                \Mail::send('emails.crm.responsible', $updateCase, function ($message) use($user) {
+                    $message->from('noreply@amauttasystems.com', 'Quipus seguros');
+                    $message->to($user->email)->subject('Actualización caso CRM');
+                });
+
+
+
+
+            }
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {

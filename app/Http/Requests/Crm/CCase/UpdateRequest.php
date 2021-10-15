@@ -4,6 +4,8 @@ namespace App\Http\Requests\Crm\CCase;
 
 use App\Http\Requests\BaseFormRequest;
 
+use App\Models\Crm\CTypeCase;
+
 class UpdateRequest extends BaseFormRequest
 {
     private $errors = [];
