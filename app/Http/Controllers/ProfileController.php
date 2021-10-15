@@ -8,6 +8,10 @@ use DB;
 // Models
 use App\Models\Profile;
 
+// FormRequest
+use App\Http\Requests\Profile\UpdateRequest;
+use App\Http\Requests\Profile\StoreRequest;
+
 // Events
 use App\Events\ProfileEvent;
 
@@ -44,7 +48,7 @@ class ProfileController extends Controller
 
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         DB::beginTransaction();
         try {
@@ -61,10 +65,11 @@ class ProfileController extends Controller
         return response()->json($profile);
     }
 
-    public function update(Request $request, Profile $profile)
+    public function update(UpdateRequest $request, $id)
     {
         DB::beginTransaction();
         try {
+            $profile = Profile::findOrFail($id);
             $profile->update($request->all());
 
             event(new ProfileEvent($profile));
@@ -84,10 +89,10 @@ class ProfileController extends Controller
         try {
             $profile = Profile::withTrashed()->findOrFail($id);
 
-            if ($profile->trashed()) {
-                $profile->restore();
-            } elseif ($request->force) {
+            if ($request->force) {
                 $profile->forceDelete();
+            } else if ($profile->trashed()) {
+                $profile->restore();
             } else {
                 $profile->delete();
             }
@@ -99,8 +104,6 @@ class ProfileController extends Controller
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
-
-        $profile->force = $request->force;
 
         return response()->json($profile);
     }

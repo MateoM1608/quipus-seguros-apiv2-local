@@ -116,12 +116,12 @@ Route::group(['prefix' => 'v1'], function () {
             Route::prefix('profile')->group(function () {
                 Route::get('/', [ProfileController::class, 'index'])->name('profile-consult');
                 Route::post('/', [ProfileController::class, 'store'])->name('profile-store');
-                Route::put('/{profile}', [ProfileController::class, 'update'])->name('profile-update');
-                Route::delete('/{profile}', [ProfileController::class, 'destroy'])->name('profile-destroy');
+                Route::put('/{id}', [ProfileController::class, 'update'])->name('profile-update');
+                Route::delete('/{id}', [ProfileController::class, 'destroy'])->name('profile-destroy');
                 Route::prefix('permission-profile')->group(function () {
                     Route::get('/', [PermissionProfileController::class,'index'])->name('profile-permission-consult');
                     Route::post('/', [PermissionProfileController::class,'store'])->name('profile-permission-store');
-                    Route::delete('/{permission}', [PermissionProfileController::class,'destroy'])->name('profile-permission-destroy');
+                    Route::delete('/{id}', [PermissionProfileController::class,'destroy'])->name('profile-permission-destroy');
                 });
             });
 
