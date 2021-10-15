@@ -16,3 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('nuevocrm', function () {
+    $newCase = [
+        'case' => '12',
+        'note' => 'Se requiere cotizar con otras aseguradoras',
+        'url' => 'https://www.google.com',
+        'creator_case' => 'Santiago Giraldo'
+    ];
+    return view('emails.crm.responsible', $newCase);
+});
