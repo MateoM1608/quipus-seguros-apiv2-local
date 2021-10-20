@@ -148,6 +148,15 @@ class ModuleSeeder extends Seeder
                                 'class' => '',
                                 'show' => 1,
                                 'order' => 8,
+                            ],
+                            [
+                                'description' => 'profile_children',
+                                'name' => 'Perfiles',
+                                'url' => '',
+                                'icon' => '',
+                                'class' => '',
+                                'show' => 0,
+                                'order' => 0,
                                 'children' => [
                                     [
                                         'description' => 'permission-profile',
