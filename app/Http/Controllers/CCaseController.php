@@ -22,38 +22,40 @@ class CCaseController extends Controller
     public function index(Request $request)
     {
         $data = CCase::with(['cTypeCase', 'cCaseStages', 'cCaseArea','sClient', 'sPolicy'])
-            ->with('sClient', function ($query) use($request) {
-                if (isset($request->name)) {
-                    $query->where('first_name', 'like', '%' . $request->name . '%');
-                    $query->orWhere('last_name', 'like', '%' . $request->name . '%');
-                }
+        ->with('sClient', function ($query) use($request) {
+            if (isset($request->name)) {
+                $query->where('first_name', 'like', '%' . $request->name . '%');
+                $query->orWhere('last_name', 'like', '%' . $request->name . '%');
+            }
 
-                if (isset($request->identification)) {
-                    $query->where('identification', 'like', '%' . $request->identification . '%');
-                }
-            })
-            ->with('cCaseStages', function ($query) use($request) {
-                if (isset($request->status)) {
-                    $query->where('description',$request->status);
-                }
-            })
-            ->where(function ($query) use ($request) {
-
-
-                if (isset($request->case)) {
-                    $query->where('id', 'like', '%' . $request->case . '%');
-                }
-
-                if (isset($request->type_case)) {
-                    $query->where('c_type_case_id',$request->type_case);
-                }
-
-                if (isset($request->status)) {
-                    $query->where('status_case',$request->status);
-                }
+            if (isset($request->identification)) {
+                $query->where('identification', 'like', '%' . $request->identification . '%');
+            }
+        })
+        ->with('cCaseStages', function ($query) use($request) {
+            if (isset($request->status)) {
+                $query->where('description',$request->status);
+            }
+        })
+        ->where(function ($query) use ($request) {
 
 
-            });
+            if (isset($request->case)) {
+                $query->where('id', 'like', '%' . $request->case . '%');
+            }
+
+            if (isset($request->type_case)) {
+                $query->where('c_type_case_id',$request->type_case);
+            }
+
+            if (isset($request->status)) {
+                $query->where('status_case',$request->status);
+            }
+
+
+        })
+        ->orderBy('status_case','ASC');
+
         if ($request->trashed) {
             $data->withTrashed();
         }
