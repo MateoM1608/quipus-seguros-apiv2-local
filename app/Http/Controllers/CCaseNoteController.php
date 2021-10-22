@@ -12,6 +12,7 @@ use App\Http\Requests\Crm\CCaseNote\StoreRequest;
 // Models
 use App\Models\Crm\CCaseNote;
 use App\Models\Crm\CCase;
+use App\Models\User;
 
 // Events
 use App\Events\CCaseNoteEvent;
@@ -55,14 +56,36 @@ class CCaseNoteController extends Controller
         try {
             $note = CCaseNote::create($request->all());
             DB::commit();
-
             event(new CCaseNoteEvent($note));
+
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
+        $userResponsible = CCase::find($note['c_case_id'],['assigned_user_id']); //Traemos el id del usuario responsable
+        $user = User::find($userResponsible->assigned_user_id, ['email']); //Traemos el email del usuario responsable
+        //dd($user);
+        //Validamos que si el tipo de nota es una tarea, envie un correo al responsable del caso.
+        if($note['type_note'] == 'Tarea'){
+
+            $newTask = [
+                'email' => $user->email,
+                'case' => $note->c_case_id,
+                'url' => 'https://quipus-1806d.web.app',
+                'note' => $note->note,
+                'creator_case' => $note->user_name
+            ];
+
+            \Mail::send('emails.crm.newTask', $newTask, function ($message) use($user) {
+                $message->from('noreply@amauttasystems.com', 'Quipus seguros');
+                $message->to($user->email)->subject('Nueva tarea CRM');
+            });
+
+        }
+
         return response()->json($note);
+
     }
 
     public function update(UpdateRequest $request, $id)

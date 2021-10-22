@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use DB;
 
 // FormRequest
@@ -10,9 +11,10 @@ use App\Http\Requests\Crm\CCase\UpdateRequest;
 use App\Http\Requests\Crm\CCase\StoreRequest;
 
 // Models
+use App\Models\Crm\CCaseStage;
+use App\Models\Crm\CCaseNote;
 use App\Models\Crm\CCase;
 use App\Models\User;
-
 // Event
 use App\Events\CCaseEvent;
 
@@ -22,38 +24,40 @@ class CCaseController extends Controller
     public function index(Request $request)
     {
         $data = CCase::with(['cTypeCase', 'cCaseStages', 'cCaseArea','sClient', 'sPolicy'])
-            ->with('sClient', function ($query) use($request) {
-                if (isset($request->name)) {
-                    $query->where('first_name', 'like', '%' . $request->name . '%');
-                    $query->orWhere('last_name', 'like', '%' . $request->name . '%');
-                }
+        ->with('sClient', function ($query) use($request) {
+            if (isset($request->name)) {
+                $query->where('first_name', 'like', '%' . $request->name . '%');
+                $query->orWhere('last_name', 'like', '%' . $request->name . '%');
+            }
 
-                if (isset($request->identification)) {
-                    $query->where('identification', 'like', '%' . $request->identification . '%');
-                }
-            })
-            ->with('cCaseStages', function ($query) use($request) {
-                if (isset($request->status)) {
-                    $query->where('description',$request->status);
-                }
-            })
-            ->where(function ($query) use ($request) {
-
-
-                if (isset($request->case)) {
-                    $query->where('id', 'like', '%' . $request->case . '%');
-                }
-
-                if (isset($request->type_case)) {
-                    $query->where('c_type_case_id',$request->type_case);
-                }
-
-                if (isset($request->status)) {
-                    $query->where('status_case',$request->status);
-                }
+            if (isset($request->identification)) {
+                $query->where('identification', 'like', '%' . $request->identification . '%');
+            }
+        })
+        ->with('cCaseStages', function ($query) use($request) {
+            if (isset($request->status)) {
+                $query->where('description',$request->status);
+            }
+        })
+        ->where(function ($query) use ($request) {
 
 
-            });
+            if (isset($request->case)) {
+                $query->where('id', 'like', '%' . $request->case . '%');
+            }
+
+            if (isset($request->type_case)) {
+                $query->where('c_type_case_id',$request->type_case);
+            }
+
+            if (isset($request->status)) {
+                $query->where('status_case',$request->status);
+            }
+
+
+        })
+        ->orderBy('status_case','ASC');
+
         if ($request->trashed) {
             $data->withTrashed();
         }
@@ -137,11 +141,24 @@ class CCaseController extends Controller
                     $message->from('noreply@amauttasystems.com', 'Quipus seguros');
                     $message->to($user->email)->subject('Actualización caso CRM');
                 });
-
-
-
-
             }
+            //En caso de cambiar la etapa del caso, crear una nota automatica.
+            if ($oldCase['c_type_case_stage_id'] != $case->c_type_case_stage_id) {
+                $stage = CCaseStage::find($case->c_type_case_stage_id);
+
+                CCaseNote::create([
+                    "c_case_id" =>  $case->id,
+                    "user_id" =>  auth()->user()->id,
+                    "user_name" =>  auth()->user()->name,
+                    "user_email" =>  auth()->user()->email,
+                    "note" =>  "Nueva etapa asignada: " . $stage->description,
+                    "type_note" =>  "Comentario",
+                    "end_date" =>  Carbon::now()->format('Y-m-d'),
+                    "state" =>  "Finalizada"
+                ]);
+            }
+
+
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
