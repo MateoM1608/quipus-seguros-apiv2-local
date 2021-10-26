@@ -4,30 +4,34 @@ namespace App\Http\Requests\ResetPassword;
 
 use App\Http\Requests\BaseFormRequest;
 
+// Models
+use App\Models\PasswordReset;
+
 class UpdateRequest extends BaseFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
+    public $errors = [];
+
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+    public function prepareForValidation()
+    {
+        if(!$this->token) {
+            $this->errors['password'][] = "No se a enviado un token.";
+        }
+
+        $exists = PasswordReset::where('token', $this->token)->count();
+
+        if ($this->token && !$exists) {
+            $this->errors['password'][] = "El token a expirado.";
+        }
+    }
+
     public function rules()
     {
         return [
-            'token' => [
-                'required',
-                'exists:password_resets,token'
-            ],
             'password' => [
                 'required'
             ],
@@ -41,11 +45,20 @@ class UpdateRequest extends BaseFormRequest
     public function messages()
     {
         return [
-            "token.required" => "Envie un token.",
-            "token.exists" => "El token a expirado",
             "password.required" => "El nuevo password es requerido",
             "password_confirmation.required" => "La confirmación del nuevo password es requerida",
             "password_confirmation.same" => "Los password no coinciden.",
         ];
+    }
+
+    public function withValidator($validation)
+    {
+        $validation->after(function ($validation) {
+            foreach ($this->errors as $key => $error) {
+                foreach ($error as $value) {
+                    $validation->errors()->add($key, $value);
+                }
+            }
+        });
     }
 }
