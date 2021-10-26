@@ -86,7 +86,8 @@ class Module extends Model
         return $this->hasMany(Module::class, 'parent', 'id')
             ->join('permissions', function ($query) {
                 $query->on('module_id', 'modules.id')
-                ->where('permissions.user_id', auth()->user()->id);
+                ->where('permissions.user_id', auth()->user()->id)
+                ->where("permissions.actions->see", true);
             })
             ->select([
                 "modules.id",
