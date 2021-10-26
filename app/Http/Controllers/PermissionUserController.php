@@ -18,7 +18,8 @@ class PermissionUserController extends Controller
     {
         $modules = Module::with(['permission'])
         ->where(function ($query) use ($request) {
-            $query->where('parent', $request->parent ?: null);
+            $query->where('parent', $request->parent ?: null)
+            ->where('modules.show', 1);
         })
         ->leftJoin('permissions', function ($query) use ($request) {
             $query->on('module_id', 'modules.id')

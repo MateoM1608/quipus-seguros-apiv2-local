@@ -52,6 +52,7 @@ class Module extends Model
     public function permission()
     {
         return $this->hasMany(Module::class, 'parent', 'id')
+            ->where('modules.show', 1)
             ->leftJoin('permissions', function ($query) {
                 $query->on('module_id', 'modules.id')
                 ->where('permissions.user_id', request()->user_id);
@@ -83,6 +84,10 @@ class Module extends Model
     public function children()
     {
         return $this->hasMany(Module::class, 'parent', 'id')
+            ->join('permissions', function ($query) {
+                $query->on('module_id', 'modules.id')
+                ->where('permissions.user_id', auth()->user()->id);
+            })
             ->select([
                 "modules.id",
                 "modules.description",
@@ -107,6 +112,7 @@ class Module extends Model
     public function permissionProfile()
     {
         return $this->hasMany(Module::class, 'parent', 'id')
+            ->where('modules.show', 1)
             ->leftJoin('permission_profiles', function ($query) {
                 $query->on('module_id', 'modules.id')
                 ->where('permission_profiles.profile_id', request()->profile_id);
