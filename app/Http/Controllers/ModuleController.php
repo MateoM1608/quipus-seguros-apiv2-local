@@ -12,7 +12,7 @@ use App\Events\ModuleEvent;
 
 class ModuleController extends Controller
 {
-    public function index(Request $request)
+    /*public function index(Request $request)
     {
         $modules = Module::with(['children'])
             ->where(function ($query) use ($request) {
@@ -37,6 +37,38 @@ class ModuleController extends Controller
                 "modules.method",
                 "modules.show",
             ]);
+
+        return response()->json($modules);
+    }*/
+
+    public function index(Request $request)
+    {
+        $modules = Module::with(['children'])
+        ->where(function ($query) use ($request) {
+            $query->where('parent', $request->parent ?: null);
+        })
+        ->join('permissions', function ($query) use ($request) {
+            $query->on('module_id', 'modules.id')
+            ->where('permissions.user_id', auth()->user()->id);
+        })
+        ->orderBy('order', 'asc')
+        ->get([
+            "modules.id",
+            "modules.description",
+            "modules.name",
+            "modules.parent",
+            "modules.url",
+            "modules.icon",
+            "modules.image",
+            "modules.class",
+            "modules.badge",
+            "modules.wrapper",
+            "modules.variant",
+            "modules.attributes",
+            "modules.divider",
+            "modules.method",
+            "modules.show",
+        ]);
 
         return response()->json($modules);
     }
