@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class PasswordReset extends Model
 {
+    protected $connection = 'seguros';
+
     const UPDATED_AT = null;
 
     protected $fillable = [

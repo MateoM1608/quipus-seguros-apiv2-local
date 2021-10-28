@@ -18,10 +18,12 @@ class ResetPasswordController extends Controller
 {
     public function notification(StoreRequest $request)
     {
+        $token = Str::random(60);
+
         $reset = [
             'email' => $request->email,
-            'token' => Str::random(60),
-            'url' => env('FRONT_URL', 'http://localhost/') . 'password-change?token=' . Str::random(60),
+            'token' => $token,
+            'url' => env('FRONT_URL', 'http://localhost/') . 'password-change?token=' . $token,
         ];
 
         $password_reset = PasswordReset::UpdateOrCreate(['email' => $request->email], $reset);
