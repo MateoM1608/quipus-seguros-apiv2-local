@@ -24,6 +24,7 @@ class CCase extends Model
         'projected_value',
         'real_value',
         'status_case',
+        'closing_note',
         'expiration_date',
         'calification'
     ];

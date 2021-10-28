@@ -120,7 +120,7 @@ class CCaseController extends Controller
                 $oldCase = $case->toArray();
             }
 
-            $case->update($request->only(['risk','expiration_date', 'c_type_case_stage_id', 'calification','c_case_area_id','assigned_user_id','assigned_name','status_case','real_value']));
+            $case->update($request->only(['risk','expiration_date', 'c_type_case_stage_id', 'calification','c_case_area_id','assigned_user_id','assigned_name','status_case','real_value', 'closing_note']));
 
             event(new CCaseEvent($case));
 

@@ -23,10 +23,10 @@ class UpdateRequest extends BaseFormRequest
         if ($typeCase && in_array($typeCase->description, ['Servicio al cliente', 'Oportunidades de negocio']) && !$this->s_client_id) {
             $this->errors['s_client_id'][] = "El cliente es requerido.";
         }
-        /*
-        if ($typeCase && in_array($typeCase->description, ['Oportunidades de negocio']) && !$this->s_client_id) {
-            $this->errors['projected_value'][] = "El valor proyectado del negocio es requerido.";
-        }*/
+
+        if ($this->status_case == "Cerrado" && $this->closing_note == "")  {
+            $this->errors['closing_note'][] = "Se requiere una nota de cierre para el caso CRM.";
+        }
     }
 
     public function rules()
