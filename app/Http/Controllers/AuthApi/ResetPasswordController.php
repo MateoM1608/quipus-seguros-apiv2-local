@@ -21,7 +21,7 @@ class ResetPasswordController extends Controller
         $reset = [
             'email' => $request->email,
             'token' => Str::random(60),
-            'url' => url()->to('/'),
+            'url' => env('FRONT_URL', 'http://localhost/') . 'password-change?token=' . Str::random(60),
         ];
 
         $password_reset = PasswordReset::UpdateOrCreate(['email' => $request->email], $reset);
