@@ -102,7 +102,7 @@ class ModifiedViewDashboardV2 extends Migration
         COALESCE(ROUND(SUM(s_annexes.annualized_premium)), 0) AS `value`
         FROM
             s_annexes
-        WHERE DATE_FORMAT(s_annexes.annex_start, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')
+        WHERE DATE_FORMAT(s_annexes.annex_start, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m') AND s_annexes.deleted_at IS NULL
 
         UNION
 
@@ -116,7 +116,7 @@ class ModifiedViewDashboardV2 extends Migration
         FROM
             s_annexes
         WHERE annex_type = 'Expedición'
-        AND DATE_FORMAT(s_annexes.annex_start, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')
+        AND DATE_FORMAT(s_annexes.annex_start, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m') AND s_annexes.deleted_at IS NULL
 
         UNION
 
@@ -126,7 +126,7 @@ class ModifiedViewDashboardV2 extends Migration
         'AMOUNT' AS type,
         '' AS url,
         'fas fa-money-check-alt' AS icon,
-        '4000000' AS value
+        '0' AS value
         FROM
         s_annexes
         WHERE s_annexes.id = 1
@@ -139,7 +139,7 @@ class ModifiedViewDashboardV2 extends Migration
         'PERCENTAGE' AS type,
         '' AS url,
         'fas fa-chart-line' AS icon,
-        ((`current` - `last`) / `last`) * 100 AS value
+        ROUND(((`current` - `last`) / `last`) * 100,0) AS value
         FROM (
         SELECT (
         SELECT COALESCE(ROUND(SUM(s_annexes.annualized_premium)),0)
