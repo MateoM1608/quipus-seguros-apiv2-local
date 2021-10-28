@@ -20,7 +20,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $data = User::whereConnection(auth()->user()->connection)->orderBy('id', 'desc');
+        $data = User::withTrashed()->whereConnection(auth()->user()->connection)->orderBy('id', 'desc');
 
         $response = [];
 
