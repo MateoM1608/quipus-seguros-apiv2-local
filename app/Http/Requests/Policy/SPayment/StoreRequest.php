@@ -36,7 +36,7 @@ class StoreRequest extends BaseFormRequest
 
         return [
             "payment_number" => [
-                "nullable"
+                "required"
             ],
             "payment_date" => [
                 "required",
@@ -58,6 +58,10 @@ class StoreRequest extends BaseFormRequest
             "s_annex_id" => [
                 "required",
                 "numeric"
+            ],
+            "payment_form" => [
+                "required",
+                "in:Contado,Financiacion"
             ]
         ];
     }
@@ -65,6 +69,8 @@ class StoreRequest extends BaseFormRequest
     public function messages()
     {
         return [
+            "payment_form.required" => "La forma de pago es requerida. valores permitidos:'Contado','Financiacion'",
+            "payment_number.required" => "El identificador del pago es obligatorio.",
             "payment_date.required" => "La fecha del pago es obligatoria.",
             "premium_value.required" => "El valor del pago es obligatorio.",
             "tax_value.required" => "El valor del impuesto es obligatorio.",

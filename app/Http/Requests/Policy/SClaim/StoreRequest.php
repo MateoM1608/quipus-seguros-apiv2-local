@@ -56,10 +56,13 @@ class StoreRequest extends BaseFormRequest
             ],
             'claim_status'=> [
                 "required"
+            ],
+            'claim_description'=> [
+                "required"
             ]
         ];
 
-        
+
     }
     public function messages()
     {
@@ -75,6 +78,7 @@ class StoreRequest extends BaseFormRequest
             "objection_date.date" => "El formato de La fecha de objeción del siniestro es invalido.",
             "s_policy_id.required" => "El identificador de la póliza del siniestro es requerido",
             "claim_status.required" => "El estado del siniestro es requerido",
+            "claim_description.required" => "La descripción del siniestro es requerida",
         ];
     }
 }

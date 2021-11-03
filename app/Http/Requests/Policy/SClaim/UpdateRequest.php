@@ -38,13 +38,13 @@ class UpdateRequest extends BaseFormRequest
             'claim_value' => $this->has('claim_value') ? [
                 "numeric"
             ] : [],
-            'paid_value' => $this->has('paid_value') ? [
+            'paid_value' =>$this->has('paid_value') && $this->paid_value ? [
                 "numeric"
             ] : [],
-            'payment_date' => $this->has('payment_date') ? [
+            'payment_date' => $this->has('payment_date') && $this->payment_date ? [
                 "date"
             ] : [],
-            'objection_date' => $this->has('objection_date') ? [
+            'objection_date' => $this->has('objection_date') && $this->objection_date ? [
                 "date"
             ] : [],
             's_policy_id' => $this->has('s_policy_id') ? [
@@ -52,7 +52,11 @@ class UpdateRequest extends BaseFormRequest
             ] : [],
             'claim_status' => $this->has('claim_status') ? [
                 "required"
-            ] : []
+            ] : [],
+            'claim_description' => $this->has('claim_description') ? [
+                "required"
+            ] : [],
+
         ];
     }
     public function messages()
@@ -69,6 +73,7 @@ class UpdateRequest extends BaseFormRequest
             "objection_date.date" => "El formato de la fecha de objeción del siniestro es invalido.",
             "s_policy_id.required" => "El identificador de la póliza del siniestro es requerido",
             "claim_status.required" => "El estado del siniestro es requerido",
+            "claim_description.required" => "La descripción del siniestro es requerida",
         ];
     }
 }
