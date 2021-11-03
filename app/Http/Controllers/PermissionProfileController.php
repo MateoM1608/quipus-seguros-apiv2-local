@@ -19,7 +19,7 @@ class PermissionProfileController extends Controller
         $modules = Module::with(['permissionProfile'])
             ->where(function ($query) use ($request) {
                 $query->where('parent', $request->parent ?: null)
-                ->where('modules.show', 1)
+                ->where('modules.show', 1);
             })
             ->leftJoin('permission_profiles', function ($query) use ($request) {
                 $query->on('module_id', 'modules.id')
