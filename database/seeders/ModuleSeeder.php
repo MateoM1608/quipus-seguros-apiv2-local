@@ -88,7 +88,7 @@ class ModuleSeeder extends Seeder
                                 'url' => '/module',
                                 'icon' => 'fas fa-th-large',
                                 'class' => '',
-                                'show' => 1,
+                                'show' => 0,
                                 'order' => 9,
                             ],
 							[
@@ -352,7 +352,7 @@ class ModuleSeeder extends Seeder
                                 'order' => 4,
                             ],
                             [
-                                'description' => 'indicator_production',
+                                'description' => 'indicators',
                                 'name' => 'Producción',
                                 'url' => '/reports/indicators/production',
                                 'icon' => 'fas fa-flag-checkered',
