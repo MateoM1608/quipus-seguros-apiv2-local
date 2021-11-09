@@ -56,12 +56,14 @@ class ProfileUserController extends Controller
                 $data[] = [
                     'user_id' => $request->user_id,
                     'profile_id' => $profile_id,
+                    'deleted_at' => null,
                 ];
             }
         } else {
             $data[] = [
                 'user_id' => $request->user_id,
                 'profile_id' => $request->profile_id,
+                'deleted_at' => null,
             ];
         }
 
@@ -70,9 +72,13 @@ class ProfileUserController extends Controller
         DB::beginTransaction();
         try {
 
-            ProfileUser::where('user_id', $user_id)->forceDelete();
+            ProfileUser::where('user_id', $user_id)->delete();
 
-            $profileUser = ProfileUser::insert($request->all());
+            $profileUser = ProfileUser::upsert(
+                $request->all(),
+                ['user_id', 'profile_id'],
+                ['deleted_at']
+            );
 
             $data = collect($request->all());
 
