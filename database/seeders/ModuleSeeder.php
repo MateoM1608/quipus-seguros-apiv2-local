@@ -21,6 +21,7 @@ class ModuleSeeder extends Seeder
             [
                 'description' => 'sidebar',
                 'name' => 'App',
+                'show' => 1,
                 'children' => [
                     [
                         'description' => 'login',
@@ -381,9 +382,9 @@ class ModuleSeeder extends Seeder
                                 'description' => 'taskCrm',
                                 'name' => 'Tareas CRM',
                                 'url' => '/reports/taskCrm',
-                                'icon' => 'fas fa-money-check-alt',
+                                'icon' => 'fas fa-tasks',
                                 'class' => '',
-                                'show' => 0,
+                                'show' => 1,
                                 'order' => 0,
                             ],
                         ]
@@ -413,7 +414,7 @@ class ModuleSeeder extends Seeder
                         'description' => 'crm',
                         'name' => 'CRM',
                         'url' => '/crm/cases',
-                        'icon' => 'fas fa-users-cog',
+                        'icon' => 'fas fa-swatchbook',
                         'class' => 'sidebar-nav-mini-hide',
                         'show' => 1,
                         'order' => 4,
@@ -424,7 +425,7 @@ class ModuleSeeder extends Seeder
                         'description' => 'crm_children',
                         'name' => 'CRM',
                         'url' => '/crm/cases',
-                        'icon' => 'fas fa-users-cog',
+                        'icon' => 'fas fa-swatchbook',
                         'class' => 'sidebar-nav-mini-hide',
                         'show' => 0,
                         'children' => [
