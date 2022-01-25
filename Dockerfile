@@ -5,10 +5,6 @@ ADD .repo/mysql.repo /etc/yum.repos.d/mysql-community.repo
 
 RUN rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql
 
-RUN ls -l /etc/
-RUN ls -l /etc/pki/
-RUN ls -l /etc/pki/rpm-gpg/
-
 RUN yum -y install mysql-community-client-5.7.30-1.el7
 
 ADD .configuration/nginx.conf /etc/nginx/nginx.conf
