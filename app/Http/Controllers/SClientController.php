@@ -84,7 +84,7 @@ class SClientController extends Controller
         return response()->json($client);
     }
 
-    public function update(UpdateRequest $request, SClient $id)
+    public function update(UpdateRequest $request, $id)
     {
         DB::beginTransaction();
         try {
