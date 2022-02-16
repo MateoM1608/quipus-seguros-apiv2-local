@@ -88,7 +88,7 @@ class SClientController extends Controller
     {
         DB::beginTransaction();
         try {
-            $client = SRisk::findOrFail($id);
+            $client = SClient::findOrFail($id);
             $client->update($request->all());
 
             event(new SClientEvent($client));
