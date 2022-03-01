@@ -76,10 +76,10 @@ class CCaseNoteController extends Controller
                 'note' => $note->note,
                 'creator_case' => $note->user_name
             ];
-
-            \Mail::send('emails.crm.newTask', $newTask, function ($message) use($user) {
+            $idCRM = $newTask['case'];
+            \Mail::send('emails.crm.newTask', $newTask, function ($message) use($user, $idCRM) {
                 $message->from('noreply@amauttasystems.com', 'Quipus seguros');
-                $message->to($user->email)->subject('Nueva tarea CRM');
+                $message->to($user->email)->subject('Nueva tarea CRM, Caso: '.$idCRM);
             });
 
         }

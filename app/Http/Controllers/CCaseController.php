@@ -95,6 +95,7 @@ class CCaseController extends Controller
         }
         $user = User::find($case->assigned_user_id, ['email']); //Traemos el email del usuario responsable
 
+        //Creamos estructura del correo a enviar como notificacion
         $newCase = [
             'email' => $user->email,
             'case' => $case->id,
@@ -103,10 +104,24 @@ class CCaseController extends Controller
             'creator_case' => $case->creator_name
         ];
 
-        \Mail::send('emails.crm.responsible', $newCase, function ($message) use($user) {
-            $message->from('noreply@amauttasystems.com', 'Quipus segurosss.$case->id');
-            $message->to($user->email)->subject('Nuevo caso CRM');
+            $idCRM = $newCase['case'];
+            \Mail::send('emails.crm.responsible', $newCase, function ($message) use($user, $idCRM) {
+            $message->from('noreply@amauttasystems.com', 'Quipus seguros');
+            $message->to($user->email)->subject('Nuevo caso CRM, Id: '.$idCRM);
         });
+        //Agregamos una nota automatica al caso con la descripcion del caso
+        CCaseNote::create([
+            "c_case_id" =>  $case->id,
+            "user_id" =>  auth()->user()->id,
+            "user_name" =>  auth()->user()->name,
+            "user_email" =>  auth()->user()->email,
+            "note" =>  "Requerimiento: " . $case->description,
+            "type_note" =>  "Comentario",
+            "end_date" =>  Carbon::now()->format('Y-m-d'),
+            "state" =>  "Finalizada"
+        ]);
+
+
 
         return response()->json($case);
     }
@@ -136,10 +151,10 @@ class CCaseController extends Controller
                     'note' => $case->description,
                     'creator_case' => $case->creator_name
                 ];
-
-                \Mail::send('emails.crm.responsible', $updateCase, function ($message) use($user) {
+                $idCRMUpdate = $updateCase['case'];
+                \Mail::send('emails.crm.responsible', $updateCase, function ($message) use($user, $idCRMUpdate) {
                     $message->from('noreply@amauttasystems.com', 'Quipus seguros');
-                    $message->to($user->email)->subject('Actualización caso CRM');
+                    $message->to($user->email)->subject('Actualización caso CRM, Id: '.$idCRMUpdate);
                 });
             }
             //En caso de cambiar la etapa del caso, crear una nota automatica.
