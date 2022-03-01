@@ -84,11 +84,11 @@ class SClientController extends Controller
         return response()->json($client);
     }
 
-    public function update(UpdateRequest $request, SClient $id)
+    public function update(UpdateRequest $request, $id)
     {
         DB::beginTransaction();
         try {
-            $client = SRisk::findOrFail($id);
+            $client = SClient::findOrFail($id);
             $client->update($request->all());
 
             event(new SClientEvent($client));
