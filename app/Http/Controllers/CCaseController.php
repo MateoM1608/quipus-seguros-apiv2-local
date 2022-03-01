@@ -104,7 +104,7 @@ class CCaseController extends Controller
         ];
 
         \Mail::send('emails.crm.responsible', $newCase, function ($message) use($user) {
-            $message->from('noreply@amauttasystems.com', 'Quipus seguros');
+            $message->from('noreply@amauttasystems.com', 'Quipus segurosss.$case->id');
             $message->to($user->email)->subject('Nuevo caso CRM');
         });
 
