@@ -25,12 +25,16 @@ class CCaseNoteController extends Controller
 
             if (isset($request->case)) {
                 $query->where('c_case_id', $request->case);
+
             }
+
         });
 
         if ($request->trashed) {
             $data->withTrashed();
         }
+
+
 
         $response = [];
 

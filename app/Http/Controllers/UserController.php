@@ -99,6 +99,31 @@ class UserController extends Controller
                     'module_id' => 27,
                     'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
                 ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 9,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 47,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 44,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 49,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 48,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
             ]);
 
             \Mail::send('emails.user.create', $data, function ($message) use($user) {
