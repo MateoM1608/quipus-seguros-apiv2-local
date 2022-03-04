@@ -26,7 +26,8 @@ class CCaseNoteController extends Controller
             if (isset($request->case)) {
                 $query->where('c_case_id', $request->case);
             }
-        });
+        })
+        ->orderBy('created_at', 'ASC');
 
         if ($request->trashed) {
             $data->withTrashed();

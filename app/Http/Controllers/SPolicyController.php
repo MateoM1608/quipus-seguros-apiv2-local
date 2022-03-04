@@ -43,6 +43,8 @@ class SPolicyController extends Controller
             if (isset($request->s_client_id)) {
                 $query->where('s_client_id', $request->s_client_id);
             }
+
+            $query->whereNull('s_risks.deleted_at');
         })
         ->groupBy('s_policies.id');
 
@@ -52,7 +54,7 @@ class SPolicyController extends Controller
         $colums = [
             's_policies.*',
             DB::raw('IF(COUNT(s_risks.id) > 1, "MULTIRIESGO", s_risks.risk_description) AS type_risk'),
-            DB::raw('(SELECT MAX(annex_end) FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id) AS end_term'),
+            DB::raw('(SELECT MAX(annex_end) FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL) AS end_term'),
         ];
 
         if (isset($request->paginate) && $request->paginate == 1) {
