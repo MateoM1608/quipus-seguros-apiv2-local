@@ -27,15 +27,12 @@ class CCaseNoteController extends Controller
                 $query->where('c_case_id', $request->case);
 
             }
-
-        });
+        })
+        ->orderBy('created_at', 'ASC');
 
         if ($request->trashed) {
             $data->withTrashed();
         }
-
-
-
         $response = [];
 
         if (isset($request->paginate) && $request->paginate == 1) {

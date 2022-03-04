@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Config;
 use DB;
 
 //FormRequest
@@ -21,58 +22,43 @@ class SPolicyController extends Controller
 {
     public function index(Request $request)
     {
-        $data = SPolicy::withTrashed()
-            ->with(['sClient.gIdentificationType' => function ($query) use ($request) {
-                //
-            }])
-            ->with(['sClient.gCity' => function ($query) use ($request) {
-                //
-            }])
+        $data = SPolicy::withTrashed()->with([
+            'sClient.gIdentificationType',
+            'sClient.gCity','sAgency',
+            'gVendor',
+            'gVendor.gIdentificationType',
+            'sBranch',
+            'sBranch.sInsuranceCarrier',
+            'sRisk',
+            'sClaims',
+            'sAnnex'
+        ])
+        ->leftJoin('s_risks','s_policies.id','s_risks.s_policy_id')
+        ->where(function ($query) use ($request) {
 
-            ->with(['sAgency' => function ($query) use ($request) {
-                //
-            }])
+            if (isset($request->policyNumber)) {
+                $query->where('policy_number', 'like', '%' . $request->policyNumber . '%');
+            }
 
-            ->with(['gVendor' => function ($query) use ($request) {
-                //
-            }])
-            ->with(['gVendor.gIdentificationType' => function ($query) use ($request) {
-                //
-            }])
+            if (isset($request->s_client_id)) {
+                $query->where('s_client_id', $request->s_client_id);
+            }
 
-            ->with(['sBranch' => function ($query) use ($request) {
-                //
-            }])
-            ->with(['sBranch.sInsuranceCarrier' => function ($query) use ($request) {
-                //
-            }])
+            $query->whereNull('s_risks.deleted_at');
+        })
+        ->groupBy('s_policies.id');
 
-            ->with(['sRisk' => function ($query) use ($request) {
-                //
-            }])
 
-            ->with(['sClaims' => function ($query) use ($request) {
-                //
-            }])
-
-            ->with(['sAnnex' => function ($query) use ($request) {
-                //
-            }])
-
-            ->where(function ($query) use ($request) {
-
-                if (isset($request->policyNumber)) {
-                    $query->where('policy_number', 'like', '%' . $request->policyNumber . '%');
-                }
-
-                if (isset($request->s_client_id)) {
-                    $query->where('s_client_id', $request->s_client_id);
-                }
-            });
         $response = [];
 
+        $colums = [
+            's_policies.*',
+            DB::raw('IF(COUNT(s_risks.id) > 1, "MULTIRIESGO", s_risks.risk_description) AS type_risk'),
+            DB::raw('(SELECT MAX(annex_end) FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL) AS end_term'),
+        ];
+
         if (isset($request->paginate) && $request->paginate == 1) {
-            $data = $data->paginate($request->rows ?: 25, $request->colums ? $request->colums : ['*']);
+            $data = $data->paginate($request->rows ?: 25, $colums);
             $response = [
                 'total' => $data->total(),
                 'data'  => $data->toArray()['data']
@@ -80,7 +66,7 @@ class SPolicyController extends Controller
         } else {
             $response = [
                 'total' => $data->count(),
-                'data'  => $data->get($request->colums ? $request->colums : ['*'])
+                'data'  => $data->get($colums)
             ];
         }
 
