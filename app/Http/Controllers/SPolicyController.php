@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Config;
 use DB;
 
 //FormRequest
@@ -33,7 +34,6 @@ class SPolicyController extends Controller
             'sAnnex'
         ])
         ->leftJoin('s_risks','s_policies.id','s_risks.s_policy_id')
-        ->leftJoin('s_annexes','s_policies.id','s_annexes.s_policy_id')
         ->where(function ($query) use ($request) {
 
             if (isset($request->policyNumber)) {
@@ -52,7 +52,7 @@ class SPolicyController extends Controller
         $colums = [
             's_policies.*',
             DB::raw('IF(COUNT(s_risks.id) > 1, "MULTIRIESGO", s_risks.risk_description) AS type_risk'),
-            DB::raw('(select max(annex_end) from s_annexes where s_annexes.s_policy_id = s_policies.id) as end_term'),
+            DB::raw('(SELECT MAX(annex_end) FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id) AS end_term'),
         ];
 
         if (isset($request->paginate) && $request->paginate == 1) {
