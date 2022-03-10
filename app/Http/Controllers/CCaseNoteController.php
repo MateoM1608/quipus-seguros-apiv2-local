@@ -73,7 +73,7 @@ class CCaseNoteController extends Controller
             $newTask = [
                 'email' => $user->email,
                 'case' => $note->c_case_id,
-                'url' => 'https://quipus-1806d.web.app',
+                'url' => 'https://beta.amauttasystems.com',
                 'note' => $note->note,
                 'creator_case' => $note->user_name
             ];

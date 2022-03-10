@@ -99,7 +99,7 @@ class CCaseController extends Controller
         $newCase = [
             'email' => $user->email,
             'case' => $case->id,
-            'url' => 'https://quipus-1806d.web.app',
+            'url' => 'https://beta.amauttasystems.com',
             'note' => $case->description,
             'creator_case' => $case->creator_name
         ];
@@ -147,7 +147,7 @@ class CCaseController extends Controller
                 $updateCase = [
                     'email' => $user->email,
                     'case' => $case->id,
-                    'url' => 'https://quipus-1806d.web.app',
+                    'url' => 'https://beta.amauttasystems.com',
                     'note' => $case->description,
                     'creator_case' => $case->creator_name
                 ];
@@ -167,6 +167,20 @@ class CCaseController extends Controller
                     "user_name" =>  auth()->user()->name,
                     "user_email" =>  auth()->user()->email,
                     "note" =>  "Nueva etapa asignada: " . $stage->description,
+                    "type_note" =>  "Comentario",
+                    "end_date" =>  Carbon::now()->format('Y-m-d'),
+                    "state" =>  "Finalizada"
+                ]);
+            }
+             //En caso de insertar la nota de cierre crear un comentario.
+             if ($oldCase['closing_note'] != $case->closing_note) {
+
+                CCaseNote::create([
+                    "c_case_id" =>  $case->id,
+                    "user_id" =>  auth()->user()->id,
+                    "user_name" =>  auth()->user()->name,
+                    "user_email" =>  auth()->user()->email,
+                    "note" =>  "Nota de Cierre: " . $case->closing_note,
                     "type_note" =>  "Comentario",
                     "end_date" =>  Carbon::now()->format('Y-m-d'),
                     "state" =>  "Finalizada"
