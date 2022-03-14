@@ -34,6 +34,7 @@ class RPortfolioController extends Controller
         $response = [];
 
         $fields = [
+            's_annexes.id',
             's_insurance_carriers.insurance_carrier',
             's_branches.name as branche',
             's_policies.policy_number',
