@@ -54,6 +54,7 @@ class RVendorCommission extends Controller
             $response = [];
 
         $fields = [
+            's_policies.id',
             's_policies.s_client_id AS client_id',
             's_policies.g_vendor_id AS vendor_id',
             's_policies.s_branch_id AS branch_id',
