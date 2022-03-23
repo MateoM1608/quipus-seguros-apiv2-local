@@ -43,6 +43,7 @@ class RExpirationController extends Controller
             's_policies.id',
             's_branches.s_insurance_carrier_id',
             's_insurance_carriers.insurance_carrier',
+            's_branches.id as s_branches_id',
             's_branches.name',
             's_branches.tax as tax',
             's_branches.commission as commission',
