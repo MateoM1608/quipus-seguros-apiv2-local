@@ -33,21 +33,21 @@ class RVendorCommission extends Controller
                     $query->whereNull('s_commissions.deleted_at');
                     $query->where('s_annexes.commission_paid', 'Si');
                     $query->where('s_commissions.vendor_commission_paid', 'Si');
-                    $query->where('s_commissions.commission_value', '>', 0);
+                    //$query->where('s_commissions.commission_value', '>', 0);
                 }
                 elseif(isset($request->commissionStatus) && $request->commissionStatus == 2){ //2 Muestreme las comisiones sin pagar
 
                     $query->whereNull('s_commissions.deleted_at');
                     $query->where('s_annexes.commission_paid', 'Si');
                     $query->where('s_commissions.vendor_commission_paid', 'No');
-                    $query->where('s_commissions.commission_value', '>', 0);
+                    //$query->where('s_commissions.commission_value', '>', 0);
                 }
                 else{
 
                     $query->whereNull('s_commissions.deleted_at'); //Muestreme las comisiones sin pagar para el asesor
                     $query->where('s_annexes.commission_paid', 'Si');
                     $query->where('s_commissions.vendor_commission_paid', 'No');
-                    $query->where('s_commissions.commission_value', '>', 0);
+                    //$query->where('s_commissions.commission_value', '>', 0);
                 }
             });
 
