@@ -54,7 +54,7 @@ class RVendorCommission extends Controller
             $response = [];
 
         $fields = [
-            's_policies.id',
+            's_annexes.id',
             's_policies.s_client_id AS client_id',
             's_policies.g_vendor_id AS vendor_id',
             's_policies.s_branch_id AS branch_id',
@@ -64,16 +64,15 @@ class RVendorCommission extends Controller
             's_agencies.id AS agency_id',
             's_policies.policy_number',
             's_policies.policy_state',
-            's_branches.name',
-            's_branches.commission',
+            's_branches.name AS branchName',
+            's_branches.commission as branchCommission',
             's_branches.tax',
-            's_clients.identification AS identificacion_cliente',
-            's_clients.first_name AS nombre_cliente',
-            's_clients.last_name AS apellido_cliente',
-            'g_vendors.identification AS identificacion_asesor',
-            'g_vendors.first_name AS nombre_asesor',
-            'g_vendors.last_name AS apellido_asesor',
-            'g_vendors.commission AS porc_asesor_comision',
+            's_clients.identification AS clientIdentification',
+            's_clients.first_name AS clientName',
+            's_clients.last_name AS clientLastName',
+            'g_vendors.identification AS vendorIdentification',
+            'g_vendors.first_name AS vendorName',
+            'g_vendors.last_name AS vendorLastName',
             's_agencies.agency_name',
             's_annexes.annex_number',
             's_annexes.annex_start',
@@ -90,7 +89,8 @@ class RVendorCommission extends Controller
             's_commissions.commission_date',
             's_commissions.commission_value',
             's_commissions.vendor_commission_paid',
-            \DB::raw('(s_commissions.commission_value * (g_vendors.commission/100)) AS vendorCommission')
+            'g_vendors.commission AS percVendorCommission',
+            \DB::raw('(s_commissions.commission_value * (g_vendors.commission/100)) AS vendorCommissionValue')
 
         ];
 
