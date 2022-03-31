@@ -34,6 +34,7 @@ class RCommissionReceivable extends Controller
 
         $fields = [
             's_annexes.id',
+            's_policies.id as s_policy_id',
             's_branches.s_insurance_carrier_id',
             's_branches.id as s_branch_id',
             's_policies.s_client_id',
