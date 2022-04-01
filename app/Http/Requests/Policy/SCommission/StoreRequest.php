@@ -42,8 +42,8 @@ class StoreRequest extends BaseFormRequest
             ],
             'commission_value' => [
                 "required",
-                "numeric",
-                "validate_total:" . $this->total
+                "numeric"
+                //"validate_total:" . $this->total //Se comenta esta linea, ya que se identifica que hay comisiones variables cada mes dependiento de la compañia
             ],
             's_annex_id' => [
                 "required",
