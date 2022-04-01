@@ -34,6 +34,12 @@ class RCommissionReceivable extends Controller
 
         $fields = [
             's_annexes.id',
+            's_policies.id as s_policy_id',
+            's_branches.s_insurance_carrier_id',
+            's_branches.id as s_branch_id',
+            's_policies.s_client_id',
+            's_policies.g_vendor_id',
+            's_annexes.id AS s_annex_id',
             's_agencies.agency_name',
             's_insurance_carriers.insurance_carrier',
             's_branches.name as branche',
@@ -41,7 +47,6 @@ class RCommissionReceivable extends Controller
             's_agencies.agency_commission',
             \DB::raw('CONCAT(s_clients.first_name, " ", s_clients.last_name) AS client'),
             's_clients.identification',
-            's_annexes.id AS s_annex_id',
             's_annexes.annex_number',
             's_annexes.annex_type',
             's_annexes.annex_start',
@@ -57,7 +62,6 @@ class RCommissionReceivable extends Controller
             's_branches.loss_coverage',
             's_branches.cancellation_risk',
             's_branches.cancellation',
-            's_policies.g_vendor_id'
 
         ];
 
