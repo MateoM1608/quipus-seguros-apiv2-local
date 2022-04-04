@@ -35,14 +35,15 @@ class RPortfolioController extends Controller
 
         $fields = [
             's_annexes.id',
-            's_insurance_carriers.insurance_carrier',
+            's_annexes.s_policy_id',
             's_branches.id as s_branch_id',
+            's_clients.id as s_client_id',
+            's_annexes.id as s_annexe_id',
+            's_insurance_carriers.insurance_carrier',
             's_branches.name as branche',
             's_policies.policy_number',
-            's_clients.id as s_client_id',
             \DB::raw('CONCAT(s_clients.first_name, " ", s_clients.last_name) AS client'),
             's_clients.identification',
-            's_annexes.id as s_annexe_id',
             's_annexes.annex_total_value',
             's_annexes.annex_number',
             's_annexes.annex_type',

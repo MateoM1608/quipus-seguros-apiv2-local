@@ -87,10 +87,10 @@ class RVendorCommission extends Controller
             's_annexes.annex_type',
             's_commissions.commission_number',
             's_commissions.commission_date',
-            's_commissions.commission_value',
+            \DB::raw('ROUND((s_commissions.commission_value),0) AS commission_value'),
             's_commissions.vendor_commission_paid',
             'g_vendors.commission AS percVendorCommission',
-            \DB::raw('(s_commissions.commission_value * (g_vendors.commission/100)) AS vendorCommissionValue')
+            \DB::raw('ROUND((s_commissions.commission_value * (g_vendors.commission/100)),0) AS vendorCommission')
 
         ];
 
