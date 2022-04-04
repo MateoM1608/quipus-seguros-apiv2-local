@@ -90,7 +90,7 @@ class RVendorCommission extends Controller
             \DB::raw('ROUND((s_commissions.commission_value),0) AS commission_value'),
             's_commissions.vendor_commission_paid',
             'g_vendors.commission AS percVendorCommission',
-            \DB::raw('ROUND((s_commissions.commission_value * (g_vendors.commission/100)),0) AS vendorCommission')
+            \DB::raw('ROUND((s_commissions.commission_value * (g_vendors.commission/100)),0) AS vendorCommissionValue')
 
         ];
 
