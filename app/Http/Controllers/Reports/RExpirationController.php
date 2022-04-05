@@ -24,6 +24,7 @@ class RExpirationController extends Controller
             ->join('s_clients', 's_clients.id',  's_policies.s_client_id')
             ->join('s_branches',  's_branches.id', 's_policies.s_branch_id')
             ->join('s_insurance_carriers', 's_insurance_carriers.id', 's_branches.s_insurance_carrier_id')
+            ->join('s_agencies', 's_policies.s_agency_id',  's_agencies.id')
             ->where(function ($query) use ($request) {
                 $query->where('policy_state', '=', 'Vigente');
                 $query->whereNotIn('s_annexes.annex_type', ['Cobro','Cancelación','Devolución']);
@@ -45,6 +46,7 @@ class RExpirationController extends Controller
             's_insurance_carriers.insurance_carrier',
             's_branches.id as s_branch_id',
             's_branches.name',
+            's_agencies.agency_name',
             's_branches.tax as tax',
             's_branches.commission as commission',
             's_annexes.s_policy_id',
