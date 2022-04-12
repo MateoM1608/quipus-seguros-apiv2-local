@@ -135,7 +135,18 @@ class CCaseController extends Controller
                 $oldCase = $case->toArray();
             }
 
-            $case->update($request->only(['risk','expiration_date', 'c_type_case_stage_id', 'calification','c_case_area_id','assigned_user_id','assigned_name','status_case','real_value', 'closing_note']));
+            $case->update($request->only([
+                'risk',
+                'expiration_date',
+                'c_type_case_stage_id',
+                'calification',
+                'c_case_area_id',
+                'assigned_user_id',
+                'assigned_name',
+                'status_case',
+                'real_value',
+                'closing_note'
+            ]));
 
             event(new CCaseEvent($case));
 
@@ -157,6 +168,7 @@ class CCaseController extends Controller
                     $message->to($user->email)->subject('Actualización caso CRM, Id: '.$idCRMUpdate);
                 });
             }
+
             //En caso de cambiar la etapa del caso, crear una nota automatica.
             if ($oldCase['c_type_case_stage_id'] != $case->c_type_case_stage_id) {
                 $stage = CCaseStage::find($case->c_type_case_stage_id);
@@ -172,9 +184,9 @@ class CCaseController extends Controller
                     "state" =>  "Finalizada"
                 ]);
             }
-             //En caso de insertar la nota de cierre crear un comentario.
-             if ($oldCase['closing_note'] != $case->closing_note) {
 
+            //En caso de insertar la nota de cierre crear un comentario.
+            if ($oldCase['closing_note'] != $case->closing_note) {
                 CCaseNote::create([
                     "c_case_id" =>  $case->id,
                     "user_id" =>  auth()->user()->id,
@@ -187,7 +199,11 @@ class CCaseController extends Controller
                 ]);
             }
 
-
+            //En caso de cierre del caso, se finalizan las tareas.
+            if ($case->status_case == 'Cerrado') {
+                CCaseNote::where('c_case_id', $case->id)
+                ->update(['state' => 'Finalizada']);
+            }
 
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
