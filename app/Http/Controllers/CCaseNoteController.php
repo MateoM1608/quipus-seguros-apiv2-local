@@ -64,37 +64,57 @@ class CCaseNoteController extends Controller
             return response()->json($e->getMessage(), 422);
         }
 
-        $userResponsible = CCase::find($note['c_case_id'],['assigned_user_id']); //Traemos el id del usuario responsable
-        $user = User::find($userResponsible->assigned_user_id, ['email']); //Traemos el email del usuario responsable
-        //dd($user);
         //Validamos que si el tipo de nota es una tarea, envie un correo al responsable del caso.
-        if($note['type_note'] == 'Tarea'){
-
+        if($note->type_note == 'Tarea'){
             $newTask = [
-                'email' => $user->email,
+                'email' => $note->user_email,
                 'case' => $note->c_case_id,
                 'url' => 'https://beta.amauttasystems.com',
                 'note' => $note->note,
                 'creator_case' => $note->user_name
             ];
             $idCRM = $newTask['case'];
-            \Mail::send('emails.crm.newTask', $newTask, function ($message) use($user, $idCRM) {
+
+            \Mail::send('emails.crm.newTask', $newTask, function ($message) use($note) {
                 $message->from('noreply@amauttasystems.com', 'Quipus seguros');
-                $message->to($user->email)->subject('Nueva tarea CRM, Caso: '.$idCRM);
+                $message->to($note->user_email)->subject('Nueva tarea CRM, Caso: '. $note->c_case_id);
             });
 
         }
 
         return response()->json($note);
-
     }
 
     public function update(UpdateRequest $request, $id)
     {
+
         DB::beginTransaction();
         try {
             $note = CCaseNote::find($id);
-            $note->update($request->only(['state','type_note', 'end_date']));
+            $note->update($request->only([
+                'state',
+                'type_note',
+                'end_date'
+            ]));
+
+            if($note->type_note == 'Tarea' && $note->state == 'Finalizada') {
+                $responsible = CCase::find($note->c_case_id,['assigned_user_id']);
+                $user = User::find($responsible->assigned_user_id, ['email']);
+
+                $newTask = [
+                    'email' => $user->email,
+                    'case' => $note->c_case_id,
+                    'url' => 'https://beta.amauttasystems.com',
+                    'note' => $note->note,
+                    'creator_case' => $note->user_name
+                ];
+
+                \Mail::send('emails.crm.taskCompleted', $newTask, function ($message) use($user, $note) {
+                    $message->from('noreply@amauttasystems.com', 'Quipus seguros');
+                    $message->to($user->email)->subject('Nueva tarea CRM, Caso: '. $note->c_case_id);
+                });
+
+            }
 
             event(new CCaseNoteEvent($note));
 
