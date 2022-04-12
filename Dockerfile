@@ -22,7 +22,7 @@ ADD .configuration/supervisord.conf /etc/
 RUN yum -y --setopt=tsflags=nodocs update
 RUN yum -y --setopt=tsflags=nodocs --nogpgcheck install epel-release
 RUN yum -y --setopt=tsflags=nodocs --nogpgcheck install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
-RUN yum -y --setopt=tsflags=nodocs --nogpgcheck --enablerepo=remi-php73 install \
+RUN yum -y --setopt=tsflags=nodocs --nogpgcheck --enablerepo=remi-php74 install \
         php-cli \
         php-fpm \
         php-bcmath \
