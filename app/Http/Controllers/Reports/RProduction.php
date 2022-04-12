@@ -38,9 +38,9 @@ class RProduction extends Controller
         }
 
         $fields = [
+            DB::raw('ROW_NUMBER() OVER(PARTITION BY s_agencies.agency_name) AS id'),
             DB::raw('CONCAT(g_vendors.first_name," ",g_vendors.last_name) AS seller'),
             's_agencies.agency_name AS agencie',
-            's_insurance_carriers.insurance_carrier',
             's_insurance_carriers.insurance_carrier',
             's_branches.name as branche',
             DB::raw('COALESCE(sum(s_annexes.annualized_premium),0) AS total'),
