@@ -99,7 +99,7 @@ class CCaseController extends Controller
         $newCase = [
             'email' => $user->email,
             'case' => $case->id,
-            'url' => 'https://beta.amauttasystems.com',
+            'url' => 'https://quipus.amauttasystems.com',
             'note' => $case->description,
             'creator_case' => $case->creator_name
         ];
@@ -116,9 +116,9 @@ class CCaseController extends Controller
             "user_name" =>  auth()->user()->name,
             "user_email" =>  auth()->user()->email,
             "note" =>  "Requerimiento: " . $case->description,
-            "type_note" =>  "Comentario",
+            "type_note" =>  "Tarea",
             "end_date" =>  Carbon::now()->format('Y-m-d'),
-            "state" =>  "Finalizada"
+            "state" =>  "Pendiente"
         ]);
 
 
@@ -158,7 +158,7 @@ class CCaseController extends Controller
                 $updateCase = [
                     'email' => $user->email,
                     'case' => $case->id,
-                    'url' => 'https://beta.amauttasystems.com',
+                    'url' => 'https://quipus.amauttasystems.com',
                     'note' => $case->description,
                     'creator_case' => $case->creator_name
                 ];
