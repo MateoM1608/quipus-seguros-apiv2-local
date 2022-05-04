@@ -31,6 +31,10 @@ class StoreRequest extends BaseFormRequest
             $identification = GIdentificationType::whereDescription($this->g_identification_type_id)->first(['id']);
             $this->merge(['g_identification_type_id' => $identification->id]);
         }
+
+        $this->merge([
+            "fix_phone" => trim($this->fix_phone)
+        ]);
     }
 
     /**
@@ -55,7 +59,7 @@ class StoreRequest extends BaseFormRequest
                 "date",
                 "date_format:Y-m-d"
             ],
-            'fix_phone' => $this->has('fix_phone') ? [
+            'fix_phone' => $this->has('fix_phone') && $this->fix_phone ? [
                 "numeric",
             ] : [],
             'cel_phone' => [

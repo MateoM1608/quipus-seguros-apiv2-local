@@ -43,7 +43,7 @@ class UpdateRequest extends BaseFormRequest
                 "date",
                 "date_format:Y-m-d"
             ] : [],
-            'fix_phone' => $this->has('fix_phone') ? [
+            'fix_phone' => $this->has('fix_phone') && $this->fix_phone ? [
                 "numeric",
             ] : [],
             'cel_phone' => $this->has('cel_phone') ? [
