@@ -34,6 +34,7 @@ class SPolicyController extends Controller
             'sAnnex'
         ])
         ->leftJoin('s_risks','s_policies.id','s_risks.s_policy_id')
+        ->leftJoin('s_branches','s_policies.s_branch_id','s_branches.id')
         ->where(function ($query) use ($request) {
 
             if (isset($request->policyNumber)) {
@@ -53,6 +54,7 @@ class SPolicyController extends Controller
 
         $colums = [
             's_policies.*',
+            's_branches.s_insurance_carrier_id',
             DB::raw('IF(COUNT(s_risks.id) > 1, "MULTIRIESGO", s_risks.risk_description) AS type_risk'),
             DB::raw('(SELECT MAX(annex_end) FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL) AS end_term'),
         ];
