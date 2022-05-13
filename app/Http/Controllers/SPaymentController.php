@@ -11,6 +11,7 @@ use App\Http\Requests\Policy\SPayment\StoreRequest;
 
 // Models
 use App\Models\Policy\SPayment;
+use App\Models\Policy\SAnnex;
 
 // Events
 use App\Events\SPaymentEvent;
@@ -56,6 +57,19 @@ class SPaymentController extends Controller
         try {
             $payment = SPayment::create($request->all());
 
+            $total_payment = SPayment::where('s_annex_id', $request->s_annex_id)
+            ->first([DB::raw('ROUND(SUM(total_value)) as total_value')])->total_value;
+
+            $total_annex = SAnnex::where('id', $request->s_annex_id)
+            ->first([DB::raw('ROUND(annex_total_value) AS annex_total_value')])->annex_total_value;
+
+            if ($total_payment >= $total_annex) {
+                SAnnex::where('id', $request->s_annex_id)
+                ->update([
+                    'annex_paid' => 'Si'
+                ]);
+            }
+
             event(new SPaymentEvent($payment));
 
             DB::commit();
@@ -73,6 +87,27 @@ class SPaymentController extends Controller
         try {
             $payment = SPayment::findOrFail($id);
             $payment->update($request->all());
+
+            $total_payment = SPayment::where('s_annex_id', $payment->s_annex_id)
+            ->first([DB::raw('ROUND(SUM(total_value)) as total_value')])->total_value;
+
+            $total_annex = SAnnex::where('id', $payment->s_annex_id)
+            ->first([DB::raw('ROUND(annex_total_value) AS annex_total_value')])->annex_total_value;
+
+            $annex_paid = null;
+
+            if ($total_payment >= $total_annex) {
+                $annex_paid = 'Si';
+            }
+
+            if ($total_payment < $total_annex) {
+                $annex_paid = 'No';
+            }
+
+            SAnnex::where('id', $payment->s_annex_id)
+            ->update([
+                'annex_paid' => $annex_paid
+            ]);
 
             event(new SPaymentEvent($payment));
 
@@ -106,6 +141,25 @@ class SPaymentController extends Controller
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
+
+        $total_payment = SPayment::where('s_annex_id', $payment->s_annex_id)
+        ->first([DB::raw('ROUND(SUM(total_value)) as total_value')])->total_value;
+
+        $total_annex = SAnnex::where('id', $payment->s_annex_id)
+        ->first([DB::raw('ROUND(annex_total_value) AS annex_total_value')])->annex_total_value;
+
+        if ($total_payment >= $total_annex) {
+            $annex_paid = 'Si';
+        }
+
+        if ($total_payment < $total_annex) {
+            $annex_paid = 'No';
+        }
+
+        SAnnex::where('id', $payment->s_annex_id)
+        ->update([
+            'annex_paid' => $annex_paid
+        ]);
 
         return response()->json($payment);
     }

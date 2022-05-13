@@ -60,7 +60,7 @@ class UpdateRequest extends BaseFormRequest
                 "gt:0",
                 "required",
                 "numeric",
-                "validate_total:" . round($this->total)
+                "validate_total:" . $this->total
             ] : [],
             "s_annex_id" => $this->has('s_annex_id') ? [
                 "required",
