@@ -22,9 +22,10 @@ class UpdateRequest extends BaseFormRequest
     public function prepareForValidation()
     {
         $total = 0;
+        $payment = SPayment::find($this->id, ['s_annex_id']);
 
-        if ($this->s_annex_id ) {
-            $total = SAnnex::find($this->s_annex_id)->annex_total_value - SPayment::where('s_annex_id', $this->s_annex_id)->where('id', '<>', $this->id)->sum('total_value');
+        if ($payment) {
+            $total = SAnnex::find($payment->s_annex_id)->annex_total_value - SPayment::where('s_annex_id', $payment->s_annex_id)->where('id', '<>', $this->id)->sum('total_value');
         }
 
         $this->merge([
@@ -56,9 +57,10 @@ class UpdateRequest extends BaseFormRequest
                 "numeric"
             ] : [],
             "total_value" => $this->has('total_value') ? [
+                "gt:0",
                 "required",
                 "numeric",
-                "validate_total:" . $this->total
+                "validate_total:" . round($this->total)
             ] : [],
             "s_annex_id" => $this->has('s_annex_id') ? [
                 "required",
@@ -78,6 +80,7 @@ class UpdateRequest extends BaseFormRequest
             "payment_date.date" => "El formato de La fecha de pago es invalido.",
             "premium_value.numeric" => "La prima del pago solo debe de contener valores numericos",
             "tax_value.numeric" => "El impuesto del pago solo debe de contener valores numericos",
+            "total_value.gt" => "El valor total del pago debe ser mayor a cero",
             "total_value.numeric" => "El valor total del pago solo debe de contener valores numericos",
             "total_value.validate_total" => "El valor total del pago no debe de ser superios a " . $this->total,
             "s_annex_id.numeric" => "El número del anexo solo debe de contener valores numericos",

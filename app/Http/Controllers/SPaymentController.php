@@ -46,7 +46,6 @@ class SPaymentController extends Controller
         if ($request->trashed) {
             $data->withTrashed();
         }
-        //dd(\DB::getQueryLog());
 
         return response()->json($response);
     }
