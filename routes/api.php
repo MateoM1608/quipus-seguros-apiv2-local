@@ -76,6 +76,10 @@ use App\Http\Controllers\Reports\RVendorCommission;
 Route::group(['prefix' => 'v1'], function () {
     Route::post('login', [AuthController::class, 'login'])->name('login');
 
+    Route::prefix('session')->group(function () {
+        Route::post('delete', [AuthController::class, 'closeSession'])->name('session-delete');
+    });
+
     Route::prefix('password')->group(function () {
         Route::post('/reset', [ResetPasswordController::class, 'notification'])->name('password-reset');
         Route::post('/change', [ResetPasswordController::class, 'changePassword'])->name('password-change');

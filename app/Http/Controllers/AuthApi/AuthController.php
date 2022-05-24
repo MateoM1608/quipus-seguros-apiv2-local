@@ -10,7 +10,7 @@ class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth.jwt', ['except' => ['login']]);
+        $this->middleware('auth.jwt', ['except' => ['login', 'closeSession']]);
     }
 
     /**
@@ -51,8 +51,13 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        if($this->checkLogin()) {
-            \JWTAuth::manager()->invalidate(new \Tymon\JWTAuth\Token($token), $forceForever = false);
+        if($this->checkLogin($token)) {
+            try {
+                \JWTAuth::manager()->invalidate(new \Tymon\JWTAuth\Token($token), $forceForever = false);
+            } catch (\Throwable $th) {
+                throw $th;
+            }
+
             return response()->json(['error' => 'Ya tiene una session iniciada, cierre la sessión e inicie de nuevo.'], 403);
         }
 
@@ -164,7 +169,7 @@ class AuthController extends Controller
         ]);
     }
 
-    protected function checkLogin()
+    protected function checkLogin($token)
     {
         $session = DB::connection('seguros')->table('sessions')
         ->where('user_id', auth('api')->user()->id)
@@ -189,6 +194,7 @@ class AuthController extends Controller
             DB::connection('seguros')->table('sessions')
             ->insert([
                 'user_id' => auth('api')->user()->id,
+                'token' => $token,
                 'expires_in' => auth('api')->factory()->getTTL() * 60
             ]);
         } else {
@@ -196,5 +202,30 @@ class AuthController extends Controller
         }
 
         return false;
+    }
+
+    public function closeSession(Request $request)
+    {
+        try {
+            $user = DB::connection('seguros')->table('users')
+            ->where('email', $request->email)
+            ->first(['id']);
+
+            $session = DB::connection('seguros')->table('sessions')
+            ->where('user_id', $user->id)
+            ->first();
+
+            \JWTAuth::manager()
+            ->invalidate(new \Tymon\JWTAuth\Token($session->token), $forceForever = false);
+
+            $session = DB::connection('seguros')->table('sessions')
+            ->where('user_id', $user->id)
+            ->delete();
+
+        } catch (\Throwable $th) {
+            return response()->json($th->getMessage(), 422);
+        }
+
+        return response()->json(['message' => 'se cerro la sesión satisfactoriamente.']);
     }
 }
