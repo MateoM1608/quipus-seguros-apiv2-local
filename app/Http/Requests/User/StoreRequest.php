@@ -28,6 +28,8 @@ class StoreRequest extends BaseFormRequest
             "password" => bcrypt($password),
             "password_real" => $password,
             "connection" => $this->connection? $this->connection : auth()->user()->connection,
+            "routeLogo" =>  auth()->user()->routeLogo,
+            "routeLogoMin" => auth()->user()->routeLogoMin,
         ]);
     }
 

@@ -54,7 +54,7 @@ class UserController extends Controller
             ];
 
             Permission::insert([
-                [
+               [
                     'user_id' => $user->id,
                     'module_id' => 1,
                     'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
@@ -91,12 +91,7 @@ class UserController extends Controller
                 ],
                 [
                     'user_id' => $user->id,
-                    'module_id' => 22,
-                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
-                ],
-                [
-                    'user_id' => $user->id,
-                    'module_id' => 27,
+                    'module_id' => 8,
                     'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
                 ],
                 [
@@ -106,7 +101,172 @@ class UserController extends Controller
                 ],
                 [
                     'user_id' => $user->id,
-                    'module_id' => 47,
+                    'module_id' => 10,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 11,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 12,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 13,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 14,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 15,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 16,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 17,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 18,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 19,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 20,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 21,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 22,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 23,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 24,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 25,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 26,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 27,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 28,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 29,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 30,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 31,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 32,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 33,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 34,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 35,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 36,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 37,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 38,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 39,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 40,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 41,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 42,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 43,
                     'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
                 ],
                 [
@@ -116,7 +276,17 @@ class UserController extends Controller
                 ],
                 [
                     'user_id' => $user->id,
-                    'module_id' => 49,
+                    'module_id' => 45,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 46,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 47,
                     'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
                 ],
                 [
@@ -124,6 +294,12 @@ class UserController extends Controller
                     'module_id' => 48,
                     'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
                 ],
+                [
+                    'user_id' => $user->id,
+                    'module_id' => 49,
+                    'actions' => '{"see": true, "edit": true, "create": true, "delete": true}',
+                ],
+
             ]);
 
             \Mail::send('emails.user.create', $data, function ($message) use($user) {
