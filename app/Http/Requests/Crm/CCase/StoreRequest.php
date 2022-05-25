@@ -87,6 +87,9 @@ class StoreRequest extends BaseFormRequest
                 "min:1",
                 "max:5"
             ]: [],
+            'description' => [
+                "required",
+            ]
         ];
     }
     public function messages()
@@ -125,7 +128,9 @@ class StoreRequest extends BaseFormRequest
 
             "creator_name.required" => "El campo de nombre del creador del caso es obligatorio.",
             "assigned_name.required" => "El campo de nombre del usuario responsable del caso es obligatorio.",
-            "c_case_area_id.required" => "El identificador del Area es obligatorio."
+            "c_case_area_id.required" => "El identificador del Area es obligatorio.",
+
+            "description.required" => "La descripción del caso es obligatoria.",
         ];
     }
 
