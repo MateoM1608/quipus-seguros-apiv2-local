@@ -10,7 +10,17 @@ class SCommission extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'commission_number', 'commission_date', 'commission_value', 's_annex_id', 's_payroll_id', 'g_vendor_id', 'vendor_commission_paid', 'agency_commission', 'agency_commission', 'payment_day', 'status_payment'
+        'commission_number',
+        'commission_date',
+        'commission_value',
+        's_annex_id',
+        's_payroll_id',
+        'g_vendor_id',
+        'vendor_commission_paid',
+        'agency_commission',
+        'agency_commission',
+        'payment_day',
+        'status_payment',
     ];
 
     public function sAnnex()

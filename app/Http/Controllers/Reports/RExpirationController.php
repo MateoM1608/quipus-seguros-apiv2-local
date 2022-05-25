@@ -52,18 +52,19 @@ class RExpirationController extends Controller
             's_annexes.s_policy_id',
             's_policies.policy_number',
             's_policies.policy_state',
-            's_annexes.annex_number',
-            DB::raw("(SELECT s_annexes.annex_type FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.annex_type NOT IN('Cobro','Cancelación','Devolución') ORDER BY annex_end DESC LIMIT 1) AS annex_type"),
             's_policies.s_client_id',
             's_clients.identification',
             DB::raw('CONCAT(s_clients.first_name, " ", s_clients.last_name) AS client'),
-            's_annexes.id as s_annexe_id',
-            's_annexes.annex_start',
-            DB::raw('(SELECT s_annexes.annex_end FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id ORDER BY annex_end DESC LIMIT 1) AS annex_end'),
-            's_annexes.annex_print',
-            's_annexes.annex_printed',
-            's_annexes.annex_email',
-            's_annexes.annex_delivered'
+
+            DB::raw('(SELECT s_annexes.id FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL ORDER BY annex_end DESC LIMIT 1) AS s_annexe_id'),
+            DB::raw('(SELECT s_annexes.annex_number FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL ORDER BY annex_end DESC LIMIT 1) AS annex_number'),
+            DB::raw("(SELECT s_annexes.annex_type FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.annex_type NOT IN('Cobro','Cancelación','Devolución') AND s_annexes.deleted_at IS NULL ORDER BY annex_end DESC LIMIT 1) AS annex_type"),
+            DB::raw('(SELECT s_annexes.annex_start FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL ORDER BY annex_end DESC LIMIT 1) AS annex_start'),
+            DB::raw('(SELECT s_annexes.annex_end FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL ORDER BY annex_end DESC LIMIT 1) AS annex_end'),
+            DB::raw('(SELECT s_annexes.annex_print FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL ORDER BY annex_end DESC LIMIT 1) AS annex_print'),
+            DB::raw('(SELECT s_annexes.annex_printed FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL ORDER BY annex_end DESC LIMIT 1) AS annex_printed'),
+            DB::raw('(SELECT s_annexes.annex_email FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL ORDER BY annex_end DESC LIMIT 1) AS annex_email'),
+            DB::raw('(SELECT s_annexes.annex_delivered FROM s_annexes WHERE s_annexes.s_policy_id = s_policies.id AND s_annexes.deleted_at IS NULL ORDER BY annex_end DESC LIMIT 1) AS annex_delivered'),
         ];
 
         if (isset($request->paginate) && $request->paginate == 1) {
