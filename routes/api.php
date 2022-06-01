@@ -62,6 +62,9 @@ use App\Http\Controllers\DataUpload\IntegratorController;
 use App\Http\Controllers\Reports\RTasksCrm;
 use App\Http\Controllers\Reports\RVendorCommission;
 
+# Cloud
+use App\Http\Controllers\Cloud\AdministratorController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -91,6 +94,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
             Route::post('/me', [AuthController::class, 'me'])->name('login-me');
         });
+
+        Route::post('databases', [AdministratorController::class, 'newEnvironment']);
 
         Route::group(['middleware' => ['connection', 'authorization']], function () {
 
