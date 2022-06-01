@@ -215,8 +215,11 @@ class AuthController extends Controller
             ->where('user_id', $user->id)
             ->first();
 
-            \JWTAuth::manager()
-            ->invalidate(new \Tymon\JWTAuth\Token($session->token), $forceForever = false);
+            try {
+                \JWTAuth::manager()
+                ->invalidate(new \Tymon\JWTAuth\Token($session->token), $forceForever = false);
+            } catch (\Throwable $th) {}
+
 
             $session = DB::connection('seguros')->table('sessions')
             ->where('user_id', $user->id)
