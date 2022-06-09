@@ -14,12 +14,14 @@ class RTasksCrm extends Controller
     public function index(Request $request)
     {
         $data = CCaseNote::join('c_cases', 'c_cases.id', 'c_case_notes.c_case_id')
-            ->join('c_type_cases', 'c_type_cases.id',  'c_cases.c_type_case_id')
-            ->leftJoin('c_case_areas', 'c_case_areas.id',  'c_cases.c_case_area_id')
-            ->where(function ($query) {
-                $query->where('c_case_notes.state', 'Pendiente');
-                $query->where('c_cases.assigned_user_id', auth()->user()->id);
-            });
+        ->join('c_type_cases', 'c_type_cases.id',  'c_cases.c_type_case_id')
+        ->leftJoin('c_case_areas', 'c_case_areas.id',  'c_cases.c_case_area_id')
+        ->where(function ($query) use($request) {
+            $query->where('c_case_notes.state', 'Pendiente');
+            if ($request->user_id) {
+                $query->where('c_cases.assigned_user_id', $request->user_id);
+            }
+        });
 
         $response = [];
 
