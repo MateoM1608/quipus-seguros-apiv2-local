@@ -129,4 +129,21 @@ class SCommissionController extends Controller
 
         return response()->json($commission);
     }
+
+    public function bulkCommissionPaid(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            SCommission::whereIn('id', $request->commissionsId)
+            ->update([
+                'vendor_commission_paid' => 'Si'
+            ]);
+            DB::commit();
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            return response()->json($e->getMessage(), 422);
+        }
+
+        return response()->json(['message' => 'Se realizó el pago correctamente.']);
+    }
 }

@@ -305,6 +305,16 @@ class ModuleSeeder extends Seeder
                                 'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
                                 'class' => 'sidebar-nav-mini-hide',
                                 'show' => 0,
+                                'children' => [
+                                    [
+                                        'description' => 'commission-paid',
+                                        'name' => 'Pago masivo de comisiones',
+                                        'icon' => 'icon-speedometer',
+                                        'badge' => json_encode(['variant' => 'primary', 'text' => 'NEW']),
+                                        'class' => 'sidebar-nav-mini-hide',
+                                        'show' => 0,
+                                    ]
+                                ]
                             ],
                         ]
                     ],

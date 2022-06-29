@@ -278,10 +278,16 @@ Route::group(['prefix' => 'v1'], function () {
              * Commission
              */
             Route::prefix('commission')->group(function () {
+
+                Route::prefix('commission-paid')->group(function () {
+                    Route::put('/', [SCommissionController::class, 'bulkCommissionPaid'])->name('commission-paid-update');
+                });
+
                 Route::get('/', [SCommissionController::class, 'index'])->name('commission-consult');
                 Route::post('/', [SCommissionController::class, 'store'])->name('commission-store');
                 Route::put('/{id}', [SCommissionController::class, 'update'])->name('commission-update');
                 Route::delete('/{id}', [SCommissionController::class, 'destroy'])->name('commission-destroy');
+
             });
 
             /**

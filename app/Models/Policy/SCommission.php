@@ -18,7 +18,6 @@ class SCommission extends Model
         'g_vendor_id',
         'vendor_commission_paid',
         'agency_commission',
-        'agency_commission',
         'payment_day',
         'status_payment',
     ];
