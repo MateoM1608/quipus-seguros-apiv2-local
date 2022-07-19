@@ -51,7 +51,7 @@ class StoreRequest extends BaseFormRequest
                 "numeric"
             ],
             "total_value" => [
-                "gt:0",
+                "distinct_to_zero",
                 "required",
                 "numeric",
                 "validate_total:" . $this->total
@@ -80,7 +80,7 @@ class StoreRequest extends BaseFormRequest
             "payment_date.date" => "El formato de La fecha de pago es invalido.",
             "premium_value.numeric" => "La prima del pago solo debe de contener valores numericos",
             "tax_value.numeric" => "El impuesto del pago solo debe de contener valores numericos",
-            "total_value.gt" => "El valor total del pago debe ser mayor a cero",
+            "total_value.distinct_to_zero" => "El valor total del pago debe ser diferente de cero.",
             "total_value.numeric" => "El valor total del pago solo debe de contener valores numericos",
             "total_value.validate_total" => "El valor total del pago no debe de ser superior a $" . $this->total,
             "s_annex_id.numeric" => "El número del anexo solo debe de contener valores numericos",

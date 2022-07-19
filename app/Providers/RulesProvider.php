@@ -28,6 +28,10 @@ class RulesProvider extends ServiceProvider
      */
     public function boot()
     {
+        \Validator::extend('distinct_to_zero', function ($field, $value, $params, $validate) {
+            return (int) $value !== 0;
+        });
+
         \Validator::extend('validate_total', function ($field, $value, $params, $validate) {
             return !(round($value) > round($params[0]));
         });
