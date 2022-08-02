@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use PDF;
 use DB;
 
 //FormRequest
@@ -19,7 +21,6 @@ class SCommissionController extends Controller
 {
     public function index(Request $request)
     {
-        //\DB::enableQueryLog();
         $data = SCommission::with(['sAnnex' => function ($query) use ($request) {
             //
         }])
@@ -62,8 +63,6 @@ class SCommissionController extends Controller
                 'data'  => $data->get($request->colums ? $request->colums : ['*'])
             ];
         }
-
-        //dd(\DB::getQueryLog());
 
         return response()->json($response);
     }
@@ -133,17 +132,44 @@ class SCommissionController extends Controller
     public function bulkCommissionPaid(Request $request)
     {
         DB::beginTransaction();
+
         try {
+            $optionsGarantia = [
+                'orientation'   => 'portrait',
+                'encoding'      => 'UTF-8',
+                'header-html'   => null,
+                'footer-html'   => null,
+                'margin-top' => '25mm',
+                'margin-bottom' => '20mm',
+                'margin-right' => '10mm',
+                'margin-left' => '18mm',
+                'enable-javascript' => true,
+                'enable-smart-shrinking' => true,
+                'no-stop-slow-scripts' => true,
+            ];
+            $pdf = PDF::loadView('pdf.commissionPay');
+            $pdf->setPaper('letter');
+            $pdf->setOptions($optionsGarantia);
+
+            $sequential = SCommission::groupBy('s_payroll_id')
+            ->orderBy('s_payroll_id', 'desc')
+            ->first('s_payroll_id');
+
+            $sequential = $sequential->s_payroll_id? $sequential->s_payroll_id + 1 : 1;
+
             SCommission::whereIn('id', $request->commissionsId)
             ->update([
-                'vendor_commission_paid' => 'Si'
+                'vendor_commission_paid' => 'Si',
+                's_payroll_id' => $sequential,
+                'payment_day' => Carbon::now()->format('Y-m-d H:m:s'),
             ]);
+
             DB::commit();
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
             return response()->json($e->getMessage(), 422);
         }
 
-        return response()->json(['message' => 'Se realizó el pago correctamente.']);
+        return $pdf->output();
     }
 }
