@@ -15,7 +15,7 @@ class RVendorCommission extends Controller
 
     public function index(Request $request)
     {
-        #\DB::enableQueryLog();
+        \DB::enableQueryLog();
         $data = SPolicy::join('s_branches', 's_branches.id', 's_policies.s_branch_id')
             ->join('s_clients', 's_clients.id',  's_policies.s_client_id')
             ->join('g_vendors', 'g_vendors.id',  's_policies.g_vendor_id')
@@ -29,26 +29,18 @@ class RVendorCommission extends Controller
             ->where(function ($query) use ($request) {
 
                 if (isset($request->commissionStatus) && $request->commissionStatus == 1) { //1 = Muestre las comisiones pagadas del asesor
-
                     $query->whereNull('s_commissions.deleted_at');
                     $query->where('s_annexes.commission_paid', 'Si');
                     $query->where('s_commissions.vendor_commission_paid', 'Si');
                     //$query->where('s_commissions.commission_value', '>', 0);
-                }
-                elseif(isset($request->commissionStatus) && $request->commissionStatus == 2){ //2 Muestreme las comisiones sin pagar
-
-                    $query->whereNull('s_commissions.deleted_at');
-                    $query->where('s_annexes.commission_paid', 'Si');
-                    $query->where('s_commissions.vendor_commission_paid', 'No');
-                    //$query->where('s_commissions.commission_value', '>', 0);
-                }
-                else{
-
+                } else{
                     $query->whereNull('s_commissions.deleted_at'); //Muestreme las comisiones sin pagar para el asesor
                     $query->where('s_annexes.commission_paid', 'Si');
                     $query->where('s_commissions.vendor_commission_paid', 'No');
                     //$query->where('s_commissions.commission_value', '>', 0);
                 }
+
+                $query->where('s_commissions.id', 1);
             });
 
             $response = [];
@@ -87,6 +79,8 @@ class RVendorCommission extends Controller
             's_annexes.annex_type',
             's_commissions.commission_number',
             's_commissions.commission_date',
+            's_commissions.payment_day',
+            's_commissions.status_payment',
             \DB::raw('ROUND((s_commissions.commission_value),0) AS commission_value'),
             's_commissions.vendor_commission_paid',
             'g_vendors.commission AS percVendorCommission',
@@ -108,7 +102,7 @@ class RVendorCommission extends Controller
             ];
         }
 
-        #dd(\DB::getQueryLog());
+        //dd(\DB::getQueryLog());
 
         return response()->json($response);
     }
