@@ -6,6 +6,8 @@ metadata:
   annotations:
     service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
     service.beta.kubernetes.io/do-loadbalancer-size-slug: "lb-small"
+    service.beta.kubernetes.io/do-loadbalancer-certificate-id: "09723aed-e463-4ff3-b60e-cdae432658a2"
+    service.beta.kubernetes.io/do-loadbalancer-redirect-http-to-https: "true"
 spec:
   ports:
   - name: http
