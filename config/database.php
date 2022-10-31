@@ -142,14 +142,14 @@ return [
             ]) : [],
         ],
 
-        'amautta' => [
+        'amauttasystems' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST_AMAUTTA', '127.0.0.1'),
-            'port' => env('DB_PORT_AMAUTTA', '3306'),
-            'database' => env('DB_DATABASE_AMAUTTA', 'forge'),
-            'username' => env('DB_USERNAME_AMAUTTA', 'forge'),
-            'password' => env('DB_PASSWORD_AMAUTTA', ''),
+            'host' => env('DB_HOST_AMAUTTASYSTEMS', '127.0.0.1'),
+            'port' => env('DB_PORT_AMAUTTASYSTEMS', '3306'),
+            'database' => env('DB_DATABASE_AMAUTTASYSTEMS', 'forge'),
+            'username' => env('DB_USERNAME_AMAUTTASYSTEMS', 'forge'),
+            'password' => env('DB_PASSWORD_AMAUTTASYSTEMS', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
