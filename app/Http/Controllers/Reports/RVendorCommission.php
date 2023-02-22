@@ -15,7 +15,6 @@ class RVendorCommission extends Controller
 
     public function index(Request $request)
     {
-        \DB::enableQueryLog();
         $data = SPolicy::join('s_branches', 's_branches.id', 's_policies.s_branch_id')
             ->join('s_clients', 's_clients.id',  's_policies.s_client_id')
             ->join('g_vendors', 'g_vendors.id',  's_policies.g_vendor_id')
@@ -97,8 +96,6 @@ class RVendorCommission extends Controller
                 'data'  => $data,
             ];
         }
-
-        //dd(\DB::getQueryLog());
 
         return response()->json($response);
     }
