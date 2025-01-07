@@ -1,0 +1,1 @@
+# quipus-seguros-apiv2
