@@ -1,0 +1,113 @@
+services:
+  - type: web
+    name: laravel-app
+    env: php
+    plan: free
+    buildCommand: composer install && php artisan config:cache && php artisan route:cache
+    startCommand: php artisan serve --host 0.0.0.0 --port 10000
+    envVars:
+      - key: APP_NAME
+        value: Laravel
+      - key: APP_ENV
+        value: local
+      - key: APP_KEY
+        value: base64:CWYWP1KA56119fof/dYMF9lqBetiScsjzgPPovWWtB8=
+      - key: JWT_SECRET
+        value: MKZpXltwU4MeEodhqMzKDR5YH2H1RPaM7Gn3O8DHD0KFS8Z7Ulc43IVXHAzkM3o5
+      - key: JWT_TTL
+        value: 480
+      - key: APP_DEBUG
+        value: true
+      - key: APP_URL
+        value: http://quipus-seguros.test
+      - key: FRONT_URL
+        value: https://quipus-1806d.web.app/
+      - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_LEVEL
+        value: debug
+      - key: DB_CONNECTION
+        value: seguros
+      - key: DB_HOST
+        value: shared045.arvixe.com
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: amauttas_insurance_global_access
+      - key: DB_USERNAME
+        value: amauttas_seguros
+      - key: DB_PASSWORD
+        value: s3gur0s
+      - key: DB_HOST_TEST
+        value: shared045.arvixe.com
+      - key: DB_PORT_TEST
+        value: 3306
+      - key: DB_DATABASE_TEST
+        value: amauttas_qs_test_dev
+      - key: DB_USERNAME_TEST
+        value: amauttas_seguros
+      - key: DB_PASSWORD_TEST
+        value: s3gur0s
+      - key: DB_HOST_AMPARALO
+        value: shared045.arvixe.com
+      - key: DB_PORT_AMPARALO
+        value: 3306
+      - key: DB_DATABASE_AMPARALO
+        value: qs_901367777
+      - key: DB_USERNAME_AMPARALO
+        value: amauttas_seguros
+      - key: DB_PASSWORD_AMPARALO
+        value: s3gur0s
+      - key: BROADCAST_DRIVER
+        value: pusher
+      - key: CACHE_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: redis
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_CONNECTION
+        value: seguros
+      - key: SESSION_LIFETIME
+        value: 120
+      - key: MEMCACHED_HOST
+        value: 127.0.0.1
+      - key: REDIS_HOST
+        value: 127.0.0.1
+      - key: REDIS_PORT
+        value: 6379
+      - key: REDIS_CLIENT
+        value: predis
+      - key: REDIS_PASSWORD
+        value: null
+      - key: MAIL_DRIVER
+        value: smtp
+      - key: MAIL_HOST
+        value: mail.amauttasystems.com
+      - key: MAIL_PORT
+        value: 465
+      - key: MAIL_USERNAME
+        value: noreply@amauttasystems.com
+      - key: MAIL_PASSWORD
+        value: _Q?QMapwVMG1
+      - key: MAIL_ENCRYPTION
+        value: ssl
+      - key: AWS_DEFAULT_REGION
+        value: us-east-1
+      - key: PUSHER_APP_ID
+        value: local
+      - key: PUSHER_APP_KEY
+        value: local
+      - key: PUSHER_APP_SECRET
+        value: local
+      - key: PUSHER_APP_CLUSTER
+        value: mt1
+      - key: MIX_PUSHER_APP_KEY
+        value: "${PUSHER_APP_KEY}"
+      - key: MIX_PUSHER_APP_CLUSTER
+        value: "${PUSHER_APP_CLUSTER}"
+
+
+
+
+
