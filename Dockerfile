@@ -1,25 +1,36 @@
-# Usar la imagen oficial de PHP con Apache
-FROM php:7.2-apache
+FROM centos:7
 
-# Instalar dependencias necesarias para Laravel
-RUN apt-get update && apt-get install -y \
-    zip unzip curl libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+# Añadir repositorios
+ADD .repo/nginx.repo /etc/yum.repos.d/nginx.repo
+ADD .repo/mysql.repo /etc/yum.repos.d/mysql-community.repo
+RUN rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql
 
-# Instalar Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Instalar dependencias
+RUN yum -y install epel-release python-pip && \
+    pip install supervisor && \
+    yum -y install mysql-community-client-5.7.30-1.el7 && \
+    yum -y install http://rpms.remirepo.net/enterprise/remi-release-7.rpm && \
+    yum -y --enablerepo=remi-php74 install \
+        php-cli php-fpm php-mysqlnd php-zip git && \
+    yum clean all
 
-# Configurar el directorio de trabajo
-WORKDIR /var/www/html
+# Configuración de Nginx y PHP
+COPY .configuration/nginx.conf /etc/nginx/nginx.conf
+COPY .configuration/default.conf /etc/nginx/conf.d/default.conf
+COPY .configuration/php/php.ini /etc/php.d/php.ini
+COPY .configuration/php/www.conf /etc/php-fpm.d/
+RUN mkdir /var/run/php-fpm
 
-# Copiar el proyecto al contenedor
-COPY . /var/www/html
+# Configuración de Supervisor
+ADD .configuration/supervisord.conf /etc/
 
-# Establecer permisos
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Código de la aplicación
+ADD . /var/www/quipus
+RUN composer install --no-dev --optimize-autoloader && \
+    chmod 777 -R /var/www/quipus/storage
 
-# Exponer el puerto 80 para Apache
-EXPOSE 80
+# Exponer puertos
+EXPOSE 80 443
 
-# Comando de inicio para Apache
-CMD ["apache2-foreground"]
+# Comando para iniciar Supervisor
+CMD ["supervisord", "-n"]
